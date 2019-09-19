@@ -96,4 +96,7 @@ public class Board {
             framesPerGridcell = framesSinceLastMove;
         }
     }
+
+    public void updateDasAcceleration() {
+    }
 }

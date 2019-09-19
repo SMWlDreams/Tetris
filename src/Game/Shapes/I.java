@@ -27,7 +27,7 @@ public class I implements Shape {
             for (int i = 0; i < 4; i++) {
                 Tile t = new Tile();
                 t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
-                t.setCoordinates(270 + (15 * i), 75);
+                t.setCoordinates(285 + (15 * i), 75);
                 tiles.add(t);
                 column = 4;
                 row = 0;
