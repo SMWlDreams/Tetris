@@ -18,6 +18,7 @@ public class Main extends Application {
         Game gameController = loader.getController();
         Scene scene = new Scene(root);
         scene.setOnKeyPressed(e -> gameController.parseInput(e));
+        stage.setOnShown(e -> gameController.run());
         stage.setScene(scene);
         stage.setTitle("Tetris");
         stage.show();

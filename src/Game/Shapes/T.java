@@ -7,17 +7,21 @@ import javafx.scene.layout.StackPane;
 import java.util.ArrayList;
 import java.util.List;
 
-public class I implements Shape {
+public class T implements Shape {
     private List<Tile> tiles = new ArrayList<>();
 
-    public I(int level) {
+    public T(int level) {
         while (level >= 10) {
             level -= 10;
         }
         for (int i = 0; i < 4; i++) {
             Tile t = new Tile();
             t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
-            t.setCoordinates(200 + (20 * i), 200);
+            if (i < 3) {
+                t.setCoordinates(500 + (i * 20), 160);
+            } else {
+                t.setCoordinates(520, 180);
+            }
             tiles.add(t);
         }
     }
@@ -31,11 +35,13 @@ public class I implements Shape {
         }
     }
 
+//    @Override
+    public void spawn(StackPane pane) {
+
+    }
+
     @Override
     public void spawn(Pane pane) {
-//        for (Tile t : tiles) {
-//            pane.getChildren().add(t);
-//        }
         pane.getChildren().addAll(tiles);
     }
 }
