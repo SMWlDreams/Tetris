@@ -39,9 +39,24 @@ public class S implements Shape {
         }
     }
 
-//    @Override
+    @Override
+    public void updateCoordinates(int col, int row) {
+
+    }
+
+    //    @Override
     public void spawn(StackPane pane) {
 
+    }
+
+    @Override
+    public int getColumn() {
+        return 0;
+    }
+
+    @Override
+    public int getRow() {
+        return 0;
     }
 
     @Override

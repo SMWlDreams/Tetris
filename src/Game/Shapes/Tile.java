@@ -11,7 +11,7 @@ public class Tile extends Rectangle {
         this.setWidth(15);
     }
 
-    public void setCoordinates(int x, int y) {
+    public void setCoordinates(double x, double y) {
         if (y < 75) {
             this.setVisible(false);
         } else {
