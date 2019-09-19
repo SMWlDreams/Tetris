@@ -7,16 +7,21 @@ import javafx.scene.shape.Rectangle;
 public class Tile extends Rectangle {
 
     public Tile() {
-        this.setHeight(20);
-        this.setWidth(20);
+        this.setHeight(15);
+        this.setWidth(15);
     }
 
     public void setCoordinates(int x, int y) {
-        this.setX(x);
-        this.setY(y);
+        if (y < 75) {
+            this.setVisible(false);
+        } else {
+            this.setVisible(true);
+            this.setX(x);
+            this.setY(y);
+        }
     }
 
     public void setImage(Image image) {
-        this.setFill(new ImagePattern(image, 0, 0, 20, 20, false));
+        this.setFill(new ImagePattern(image, 0, 0, 15, 15, false));
     }
 }

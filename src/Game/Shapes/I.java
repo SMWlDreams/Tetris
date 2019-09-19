@@ -10,15 +10,24 @@ import java.util.List;
 public class I implements Shape {
     private List<Tile> tiles = new ArrayList<>();
 
-    public I(int level) {
+    public I(int level, boolean next) {
         while (level >= 10) {
             level -= 10;
         }
-        for (int i = 0; i < 4; i++) {
-            Tile t = new Tile();
-            t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
-            t.setCoordinates(200 + (20 * i), 200);
-            tiles.add(t);
+        if (next) {
+            for (int i = 0; i < 4; i++) {
+                Tile t = new Tile();
+                t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
+                t.setCoordinates(420 + (15 * i), 225);
+                tiles.add(t);
+            }
+        } else {
+            for (int i = 0; i < 4; i++) {
+                Tile t = new Tile();
+                t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
+                t.setCoordinates(270 + (15 * i), 75);
+                tiles.add(t);
+            }
         }
     }
 
