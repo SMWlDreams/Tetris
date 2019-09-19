@@ -13,4 +13,8 @@ public interface Shape {
     void updateImage(int level);
 
     void updateCoordinates(int col, int row);
+
+    void leftRotate();
+
+    void rightRotate();
 }

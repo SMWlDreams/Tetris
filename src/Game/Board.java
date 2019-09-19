@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
-    private int dasCounter = 16;
+    private int dasCounter = 15;
     private int frameCount = 0;
     private List<Shape> shapes = new ArrayList<>();
     private int level = 0;
@@ -19,16 +19,38 @@ public class Board {
     private int framesSinceLastMove;
     private int framesPerGridcell;
     private int xAdjustment = 0;
-    private int dasAcceleration;
+    private static final int INITIAL_DAS_DELAY = 16;
+    private static final int DAS_ACCELERATION = 6;
+    private boolean firstDasDelay = false;
+    private boolean moving = false;
 
     public void nextFrame(Pane pane) {
-        dasCounter++;
+        if (moving) {
+            dasCounter++;
+        }
         frameCount++;
         if (frameCount == Integer.MAX_VALUE) {
             frameCount = 0;
         }
         framesSinceLastMove--;
-        if (dasCounter == 16) {
+        if (dasCounter > INITIAL_DAS_DELAY) {
+            dasCounter = 0;
+            if (framesSinceLastMove == 0) {
+                framesSinceLastMove = framesPerGridcell;
+                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow() + 1);
+            } else {
+                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow());
+            }
+        } else if (dasCounter == INITIAL_DAS_DELAY) {
+            firstDasDelay = true;
+            dasCounter = 0;
+            if (framesSinceLastMove == 0) {
+                framesSinceLastMove = framesPerGridcell;
+                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow() + 1);
+            } else {
+                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow());
+            }
+        } else if (dasCounter == DAS_ACCELERATION && firstDasDelay) {
             dasCounter = 0;
             if (framesSinceLastMove == 0) {
                 framesSinceLastMove = framesPerGridcell;
@@ -74,13 +96,15 @@ public class Board {
     }
 
     public void moveLeft() {
-        dasCounter = 15;
-        xAdjustment = -15;
+        dasCounter = 16;
+        moving = true;
+        xAdjustment = -1;
     }
 
     public void moveRight() {
-        dasCounter = 15;
-        xAdjustment = 15;
+        dasCounter = 16;
+        moving = true;
+        xAdjustment = 1;
     }
 
     private void levelUp() {
@@ -97,6 +121,15 @@ public class Board {
         }
     }
 
-    public void updateDasAcceleration() {
+    public void stopMovement() {
+        xAdjustment = 0;
+        moving = false;
+        firstDasDelay = false;
+    }
+
+    public void rotate(boolean dir) {
+        if (dir) {
+            activeShape.rightRotate();
+        }
     }
 }

@@ -40,6 +40,16 @@ public class L implements Shape {
 
     }
 
+    @Override
+    public void leftRotate() {
+
+    }
+
+    @Override
+    public void rightRotate() {
+
+    }
+
     //    @Override
     public void spawn(StackPane pane) {
 

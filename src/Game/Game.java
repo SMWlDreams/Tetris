@@ -15,16 +15,33 @@ public class Game {
     private boolean moving = false;
     private Timeline timeline;
     private Board board = new Board();
+    private KeyCode lastPressedKey;
+    private boolean rotate = false;
+    private KeyCode lastRotationKey;
 
     public void parseInput(KeyEvent keyEvent) {
-        if (!moving) {
-            if (keyEvent.getCode().equals(KeyCode.A)) {
+        if (keyEvent.getCode().equals(KeyCode.SLASH) && !rotate) {
+            lastRotationKey = KeyCode.SLASH;
+            board.rotate(true);
+            rotate = true;
+        } else if (!moving) {
+            lastPressedKey = keyEvent.getCode();
+            if (lastPressedKey.equals(KeyCode.A)) {
                 board.moveLeft();
-                timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1.0/60.0), e -> board.updateDasAcceleration()));
-            } else if (keyEvent.getCode().equals(KeyCode.D)) {
+                moving = true;
+            } else if (lastPressedKey.equals(KeyCode.D)) {
                 board.moveRight();
+                moving = true;
             }
-            moving = true;
+        }
+    }
+
+    public void stopMovement(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(lastRotationKey)) {
+            rotate = false;
+        } if (keyEvent.getCode().equals(lastPressedKey)) {
+            moving = false;
+            board.stopMovement();
         }
     }
 

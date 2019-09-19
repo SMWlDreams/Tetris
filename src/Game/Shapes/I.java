@@ -11,6 +11,7 @@ public class I implements Shape {
     private List<Tile> tiles = new ArrayList<>();
     private int column;
     private int row;
+    private int rotation = 0;
 
     public I(int level, boolean next) {
         while (level >= 10) {
@@ -62,6 +63,47 @@ public class I implements Shape {
             for (Tile t : tiles) {
                 t.setCoordinates(t.getX() + 15, t.getY());
             }
+        }
+    }
+
+    @Override
+    public void leftRotate() {
+    }
+
+    @Override
+    public void rightRotate() {
+        if (rotation == 0) {
+            rotation++;
+            Tile t = tiles.get(0);
+            t.setCoordinates(t.getX() + 30, t.getY() - 30);
+            t = tiles.get(1);
+            t.setCoordinates(t.getX() + 15, t.getY() - 15);
+            t = tiles.get(3);
+            t.setCoordinates(t.getX() - 15, t.getY() + 15);
+        } else if (rotation == 1) {
+            rotation++;
+            Tile t = tiles.get(0);
+            t.setCoordinates(t.getX() + 30, t.getY() + 30);
+            t = tiles.get(1);
+            t.setCoordinates(t.getX() + 15, t.getY() + 15);
+            t = tiles.get(3);
+            t.setCoordinates(t.getX() - 15, t.getY() - 15);
+        } else if (rotation == 2) {
+            rotation++;
+            Tile t = tiles.get(0);
+            t.setCoordinates(t.getX() - 30, t.getY() + 30);
+            t = tiles.get(1);
+            t.setCoordinates(t.getX() - 15, t.getY() + 15);
+            t = tiles.get(3);
+            t.setCoordinates(t.getX() + 15, t.getY() - 15);
+        } else if (rotation == 3) {
+            rotation = 0;
+            Tile t = tiles.get(0);
+            t.setCoordinates(t.getX() - 30, t.getY() - 30);
+            t = tiles.get(1);
+            t.setCoordinates(t.getX() - 15, t.getY() - 15);
+            t = tiles.get(3);
+            t.setCoordinates(t.getX() + 15, t.getY() + 15);
         }
     }
 
