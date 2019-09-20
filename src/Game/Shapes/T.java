@@ -13,17 +13,17 @@ public class T implements Shape {
     private int rotation = 0;
 
     public T(int level, boolean next) {
-        while (level >= Shape.LEVEL_IMAGE_LOOP) {
-            level -= Shape.LEVEL_IMAGE_LOOP;
+        while (level >= LEVEL_IMAGE_LOOP) {
+            level -= LEVEL_IMAGE_LOOP;
         }
         if (next) {
             for (int i = 0; i < 4; i++) {
                 Tile t = new Tile();
                 t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
                 if (i < 3) {
-                    t.setCoordinates(420 + (i * 15), 225);
+                    t.setCoordinates(VALID_NEXT_X_COORDINATES[i + 1], VALID_NEXT_Y_COORDINATES[0]);
                 } else {
-                    t.setCoordinates(435, 240);
+                    t.setCoordinates(VALID_NEXT_X_COORDINATES[2], VALID_NEXT_Y_COORDINATES[1]);
                 }
                 tiles.add(t);
             }
@@ -32,9 +32,9 @@ public class T implements Shape {
                 Tile t = new Tile();
                 t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
                 if (i < 3) {
-                    t.setCoordinates(300 + (i * 15), 75);
+                    t.setCoordinates(VALID_X_COORDINATES[i + 1], VALID_Y_COORDINATES[0]);
                 } else {
-                    t.setCoordinates(315, 90);
+                    t.setCoordinates(VALID_X_COORDINATES[2], VALID_Y_COORDINATES[1]);
                 }
                 tiles.add(t);
             }
@@ -44,8 +44,8 @@ public class T implements Shape {
     }
 
     public void updateImage(int level) {
-        while (level >= Shape.LEVEL_IMAGE_LOOP) {
-            level -= Shape.LEVEL_IMAGE_LOOP;
+        while (level >= LEVEL_IMAGE_LOOP) {
+            level -= LEVEL_IMAGE_LOOP;
         }
         for (Tile t : tiles) {
             t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
@@ -57,18 +57,18 @@ public class T implements Shape {
         if (row > this.row) {
             this.row++;
             for (Tile t : tiles) {
-                t.setCoordinates(t.getX(), t.getY() + Shape.VALID_COORDINATE_MODIFIERS[0]);
+                t.setCoordinates(t.getX(), t.getY() + VALID_COORDINATE_MODIFIERS[0]);
             }
         }
         if (col < column) {
             column--;
             for (Tile t : tiles) {
-                t.setCoordinates(t.getX() - Shape.VALID_COORDINATE_MODIFIERS[0], t.getY());
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY());
             }
         } else if (col > column) {
             column++;
             for (Tile t : tiles) {
-                t.setCoordinates(t.getX() + Shape.VALID_COORDINATE_MODIFIERS[0], t.getY());
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY());
             }
         }
     }
@@ -80,38 +80,38 @@ public class T implements Shape {
             case 0:
                 rotation = 3;
                 t = tiles.get(0);
-                t.setCoordinates(t.getX() + 15, t.getY() + 15);
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(2);
-                t.setCoordinates(t.getX() - 15, t.getY() - 15);
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(3);
-                t.setCoordinates(t.getX() + 15, t.getY() - 15);
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 break;
             case 1:
                 rotation--;
                 t = tiles.get(0);
-                t.setCoordinates(t.getX() - 15, t.getY() + 15);
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(2);
-                t.setCoordinates(t.getX() + 15, t.getY() - 15);
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(3);
-                t.setCoordinates(t.getX() + 15, t.getY() + 15);
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 break;
             case 2:
                 rotation--;
                 t = tiles.get(0);
-                t.setCoordinates(t.getX() - 15, t.getY() - 15);
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(2);
-                t.setCoordinates(t.getX() + 15, t.getY() + 15);
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(3);
-                t.setCoordinates(t.getX() - 15, t.getY() + 15);
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 break;
             case 3:
                 rotation--;
                 t = tiles.get(0);
-                t.setCoordinates(t.getX() + 15, t.getY() - 15);
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(2);
-                t.setCoordinates(t.getX() - 15, t.getY() + 15);
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(3);
-                t.setCoordinates(t.getX() - 15, t.getY() - 15);
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 break;
         }
     }
@@ -123,38 +123,38 @@ public class T implements Shape {
             case 0:
                 rotation++;
                 t = tiles.get(0);
-                t.setCoordinates(t.getX() + 15, t.getY() - 15);
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(2);
-                t.setCoordinates(t.getX() - 15, t.getY() + 15);
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(3);
-                t.setCoordinates(t.getX() - 15, t.getY() - 15);
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 break;
             case 1:
                 rotation++;
                 t = tiles.get(0);
-                t.setCoordinates(t.getX() + 15, t.getY() + 15);
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(2);
-                t.setCoordinates(t.getX() - 15, t.getY() - 15);
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(3);
-                t.setCoordinates(t.getX() + 15, t.getY() - 15);
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 break;
             case 2:
                 rotation++;
                 t = tiles.get(0);
-                t.setCoordinates(t.getX() - 15, t.getY() + 15);
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(2);
-                t.setCoordinates(t.getX() + 15, t.getY() - 15);
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(3);
-                t.setCoordinates(t.getX() + 15, t.getY() + 15);
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 break;
             case 3:
                 rotation = 0;
                 t = tiles.get(0);
-                t.setCoordinates(t.getX() - 15, t.getY() - 15);
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(2);
-                t.setCoordinates(t.getX() + 15, t.getY() + 15);
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(3);
-                t.setCoordinates(t.getX() - 15, t.getY() + 15);
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 break;
         }
     }

@@ -12,17 +12,17 @@ public class O implements Shape {
     private int row;
 
     public O(int level, boolean next) {
-        while (level >= Shape.LEVEL_IMAGE_LOOP) {
-            level -= Shape.LEVEL_IMAGE_LOOP;
+        while (level >= LEVEL_IMAGE_LOOP) {
+            level -= LEVEL_IMAGE_LOOP;
         }
         if (next) {
             for (int i = 0; i < 4; i++) {
                 Tile t = new Tile();
                 t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
                 if (i % 2 == 0) {
-                    t.setCoordinates(420, 225 + 15 * (i / 2));
+                    t.setCoordinates(VALID_NEXT_X_COORDINATES[1], VALID_NEXT_Y_COORDINATES[i/2]);
                 } else {
-                    t.setCoordinates(435, 225 + 15 * (i / 2));
+                    t.setCoordinates(VALID_NEXT_X_COORDINATES[2], VALID_NEXT_Y_COORDINATES[i/2]);
                 }
                 tiles.add(t);
             }
@@ -31,9 +31,9 @@ public class O implements Shape {
                 Tile t = new Tile();
                 t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
                 if (i % 2 == 0) {
-                    t.setCoordinates(300, 75 + 15 * (i / 2));
+                    t.setCoordinates(VALID_X_COORDINATES[1], VALID_Y_COORDINATES[i/2]);
                 } else {
-                    t.setCoordinates(315, 75 + 15 * (i / 2));
+                    t.setCoordinates(VALID_X_COORDINATES[2], VALID_Y_COORDINATES[i/2]);
                 }
                 tiles.add(t);
             }
@@ -43,8 +43,8 @@ public class O implements Shape {
     }
 
     public void updateImage(int level) {
-        while (level >= Shape.LEVEL_IMAGE_LOOP) {
-            level -= Shape.LEVEL_IMAGE_LOOP;
+        while (level >= LEVEL_IMAGE_LOOP) {
+            level -= LEVEL_IMAGE_LOOP;
         }
         for (Tile t : tiles) {
             t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
@@ -56,18 +56,18 @@ public class O implements Shape {
         if (row > this.row) {
             this.row++;
             for (Tile t : tiles) {
-                t.setCoordinates(t.getX(), t.getY() + Shape.VALID_COORDINATE_MODIFIERS[0]);
+                t.setCoordinates(t.getX(), t.getY() + VALID_COORDINATE_MODIFIERS[0]);
             }
         }
         if (col < column) {
             column--;
             for (Tile t : tiles) {
-                t.setCoordinates(t.getX() - Shape.VALID_COORDINATE_MODIFIERS[0], t.getY());
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY());
             }
         } else if (col > column) {
             column++;
             for (Tile t : tiles) {
-                t.setCoordinates(t.getX() + Shape.VALID_COORDINATE_MODIFIERS[0], t.getY());
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY());
             }
         }
     }

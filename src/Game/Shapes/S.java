@@ -13,8 +13,8 @@ public class S implements Shape {
     private int rotation = 0;
 
     public S(int level, boolean next) {
-        while (level >= Shape.LEVEL_IMAGE_LOOP) {
-            level -= Shape.LEVEL_IMAGE_LOOP;
+        while (level >= LEVEL_IMAGE_LOOP) {
+            level -= LEVEL_IMAGE_LOOP;
         }
         if (next) {
             for (int i = 0; i < 4; i++) {
@@ -52,8 +52,8 @@ public class S implements Shape {
     }
 
     public void updateImage(int level) {
-        while (level >= Shape.LEVEL_IMAGE_LOOP) {
-            level -= Shape.LEVEL_IMAGE_LOOP;
+        while (level >= LEVEL_IMAGE_LOOP) {
+            level -= LEVEL_IMAGE_LOOP;
         }
         for (Tile t : tiles) {
             t.setImage(new Image("\\Assets\\S_J_" + level + ".png"));
@@ -65,18 +65,18 @@ public class S implements Shape {
         if (row > this.row) {
             this.row++;
             for (Tile t : tiles) {
-                t.setCoordinates(t.getX(), t.getY() + Shape.VALID_COORDINATE_MODIFIERS[0]);
+                t.setCoordinates(t.getX(), t.getY() + VALID_COORDINATE_MODIFIERS[0]);
             }
         }
         if (col < column) {
             column--;
             for (Tile t : tiles) {
-                t.setCoordinates(t.getX() - Shape.VALID_COORDINATE_MODIFIERS[0], t.getY());
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY());
             }
         } else if (col > column) {
             column++;
             for (Tile t : tiles) {
-                t.setCoordinates(t.getX() + Shape.VALID_COORDINATE_MODIFIERS[0], t.getY());
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY());
             }
         }
     }
@@ -93,20 +93,20 @@ public class S implements Shape {
             case 0:
                 rotation++;
                 t = tiles.get(0);
-                t.setCoordinates(t.getX() + 30, t.getY());
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[1], t.getY());
                 t = tiles.get(1);
-                t.setCoordinates(t.getX() + 15, t.getY() - 15);
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(3);
-                t.setCoordinates(t.getX() - 15, t.getY() - 15);
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 break;
             case 1:
                 rotation--;
                 t = tiles.get(0);
-                t.setCoordinates(t.getX() - 30, t.getY());
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[1], t.getY());
                 t = tiles.get(1);
-                t.setCoordinates(t.getX() - 15, t.getY() + 15);
+                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(3);
-                t.setCoordinates(t.getX() + 15, t.getY() + 15);
+                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 break;
         }
     }
