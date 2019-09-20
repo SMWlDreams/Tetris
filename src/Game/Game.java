@@ -50,7 +50,7 @@ public class Game {
     }
 
     public void run() {
-        board.drawAllShapes(pane);
+        board.init(pane);
         timeline = new Timeline();
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(1.0/60.0), e -> board.nextFrame(pane));
         timeline.getKeyFrames().add(keyFrame);

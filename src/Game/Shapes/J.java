@@ -13,8 +13,8 @@ public class J implements Shape {
     private int rotation = 0;
 
     public J(int level, boolean next) {
-        while (level >= 10) {
-            level -= 10;
+        while (level >= Shape.LEVEL_IMAGE_LOOP) {
+            level -= Shape.LEVEL_IMAGE_LOOP;
         }
         if (next) {
             for (int i = 0; i < 4; i++) {
@@ -52,8 +52,8 @@ public class J implements Shape {
     }
 
     public void updateImage(int level) {
-        while (level >= 10) {
-            level -= 10;
+        while (level >= Shape.LEVEL_IMAGE_LOOP) {
+            level -= Shape.LEVEL_IMAGE_LOOP;
         }
         for (Tile t : tiles) {
             t.setImage(new Image("\\Assets\\S_J_" + level + ".png"));
@@ -65,18 +65,18 @@ public class J implements Shape {
         if (row > this.row) {
             this.row++;
             for (Tile t : tiles) {
-                t.setCoordinates(t.getX(), t.getY() + 15);
+                t.setCoordinates(t.getX(), t.getY() + Shape.VALID_COORDINATE_MODIFIERS[0]);
             }
         }
         if (col < column) {
             column--;
             for (Tile t : tiles) {
-                t.setCoordinates(t.getX() - 15, t.getY());
+                t.setCoordinates(t.getX() - Shape.VALID_COORDINATE_MODIFIERS[0], t.getY());
             }
         } else if (col > column) {
             column++;
             for (Tile t : tiles) {
-                t.setCoordinates(t.getX() + 15, t.getY());
+                t.setCoordinates(t.getX() + Shape.VALID_COORDINATE_MODIFIERS[0], t.getY());
             }
         }
     }
@@ -185,5 +185,10 @@ public class J implements Shape {
     @Override
     public void spawn(Pane pane) {
         pane.getChildren().addAll(tiles);
+    }
+
+    @Override
+    public List<Tile> getTiles() {
+        return tiles;
     }
 }

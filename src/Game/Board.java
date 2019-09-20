@@ -17,7 +17,7 @@ public class Board {
     private Shape nextShape;
     private static final int[] FRAMES_PER_GRIDCELL = {48, 43, 38, 33, 28, 23, 18, 13, 8, 6, 5, 5,
             5, 4, 4, 4, 3, 3, 3, 2};
-    private static final int FINAL_FAME_PER_GRIDCELL = 1;
+    private static final int FINAL_FRAME_PER_GRIDCELL = 1;
     private int framesSinceLastMove;
     private int framesPerGridcell;
     private int xAdjustment = 0;
@@ -25,7 +25,8 @@ public class Board {
     private static final int DAS_ACCELERATION = 6;
     private boolean firstDasDelay = false;
     private boolean moving = false;
-    private ArrayList<Integer> memory = new ArrayList<>();
+    private List<Integer> memory = new ArrayList<>();
+    private List<List<Boolean>> usedSpaces = new ArrayList<>();
 
     public void nextFrame(Pane pane) {
         if (moving) {
@@ -74,47 +75,15 @@ public class Board {
         }
     }
 
-    public void drawAllShapes(Pane pane) {
+    public void init(Pane pane) {
         framesSinceLastMove = FRAMES_PER_GRIDCELL[level];
         framesPerGridcell = framesSinceLastMove;
-        switch (selectRandom()) {
-            case 0:
-                activeShape = new I(level, false);
-                activeShape.spawn(pane);
-                shapes.add(activeShape);
-                break;
-            case 1:
-                activeShape = new J(level, false);
-                activeShape.spawn(pane);
-                shapes.add(activeShape);
-                break;
-            case 2:
-                activeShape = new L(level, false);
-                activeShape.spawn(pane);
-                shapes.add(activeShape);
-                break;
-            case 3:
-                activeShape = new O(level, false);
-                activeShape.spawn(pane);
-                shapes.add(activeShape);
-                break;
-            case 4:
-                activeShape = new S(level, false);
-                activeShape.spawn(pane);
-                shapes.add(activeShape);
-                break;
-            case 5:
-                activeShape = new T(level, false);
-                activeShape.spawn(pane);
-                shapes.add(activeShape);
-                break;
-            case 6:
-                activeShape = new Z(level, false);
-                activeShape.spawn(pane);
-                shapes.add(activeShape);
-                break;
-        }
+        drawFirstShape(pane);
         chooseNextShape(pane);
+        int i = 0;
+        while (i < 10) {
+            usedSpaces.add(i++, new ArrayList<>(20));
+        }
     }
 
     public void moveLeft() {
@@ -135,7 +104,7 @@ public class Board {
             framesSinceLastMove = FRAMES_PER_GRIDCELL[FRAMES_PER_GRIDCELL.length - 1];
             framesPerGridcell = framesSinceLastMove;
         } else if (level >= 29) {
-            framesSinceLastMove = FINAL_FAME_PER_GRIDCELL;
+            framesSinceLastMove = FINAL_FRAME_PER_GRIDCELL;
             framesPerGridcell = framesSinceLastMove;
         } else {
             framesSinceLastMove = FRAMES_PER_GRIDCELL[level];
@@ -255,4 +224,46 @@ public class Board {
                 break;
         }
     }
+
+    private void drawFirstShape(Pane pane) {
+        switch (selectRandom()) {
+            case 0:
+                activeShape = new I(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case 1:
+                activeShape = new J(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case 2:
+                activeShape = new L(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case 3:
+                activeShape = new O(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case 4:
+                activeShape = new S(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case 5:
+                activeShape = new T(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case 6:
+                activeShape = new Z(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+        }
+    }
+
+
 }
