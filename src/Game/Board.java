@@ -2,17 +2,19 @@ package Game;
 
 import Game.Shapes.*;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class Board {
     private int dasCounter = 15;
     private int frameCount = 0;
     private List<Shape> shapes = new ArrayList<>();
-    private int level = 0;
+    private int level = 7;
     private Shape activeShape;
+    private Shape nextShape;
     private static final int[] FRAMES_PER_GRIDCELL = {48, 43, 38, 33, 28, 23, 18, 13, 8, 6, 5, 5,
             5, 4, 4, 4, 3, 3, 3, 2};
     private static final int FINAL_FAME_PER_GRIDCELL = 1;
@@ -23,12 +25,18 @@ public class Board {
     private static final int DAS_ACCELERATION = 6;
     private boolean firstDasDelay = false;
     private boolean moving = false;
+    private ArrayList<Integer> memory = new ArrayList<>();
 
     public void nextFrame(Pane pane) {
         if (moving) {
             dasCounter++;
         }
         frameCount++;
+        if (frameCount % 130 == 0) {
+            nextShape.unload(pane);
+            loadActiveShape(pane);
+            chooseNextShape(pane);
+        }
         if (frameCount == Integer.MAX_VALUE) {
             frameCount = 0;
         }
@@ -67,32 +75,46 @@ public class Board {
     }
 
     public void drawAllShapes(Pane pane) {
-        framesSinceLastMove = FRAMES_PER_GRIDCELL[0];
+        framesSinceLastMove = FRAMES_PER_GRIDCELL[level];
         framesPerGridcell = framesSinceLastMove;
-        Shape shape = new I(0, false);
-        shape.spawn(pane);
-        activeShape = shape;
-        shapes.add(activeShape);
-        shape = new I(0, true);
-        shape.spawn(pane);
-//        shape = new J(0);
-//        shape.spawn(pane);
-//        shapes.add(shape);
-//        shape = new L(0);
-//        shape.spawn(pane);
-//        shapes.add(shape);
-//        shape = new Z(0);
-//        shape.spawn(pane);
-//        shapes.add(shape);
-//        shape = new S(0);
-//        shape.spawn(pane);
-//        shapes.add(shape);
-//        shape = new Cube(0);
-//        shape.spawn(pane);
-//        shapes.add(shape);
-//        shape = new T(0);
-//        shape.spawn(pane);
-//        shapes.add(shape);
+        switch (selectRandom()) {
+            case 0:
+                activeShape = new I(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case 1:
+                activeShape = new J(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case 2:
+                activeShape = new L(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case 3:
+                activeShape = new O(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case 4:
+                activeShape = new S(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case 5:
+                activeShape = new T(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case 6:
+                activeShape = new Z(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+        }
+        chooseNextShape(pane);
     }
 
     public void moveLeft() {
@@ -130,6 +152,107 @@ public class Board {
     public void rotate(boolean dir) {
         if (dir) {
             activeShape.rightRotate();
+        } else {
+            activeShape.leftRotate();
+        }
+    }
+
+    public int selectRandom() {
+        Random r = new Random();
+        int get = r.nextInt(7);
+        boolean verify = false;
+        List<Integer> recall;
+        while (!verify) {
+            get = r.nextInt(7);
+            if (memory.size() > 1) {
+                recall = memory.subList(0, Math.min(memory.size(),6));
+                if (Collections.frequency(recall, get) < 2) {
+                    addToMemory(get);
+                    verify = true;
+                }
+            } else {
+                addToMemory(get);
+                verify = true;
+            }
+        }
+        return get;
+    }
+
+    private void addToMemory(int value) {
+        memory.add(0, value);
+    }
+
+    private void loadActiveShape(Pane pane) {
+        String name = nextShape.getClass().getName();
+        switch (name) {
+            case "Game.Shapes.I":
+                activeShape = new I(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case "Game.Shapes.J":
+                activeShape = new J(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case "Game.Shapes.L":
+                activeShape = new L(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case "Game.Shapes.O":
+                activeShape = new O(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case "Game.Shapes.S":
+                activeShape = new S(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case "Game.Shapes.T":
+                activeShape = new T(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+            case "Game.Shapes.Z":
+                activeShape = new Z(level, false);
+                activeShape.spawn(pane);
+                shapes.add(activeShape);
+                break;
+        }
+    }
+
+    private void chooseNextShape(Pane pane) {
+        switch (selectRandom()) {
+            case 0:
+                nextShape = new I(level, true);
+                nextShape.spawn(pane);
+                break;
+            case 1:
+                nextShape = new J(level, true);
+                nextShape.spawn(pane);
+                break;
+            case 2:
+                nextShape = new L(level, true);
+                nextShape.spawn(pane);
+                break;
+            case 3:
+                nextShape = new O(level, true);
+                nextShape.spawn(pane);
+                break;
+            case 4:
+                nextShape = new S(level, true);
+                nextShape.spawn(pane);
+                break;
+            case 5:
+                nextShape = new T(level, true);
+                nextShape.spawn(pane);
+                break;
+            case 6:
+                nextShape = new Z(level, true);
+                nextShape.spawn(pane);
+                break;
         }
     }
 }

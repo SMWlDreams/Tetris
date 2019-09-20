@@ -24,6 +24,10 @@ public class Game {
             lastRotationKey = KeyCode.SLASH;
             board.rotate(true);
             rotate = true;
+        } else if (keyEvent.getCode().equals(KeyCode.PERIOD) && !rotate) {
+            lastRotationKey = KeyCode.PERIOD;
+            board.rotate(false);
+            rotate = true;
         } else if (!moving) {
             lastPressedKey = keyEvent.getCode();
             if (lastPressedKey.equals(KeyCode.A)) {
