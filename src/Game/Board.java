@@ -11,7 +11,6 @@ import java.util.Random;
 public class Board {
     private int dasCounter = 15;
     private int frameCount = 0;
-    private List<Shape> shapes = new ArrayList<>();
     private int level = 7;
     private Shape activeShape;
     private Shape nextShape;
@@ -26,8 +25,11 @@ public class Board {
     private boolean firstDasDelay = false;
     private boolean moving = false;
     private List<Integer> memory = new ArrayList<>();
+    private List<List<Tile>> savedTiles = new ArrayList<>();
     private List<List<Boolean>> usedSpaces = new ArrayList<>();
     private Random r = new Random();
+    private List<Boolean> defaultList;
+    private List<Boolean> cmpList;
 
     public void nextFrame(Pane pane) {
         List<Tile> tiles = activeShape.getTiles();
@@ -36,9 +38,6 @@ public class Board {
         }
         frameCount++;
         if (frameCount % 130 == 0) {
-            nextShape.unload(pane);
-            loadActiveShape(pane);
-            chooseNextShape(pane);
         }
         if (frameCount == Integer.MAX_VALUE) {
             frameCount = 0;
@@ -83,8 +82,13 @@ public class Board {
             framesSinceLastMove = framesPerGridcell;
             if (verifyVerticalMovement(tiles)) {
                 adjustVertical(tiles);
+            } else {
+                writeNewLines(tiles);
+                clearLine();
+                nextShape.unload(pane);
+                loadActiveShape(pane);
+                chooseNextShape(pane);
             }
-
         }
     }
 
@@ -93,13 +97,16 @@ public class Board {
         framesPerGridcell = framesSinceLastMove;
         drawFirstShape(pane);
         chooseNextShape(pane);
-        ArrayList<Boolean> l = new ArrayList<>(20);
+        defaultList = new ArrayList<>(20);
+        cmpList = new ArrayList<>(20);
         for (int j = 0; j < 20; j++) {
-            l.add(false);
+            defaultList.add(false);
+            cmpList.add(true);
         }
         int i = 0;
         while (i < 10) {
-            usedSpaces.add(i++, new ArrayList<>(l));
+            usedSpaces.add(i++, new ArrayList<>(defaultList));
+            savedTiles.add(i++, new ArrayList<>(20));
         }
     }
 
@@ -173,37 +180,30 @@ public class Board {
             case "Game.Shapes.I":
                 activeShape = new I(level, false);
                 activeShape.spawn(pane);
-                shapes.add(activeShape);
                 break;
             case "Game.Shapes.J":
                 activeShape = new J(level, false);
                 activeShape.spawn(pane);
-                shapes.add(activeShape);
                 break;
             case "Game.Shapes.L":
                 activeShape = new L(level, false);
                 activeShape.spawn(pane);
-                shapes.add(activeShape);
                 break;
             case "Game.Shapes.O":
                 activeShape = new O(level, false);
                 activeShape.spawn(pane);
-                shapes.add(activeShape);
                 break;
             case "Game.Shapes.S":
                 activeShape = new S(level, false);
                 activeShape.spawn(pane);
-                shapes.add(activeShape);
                 break;
             case "Game.Shapes.T":
                 activeShape = new T(level, false);
                 activeShape.spawn(pane);
-                shapes.add(activeShape);
                 break;
             case "Game.Shapes.Z":
                 activeShape = new Z(level, false);
                 activeShape.spawn(pane);
-                shapes.add(activeShape);
                 break;
         }
     }
@@ -246,37 +246,30 @@ public class Board {
             case 0:
                 activeShape = new I(level, false);
                 activeShape.spawn(pane);
-                shapes.add(activeShape);
                 break;
             case 1:
                 activeShape = new J(level, false);
                 activeShape.spawn(pane);
-                shapes.add(activeShape);
                 break;
             case 2:
                 activeShape = new L(level, false);
                 activeShape.spawn(pane);
-                shapes.add(activeShape);
                 break;
             case 3:
                 activeShape = new O(level, false);
                 activeShape.spawn(pane);
-                shapes.add(activeShape);
                 break;
             case 4:
                 activeShape = new S(level, false);
                 activeShape.spawn(pane);
-                shapes.add(activeShape);
                 break;
             case 5:
                 activeShape = new T(level, false);
                 activeShape.spawn(pane);
-                shapes.add(activeShape);
                 break;
             case 6:
                 activeShape = new Z(level, false);
                 activeShape.spawn(pane);
-                shapes.add(activeShape);
                 break;
         }
     }
@@ -334,6 +327,23 @@ public class Board {
         for (Tile t : tiles) {
             t.setCoordinates(t.getX(), t.getY() + Tile.SQUARE_DIMENSIONS);
             t.setCoordinates(t.getColumn(), t.getRow() + 1);
+        }
+    }
+
+    private void writeNewLines(List<Tile> tiles) {
+        for (Tile t : tiles) {
+            usedSpaces.get(t.getColumn()).set(t.getRow(), true);
+            savedTiles.get(t.getColumn()).set(t.getRow(), t);
+        }
+    }
+
+    private void clearLine() {
+        List<Boolean> l;
+        for (int i = 0; i < 20; i++) {
+            if (l.equals(cmpList)) {
+                usedSpaces.remove(l);
+                usedSpaces.add(0, defaultList);
+            }
         }
     }
 }

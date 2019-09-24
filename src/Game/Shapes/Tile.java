@@ -42,4 +42,8 @@ public class Tile extends Rectangle {
     public int getRow() {
         return row;
     }
+
+    public void unload() {
+
+    }
 }
