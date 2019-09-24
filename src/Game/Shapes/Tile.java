@@ -5,7 +5,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 public class Tile extends Rectangle {
-    private static final int SQUARE_DIMENSIONS = 15;
+    public static final int SQUARE_DIMENSIONS = 15;
     private int row;
     private int column;
 

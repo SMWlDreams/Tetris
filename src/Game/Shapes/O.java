@@ -32,10 +32,10 @@ public class O implements Shape {
                 t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
                 if (i % 2 == 0) {
                     t.setCoordinates(VALID_X_COORDINATES[1], VALID_Y_COORDINATES[i/2]);
-                    t.setCoordinates(5, i/2 - 1);
+                    t.setCoordinates(5, i/2);
                 } else {
                     t.setCoordinates(VALID_X_COORDINATES[2], VALID_Y_COORDINATES[i/2]);
-                    t.setCoordinates(6, i/2 - 1);
+                    t.setCoordinates(6, i/2);
                 }
                 tiles.add(t);
             }

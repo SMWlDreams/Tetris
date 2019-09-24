@@ -30,6 +30,7 @@ public class Board {
     private Random r = new Random();
 
     public void nextFrame(Pane pane) {
+        List<Tile> tiles = activeShape.getTiles();
         if (moving) {
             dasCounter++;
         }
@@ -45,34 +46,45 @@ public class Board {
         framesSinceLastMove--;
         if (dasCounter > INITIAL_DAS_DELAY) {
             dasCounter = 0;
-            if (framesSinceLastMove == 0) {
-                framesSinceLastMove = framesPerGridcell;
-                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow() + 1);
-            } else {
-                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow());
+            if (verifyHorizMovement(tiles)) {
+                adjustHoriz(tiles);
             }
+//            if (framesSinceLastMove == 0) {
+//                framesSinceLastMove = framesPerGridcell;
+//                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow() + 1);
+//            } else {
+//                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow());
+//            }
         } else if (dasCounter == INITIAL_DAS_DELAY) {
             firstDasDelay = true;
             dasCounter = 0;
-            if (framesSinceLastMove == 0) {
-                framesSinceLastMove = framesPerGridcell;
-                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow() + 1);
-            } else {
-                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow());
+            if (verifyHorizMovement(tiles)) {
+                adjustHoriz(tiles);
             }
+//            if (framesSinceLastMove == 0) {
+//                framesSinceLastMove = framesPerGridcell;
+//                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow() + 1);
+//            } else {
+//                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow());
+//            }
         } else if (dasCounter == DAS_ACCELERATION && firstDasDelay) {
             dasCounter = 0;
-            if (framesSinceLastMove == 0) {
-                framesSinceLastMove = framesPerGridcell;
-                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow() + 1);
-            } else {
-                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow());
+            if (verifyHorizMovement(tiles)) {
+                adjustHoriz(tiles);
             }
-        } else {
-            if (framesSinceLastMove == 0) {
-                framesSinceLastMove = framesPerGridcell;
-                activeShape.updateCoordinates(activeShape.getColumn(), activeShape.getRow() + 1);
+//            if (framesSinceLastMove == 0) {
+//                framesSinceLastMove = framesPerGridcell;
+//                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow() + 1);
+//            } else {
+//                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow());
+//            }
+        }
+        if (framesSinceLastMove == 0) {
+            framesSinceLastMove = framesPerGridcell;
+            if (verifyVerticalMovement(tiles)) {
+                adjustVertical(tiles);
             }
+
         }
     }
 
@@ -81,9 +93,13 @@ public class Board {
         framesPerGridcell = framesSinceLastMove;
         drawFirstShape(pane);
         chooseNextShape(pane);
+        ArrayList<Boolean> l = new ArrayList<>(20);
+        for (int j = 0; j < 20; j++) {
+            l.add(false);
+        }
         int i = 0;
         while (i < 10) {
-            usedSpaces.add(i++, new ArrayList<>(20));
+            usedSpaces.add(i++, new ArrayList<>(l));
         }
     }
 
@@ -265,5 +281,59 @@ public class Board {
         }
     }
 
+    private boolean verifyHorizMovement(List<Tile> tiles) {
+        try {
+            if (xAdjustment > 0) {
+                for (Tile t : tiles) {
+                    if (usedSpaces.get(t.getColumn() + 1).get(t.getRow())) {
+                        return false;
+                    }
+                }
+            } else {
+                for (Tile t : tiles) {
+                    if (usedSpaces.get(t.getColumn() - 1).get(t.getRow())) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
+    }
 
+    private boolean verifyVerticalMovement(List<Tile> tiles) {
+        try {
+            for (Tile t : tiles) {
+                if (usedSpaces.get(t.getColumn()).get(t.getRow() + 1)) {
+                    return false;
+                }
+            }
+
+            return true;
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
+    }
+
+    private void adjustHoriz(List<Tile> tiles) {
+        if (xAdjustment > 0) {
+            for (Tile t : tiles) {
+                t.setCoordinates(t.getX() + Tile.SQUARE_DIMENSIONS, t.getY());
+                t.setCoordinates(t.getColumn() + 1, t.getRow());
+            }
+        } else {
+            for (Tile t : tiles) {
+                t.setCoordinates(t.getX() - Tile.SQUARE_DIMENSIONS, t.getY());
+                t.setCoordinates(t.getColumn() - 1, t.getRow());
+            }
+        }
+    }
+
+    private void adjustVertical(List<Tile> tiles) {
+        for (Tile t : tiles) {
+            t.setCoordinates(t.getX(), t.getY() + Tile.SQUARE_DIMENSIONS);
+            t.setCoordinates(t.getColumn(), t.getRow() + 1);
+        }
+    }
 }
