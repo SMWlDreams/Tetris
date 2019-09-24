@@ -21,13 +21,13 @@ public class Z implements Shape {
                 Tile t = new Tile();
                 t.setImage(new Image("\\Assets\\Z_L_" + level + ".png"));
                 if (i == 0) {
-                    t.setCoordinates(VALID_NEXT_X_COORDINATES[2], 225);
+                    t.setCoordinates(VALID_NEXT_X_COORDINATES[3], VALID_NEXT_Y_COORDINATES[1]);
                 } else if (i == 1) {
-                    t.setCoordinates(435, 225);
+                    t.setCoordinates(VALID_NEXT_X_COORDINATES[2], VALID_NEXT_Y_COORDINATES[1]);
                 } else if (i == 2) {
-                    t.setCoordinates(435, 210);
+                    t.setCoordinates(VALID_NEXT_X_COORDINATES[2], VALID_NEXT_Y_COORDINATES[0]);
                 } else {
-                    t.setCoordinates(420, 210);
+                    t.setCoordinates(VALID_NEXT_X_COORDINATES[1], VALID_NEXT_Y_COORDINATES[0]);
                 }
                 tiles.add(t);
             }
@@ -36,13 +36,17 @@ public class Z implements Shape {
                 Tile t = new Tile();
                 t.setImage(new Image("\\Assets\\Z_L_" + level + ".png"));
                 if (i == 0) {
-                    t.setCoordinates(330, 90);
+                    t.setCoordinates(VALID_X_COORDINATES[3], VALID_Y_COORDINATES[1]);
+                    t.setCoordinates(7, 1);
                 } else if (i == 1) {
-                    t.setCoordinates(315, 90);
+                    t.setCoordinates(VALID_X_COORDINATES[2], VALID_Y_COORDINATES[1]);
+                    t.setCoordinates(6, 1);
                 } else if (i == 2) {
-                    t.setCoordinates(315, 75);
+                    t.setCoordinates(VALID_X_COORDINATES[2], VALID_Y_COORDINATES[0]);
+                    t.setCoordinates(6, 0);
                 } else {
-                    t.setCoordinates(300, 75);
+                    t.setCoordinates(VALID_X_COORDINATES[1], VALID_Y_COORDINATES[0]);
+                    t.setCoordinates(5, 0);
                 }
                 tiles.add(t);
             }

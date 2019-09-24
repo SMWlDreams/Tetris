@@ -8,6 +8,7 @@ import java.util.List;
 
 public class T implements Shape {
     private List<Tile> tiles = new ArrayList<>();
+    private static final int COLUMN_START = 5;
     private int column;
     private int row;
     private int rotation = 0;
@@ -33,8 +34,10 @@ public class T implements Shape {
                 t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
                 if (i < 3) {
                     t.setCoordinates(VALID_X_COORDINATES[i + 1], VALID_Y_COORDINATES[0]);
+                    t.setCoordinates(i + COLUMN_START, 0);
                 } else {
                     t.setCoordinates(VALID_X_COORDINATES[2], VALID_Y_COORDINATES[1]);
+                    t.setCoordinates(1 + COLUMN_START, 1);
                 }
                 tiles.add(t);
             }

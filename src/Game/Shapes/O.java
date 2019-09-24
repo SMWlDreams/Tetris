@@ -32,8 +32,10 @@ public class O implements Shape {
                 t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
                 if (i % 2 == 0) {
                     t.setCoordinates(VALID_X_COORDINATES[1], VALID_Y_COORDINATES[i/2]);
+                    t.setCoordinates(5, i/2 - 1);
                 } else {
                     t.setCoordinates(VALID_X_COORDINATES[2], VALID_Y_COORDINATES[i/2]);
+                    t.setCoordinates(6, i/2 - 1);
                 }
                 tiles.add(t);
             }
@@ -72,10 +74,16 @@ public class O implements Shape {
         }
     }
 
+    /**
+     * You cant rotate this block you dummy
+     */
     @Override
     public void leftRotate() {
     }
 
+    /**
+     * You cant rotate this block you dummy
+     */
     @Override
     public void rightRotate() {
     }

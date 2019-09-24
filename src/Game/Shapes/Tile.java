@@ -5,10 +5,13 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 public class Tile extends Rectangle {
+    private static final int SQUARE_DIMENSIONS = 15;
+    private int row;
+    private int column;
 
     public Tile() {
-        this.setHeight(15);
-        this.setWidth(15);
+        this.setHeight(SQUARE_DIMENSIONS);
+        this.setWidth(SQUARE_DIMENSIONS);
     }
 
     public void setCoordinates(double x, double y) {
@@ -24,6 +27,19 @@ public class Tile extends Rectangle {
     }
 
     public void setImage(Image image) {
-        this.setFill(new ImagePattern(image, 0, 0, 15, 15, false));
+        this.setFill(new ImagePattern(image, 0, 0, SQUARE_DIMENSIONS, SQUARE_DIMENSIONS, false));
+    }
+
+    public void setCoordinates(int column, int row) {
+        this.column = column;
+        this.row = row;
+    }
+
+    public int getColumn() {
+        return column;
+    }
+
+    public int getRow() {
+        return row;
     }
 }

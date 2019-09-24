@@ -8,9 +8,11 @@ import java.util.List;
 
 public class I implements Shape {
     private List<Tile> tiles = new ArrayList<>();
-    private int column;
-    private int row;
+    private static final int COLUMN_START = 4;
+    private static final int ROW_START = 0;
     private int rotation = 0;
+    private int row;
+    private int column;
 
     public I(int level, boolean next) {
         while (level >= LEVEL_IMAGE_LOOP) {
@@ -28,11 +30,12 @@ public class I implements Shape {
                 Tile t = new Tile();
                 t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
                 t.setCoordinates(VALID_X_COORDINATES[i], VALID_Y_COORDINATES[0]);
+                t.setCoordinates(i + COLUMN_START, ROW_START);
                 tiles.add(t);
             }
-            column = 4;
-            row = 0;
         }
+        row = 0;
+        column = 4;
     }
 
     public void updateImage(int level) {

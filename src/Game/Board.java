@@ -27,6 +27,7 @@ public class Board {
     private boolean moving = false;
     private List<Integer> memory = new ArrayList<>();
     private List<List<Boolean>> usedSpaces = new ArrayList<>();
+    private Random r = new Random();
 
     public void nextFrame(Pane pane) {
         if (moving) {
@@ -87,13 +88,13 @@ public class Board {
     }
 
     public void moveLeft() {
-        dasCounter = 16;
+        dasCounter = INITIAL_DAS_DELAY;
         moving = true;
         xAdjustment = -1;
     }
 
     public void moveRight() {
-        dasCounter = 16;
+        dasCounter = INITIAL_DAS_DELAY;
         moving = true;
         xAdjustment = 1;
     }
@@ -126,8 +127,7 @@ public class Board {
         }
     }
 
-    public int selectRandom() {
-        Random r = new Random();
+    private int selectRandom() {
         int get = r.nextInt(7);
         boolean verify = false;
         List<Integer> recall;
