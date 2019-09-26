@@ -81,6 +81,7 @@ public class O implements Shape {
      */
     @Override
     public void leftRotate() {
+        rightRotate();
     }
 
     /**
@@ -95,6 +96,11 @@ public class O implements Shape {
      */
     @Override
     public void rightRotate() {
+        for (Tile t : tiles) {
+            t.setCoordinates(t.getX(), t.getY());
+            t.setXCoordinate(t.getColumn());
+            t.setYCoordinate(t.getRow());
+        }
     }
 
     @Override
