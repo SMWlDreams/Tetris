@@ -6,10 +6,16 @@ import javafx.scene.shape.Rectangle;
 
 public class Tile extends Rectangle {
     public static final int SQUARE_DIMENSIONS = 15;
-    private int row;
-    private int column;
+    private boolean anchor;
+    private int row = 0;
+    private int column = 0;
+    private int previousRow;
+    private int previousColumn;
+    private double previousX = 0;
+    private double previousY = 0;
 
-    public Tile() {
+    public Tile(boolean anchor) {
+        this.anchor = anchor;
         this.setHeight(SQUARE_DIMENSIONS);
         this.setWidth(SQUARE_DIMENSIONS);
     }
@@ -17,10 +23,14 @@ public class Tile extends Rectangle {
     public void setCoordinates(double x, double y) {
         if (y < 75) {
             this.setVisible(false);
+            previousX = this.getX();
+            previousY = this.getY();
             this.setX(x);
             this.setY(y);
         } else {
             this.setVisible(true);
+            previousX = this.getX();
+            previousY = this.getY();
             this.setX(x);
             this.setY(y);
         }
@@ -30,9 +40,23 @@ public class Tile extends Rectangle {
         this.setFill(new ImagePattern(image, 0, 0, SQUARE_DIMENSIONS, SQUARE_DIMENSIONS, false));
     }
 
-    public void setCoordinates(int column, int row) {
+    public void setXCoordinate(int column) {
+        previousColumn = this.column;
         this.column = column;
+    }
+
+    public void setYCoordinate(int row) {
+        previousRow = this.row;
         this.row = row;
+    }
+
+    public void revert() {
+        if (!anchor) {
+            row = previousRow;
+            column = previousColumn;
+            this.setX(previousX);
+            this.setY(previousY);
+        }
     }
 
     public int getColumn() {
@@ -43,7 +67,7 @@ public class Tile extends Rectangle {
         return row;
     }
 
-    public void unload() {
-
+    public void setAnchor(boolean bool) {
+        anchor = bool;
     }
 }

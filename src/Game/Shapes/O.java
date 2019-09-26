@@ -17,7 +17,7 @@ public class O implements Shape {
         }
         if (next) {
             for (int i = 0; i < 4; i++) {
-                Tile t = new Tile();
+                Tile t = new Tile(false);
                 t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
                 if (i % 2 == 0) {
                     t.setCoordinates(VALID_NEXT_X_COORDINATES[1], VALID_NEXT_Y_COORDINATES[i/2]);
@@ -28,14 +28,16 @@ public class O implements Shape {
             }
         } else {
             for (int i = 0; i < 4; i++) {
-                Tile t = new Tile();
+                Tile t = new Tile(false);
                 t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
                 if (i % 2 == 0) {
+                    t.setXCoordinate(4);
+                    t.setYCoordinate(i/2);
                     t.setCoordinates(VALID_X_COORDINATES[1], VALID_Y_COORDINATES[i/2]);
-                    t.setCoordinates(5, i/2);
                 } else {
+                    t.setXCoordinate(5);
+                    t.setYCoordinate(i/2);
                     t.setCoordinates(VALID_X_COORDINATES[2], VALID_Y_COORDINATES[i/2]);
-                    t.setCoordinates(6, i/2);
                 }
                 tiles.add(t);
             }
@@ -75,14 +77,21 @@ public class O implements Shape {
     }
 
     /**
-     * You cant rotate this block you dummy
+     * You can't rotate this block you dummy
      */
     @Override
     public void leftRotate() {
     }
 
     /**
-     * You cant rotate this block you dummy
+     * You can't rotate this block you dummy
+     */
+    @Override
+    public void undoRotation() {
+    }
+
+    /**
+     * You can't rotate this block you dummy
      */
     @Override
     public void rightRotate() {

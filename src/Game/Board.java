@@ -4,14 +4,22 @@ import Game.Shapes.*;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 public class Board {
+    private boolean test = false;
+    private boolean secondAuthentication = false;
+    private int blocksPlaced = 0;
+    private boolean lock = false;
+    private boolean clearLine = false;
+    private boolean down = false;
+    private int lockFrameCounter;
     private int dasCounter = 15;
     private int frameCount = 0;
     private int level = 7;
+    private int startLevel;
+    private boolean finishedFirstLevel;
     private Shape activeShape;
     private Shape nextShape;
     private static final int[] FRAMES_PER_GRIDCELL = {48, 43, 38, 33, 28, 23, 18, 13, 8, 6, 5, 5,
@@ -24,102 +32,119 @@ public class Board {
     private static final int DAS_ACCELERATION = 6;
     private boolean firstDasDelay = false;
     private boolean moving = false;
-    private List<Integer> memory = new ArrayList<>();
     private List<List<Tile>> savedTiles = new ArrayList<>();
     private List<List<Boolean>> usedSpaces = new ArrayList<>();
     private Random r = new Random();
     private List<Boolean> defaultList;
     private List<Boolean> cmpList;
+    private List<Tile> defaultTiles;
+    private int lastShapeIndex = 7;
+    private int linesCleared = 0;
 
     public void nextFrame(Pane pane) {
-        List<Tile> tiles = activeShape.getTiles();
-        if (moving) {
-            dasCounter++;
-        }
         frameCount++;
-        if (frameCount % 130 == 0) {
-        }
-        if (frameCount == Integer.MAX_VALUE) {
-            frameCount = 0;
-        }
-        framesSinceLastMove--;
-        if (dasCounter > INITIAL_DAS_DELAY) {
-            dasCounter = 0;
-            if (verifyHorizMovement(tiles)) {
-                adjustHoriz(tiles);
+        if (lock) {
+            if (clearLine) {
             }
-//            if (framesSinceLastMove == 0) {
-//                framesSinceLastMove = framesPerGridcell;
-//                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow() + 1);
-//            } else {
-//                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow());
-//            }
-        } else if (dasCounter == INITIAL_DAS_DELAY) {
-            firstDasDelay = true;
-            dasCounter = 0;
-            if (verifyHorizMovement(tiles)) {
-                adjustHoriz(tiles);
-            }
-//            if (framesSinceLastMove == 0) {
-//                framesSinceLastMove = framesPerGridcell;
-//                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow() + 1);
-//            } else {
-//                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow());
-//            }
-        } else if (dasCounter == DAS_ACCELERATION && firstDasDelay) {
-            dasCounter = 0;
-            if (verifyHorizMovement(tiles)) {
-                adjustHoriz(tiles);
-            }
-//            if (framesSinceLastMove == 0) {
-//                framesSinceLastMove = framesPerGridcell;
-//                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow() + 1);
-//            } else {
-//                activeShape.updateCoordinates(activeShape.getColumn() + xAdjustment, activeShape.getRow());
-//            }
-        }
-        if (framesSinceLastMove == 0) {
-            framesSinceLastMove = framesPerGridcell;
-            if (verifyVerticalMovement(tiles)) {
-                adjustVertical(tiles);
-            } else {
-                writeNewLines(tiles);
-                clearLine();
+            if (--lockFrameCounter == 0) {
+                lock = false;
                 nextShape.unload(pane);
                 loadActiveShape(pane);
                 chooseNextShape(pane);
             }
+        } else {
+            List<Tile> tiles = activeShape.getTiles();
+            if (moving) {
+                dasCounter++;
+            }
+            if (frameCount == Integer.MAX_VALUE) {
+                frameCount = 0;
+            }
+            if (!down) {
+                framesSinceLastMove--;
+                if (dasCounter > INITIAL_DAS_DELAY) {
+                    dasCounter = 0;
+                    if (verifyHorizMovement(tiles)) {
+                        adjustHoriz(tiles);
+                    }
+                } else if (dasCounter == INITIAL_DAS_DELAY) {
+                    firstDasDelay = true;
+                    dasCounter = 0;
+                    if (verifyHorizMovement(tiles)) {
+                        adjustHoriz(tiles);
+                    }
+                } else if (dasCounter == DAS_ACCELERATION && firstDasDelay) {
+                    dasCounter = 0;
+                    if (verifyHorizMovement(tiles)) {
+                        adjustHoriz(tiles);
+                    }
+                }
+                if (framesSinceLastMove == 0) {
+                    framesSinceLastMove = framesPerGridcell;
+                    if (verifyVerticalMovement(tiles)) {
+                        adjustVertical(tiles);
+                    } else {
+                        writeNewLines(tiles);
+                        if (checkFullLine()) {
+                            clearLine(pane);
+                        }
+                    }
+                }
+            } else {
+                framesSinceLastMove = framesPerGridcell;
+                if (verifyVerticalMovement(tiles)) {
+                    adjustVertical(tiles);
+                } else {
+                    writeNewLines(tiles);
+                    if (checkFullLine()) {
+                        clearLine(pane);
+                    }
+                }
+            }
         }
     }
 
-    public void init(Pane pane) {
+    public void init(Pane pane, int level) {
         framesSinceLastMove = FRAMES_PER_GRIDCELL[level];
+        this.level = level;
+        startLevel = level;
+        finishedFirstLevel = false;
         framesPerGridcell = framesSinceLastMove;
         drawFirstShape(pane);
         chooseNextShape(pane);
-        defaultList = new ArrayList<>(20);
-        cmpList = new ArrayList<>(20);
-        for (int j = 0; j < 20; j++) {
+        defaultList = new ArrayList<>();
+        cmpList = new ArrayList<>();
+        defaultTiles = new ArrayList<>();
+        for (int j = 0; j < 10; j++) {
             defaultList.add(false);
             cmpList.add(true);
+            defaultTiles.add(new Tile(false));
         }
         int i = 0;
-        while (i < 10) {
-            usedSpaces.add(i++, new ArrayList<>(defaultList));
-            savedTiles.add(i++, new ArrayList<>(20));
+        while (i < 20) {
+            usedSpaces.add(i, new ArrayList<>(defaultList));
+            savedTiles.add(i++, new ArrayList<>(defaultTiles));
         }
+    }
+
+    public void setDown(boolean bool) {
+        down = bool;
     }
 
     public void moveLeft() {
-        dasCounter = INITIAL_DAS_DELAY;
-        moving = true;
-        xAdjustment = -1;
+        if (!lock) {
+            dasCounter = INITIAL_DAS_DELAY;
+            moving = true;
+            xAdjustment = -1;
+        }
     }
 
     public void moveRight() {
-        dasCounter = INITIAL_DAS_DELAY;
-        moving = true;
-        xAdjustment = 1;
+        if (!lock) {
+            dasCounter = INITIAL_DAS_DELAY;
+            moving = true;
+            xAdjustment = 1;
+        }
     }
 
     private void levelUp() {
@@ -143,35 +168,52 @@ public class Board {
     }
 
     public void rotate(boolean dir) {
-        if (dir) {
-            activeShape.rightRotate();
-        } else {
-            activeShape.leftRotate();
+        if (!lock) {
+            if (dir) {
+                activeShape.rightRotate();
+            } else {
+                activeShape.leftRotate();
+            }
+            List<Tile> tiles = activeShape.getTiles();
+            try {
+                for (Tile t : tiles) {
+                    try {
+                        List<Boolean> bools = usedSpaces.get(t.getRow());
+                        try {
+                            if (bools.get(t.getColumn())) {
+                                throw new InvalidNewCoordinateException("Invalid new coordinate for tile rotation");
+                            }
+                        } catch (IndexOutOfBoundsException e) {
+                            throw new InvalidNewCoordinateException("Invalid new coordinate for tile rotation");
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+//                        System.out.println("oof");
+                    }
+                }
+            } catch (InvalidNewCoordinateException e) {
+                for (Tile t : tiles) {
+                    t.revert();
+                    activeShape.undoRotation();
+                }
+            }
         }
     }
 
     private int selectRandom() {
         int get = r.nextInt(7);
         boolean verify = false;
-        List<Integer> recall;
+        if (get != lastShapeIndex) {
+            verify = true;
+            lastShapeIndex = get;
+        }
         while (!verify) {
             get = r.nextInt(7);
-            if (memory.size() > 1) {
-                recall = memory.subList(0, Math.min(memory.size(),6));
-                if (Collections.frequency(recall, get) < 2) {
-                    addToMemory(get);
-                    verify = true;
-                }
-            } else {
-                addToMemory(get);
+            if (get != lastShapeIndex) {
                 verify = true;
+                lastShapeIndex = get;
             }
         }
         return get;
-    }
-
-    private void addToMemory(int value) {
-        memory.add(0, value);
     }
 
     private void loadActiveShape(Pane pane) {
@@ -275,34 +317,55 @@ public class Board {
     }
 
     private boolean verifyHorizMovement(List<Tile> tiles) {
-        try {
-            if (xAdjustment > 0) {
-                for (Tile t : tiles) {
-                    if (usedSpaces.get(t.getColumn() + 1).get(t.getRow())) {
+        if (xAdjustment > 0) {
+            for (Tile t : tiles) {
+                try {
+                    if (t.getColumn() + 1 >= 10) {
                         return false;
                     }
-                }
-            } else {
-                for (Tile t : tiles) {
-                    if (usedSpaces.get(t.getColumn() - 1).get(t.getRow())) {
+                    List<Boolean> b = usedSpaces.get(t.getRow());
+                    try {
+                        if (usedSpaces.get(t.getRow()).get(t.getColumn() + 1)) {
+                            return false;
+                        }
+                    } catch (IndexOutOfBoundsException e) {
                         return false;
                     }
+                } catch (IndexOutOfBoundsException e) {
+//                    System.out.println("F");
                 }
             }
-            return true;
-        } catch (IndexOutOfBoundsException e) {
-            return false;
+        } else {
+            for (Tile t : tiles) {
+                try {
+                    if (t.getColumn() - 1 < 0) {
+                        return false;
+                    }
+                    List<Boolean> b = usedSpaces.get(t.getRow());
+                    try {
+                        if (usedSpaces.get(t.getRow()).get(t.getColumn() - 1)) {
+                            return false;
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+                        return false;
+                    }
+                } catch (IndexOutOfBoundsException e) {
+//                    System.out.println("F");
+                }
+            }
         }
+        return true;
     }
 
     private boolean verifyVerticalMovement(List<Tile> tiles) {
         try {
             for (Tile t : tiles) {
-                if (usedSpaces.get(t.getColumn()).get(t.getRow() + 1)) {
-                    return false;
+                if (!(t.getRow() < 0)) {
+                    if (usedSpaces.get(t.getRow() + 1).get(t.getColumn())) {
+                        return false;
+                    }
                 }
             }
-
             return true;
         } catch (IndexOutOfBoundsException e) {
             return false;
@@ -312,38 +375,112 @@ public class Board {
     private void adjustHoriz(List<Tile> tiles) {
         if (xAdjustment > 0) {
             for (Tile t : tiles) {
+                t.setXCoordinate(t.getColumn() + 1);
                 t.setCoordinates(t.getX() + Tile.SQUARE_DIMENSIONS, t.getY());
-                t.setCoordinates(t.getColumn() + 1, t.getRow());
             }
         } else {
             for (Tile t : tiles) {
+                t.setXCoordinate(t.getColumn() - 1);
                 t.setCoordinates(t.getX() - Tile.SQUARE_DIMENSIONS, t.getY());
-                t.setCoordinates(t.getColumn() - 1, t.getRow());
             }
         }
     }
 
     private void adjustVertical(List<Tile> tiles) {
         for (Tile t : tiles) {
+            t.setYCoordinate(t.getRow() + 1);
             t.setCoordinates(t.getX(), t.getY() + Tile.SQUARE_DIMENSIONS);
-            t.setCoordinates(t.getColumn(), t.getRow() + 1);
         }
     }
 
     private void writeNewLines(List<Tile> tiles) {
+        lock = true;
+        int row = 0;
         for (Tile t : tiles) {
-            usedSpaces.get(t.getColumn()).set(t.getRow(), true);
-            savedTiles.get(t.getColumn()).set(t.getRow(), t);
-        }
-    }
-
-    private void clearLine() {
-        List<Boolean> l;
-        for (int i = 0; i < 20; i++) {
-            if (l.equals(cmpList)) {
-                usedSpaces.remove(l);
-                usedSpaces.add(0, defaultList);
+            t.setAnchor(false);
+            int r = t.getRow();
+            if (r > row) {
+                row = r;
+            }
+            if (!(r < 0)) {
+                usedSpaces.get(r).set(t.getColumn(), true);
+                savedTiles.get(r).set(t.getColumn(), t);
             }
         }
+        if (row < 4) {
+            lockFrameCounter = 18;
+        } else if (row < 8) {
+            lockFrameCounter = 16;
+        } else if (row < 12) {
+            lockFrameCounter = 14;
+        } else if (row < 16) {
+            lockFrameCounter = 12;
+        } else {
+            lockFrameCounter = 10;
+        }
+        System.out.println(++blocksPlaced);
+        if (secondAuthentication) {
+            System.out.println("DEBUG");
+        }
+        if (test) {
+            secondAuthentication = true;
+        }
+//        if (blocksPlaced == 40) {
+//            System.out.println("ENTERED DEBUG MODE");
+//        }
+    }
+
+    private void clearLine(Pane pane) {
+        List<Boolean> l;
+        List<List<Boolean>> tempSpaces = new ArrayList<>(usedSpaces);
+        List<List<Tile>> tempTile = new ArrayList<>(savedTiles);
+        int clears = 0;
+        for (int i = 0; i < 20; i++) {
+            l = usedSpaces.get(i);
+            if (l.equals(cmpList)) {
+                tempSpaces.set(i, null);
+                pane.getChildren().removeAll(savedTiles.get(i));
+                tempTile.set(i, null);
+                clears++;
+            }
+        }
+        for (List<Tile> tile : tempTile) {
+            if (tile == null) {
+                break;
+            }
+            for (Tile t : tile) {
+                t.setCoordinates(t.getX(), t.getY() + Tile.SQUARE_DIMENSIONS * clears);
+            }
+        }
+        for (int i = 0; i < tempSpaces.size(); i++) {
+            if (tempSpaces.get(i) == null) {
+                tempSpaces.remove(i);
+                tempTile.remove(i--);
+            }
+        }
+        linesCleared += clears;
+        if (blocksPlaced >= 40) {
+            test = true;
+        }
+        while (tempSpaces.size() < usedSpaces.size()) {
+            tempSpaces.add(0, defaultList);
+            tempTile.add(0, defaultTiles);
+        }
+        usedSpaces = tempSpaces;
+        savedTiles = tempTile;
+        lockFrameCounter = 20;
+        System.out.println(linesCleared);
+        clearLine = true;
+    }
+
+    private boolean checkFullLine() {
+        List<Boolean> l;
+        for (int i = 0; i < 20; i++) {
+            l = usedSpaces.get(i);
+            if (l.equals(cmpList)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

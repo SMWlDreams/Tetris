@@ -28,5 +28,7 @@ public interface Shape {
 
     void unload(Pane pane);
 
+    void undoRotation();
+
     List<Tile> getTiles();
 }

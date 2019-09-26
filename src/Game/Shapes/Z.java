@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Z implements Shape {
+    private int lastRotation = 0;
     private List<Tile> tiles = new ArrayList<>();
     private int column;
     private int row;
@@ -18,7 +19,7 @@ public class Z implements Shape {
         }
         if (next) {
             for (int i = 0; i < 4; i++) {
-                Tile t = new Tile();
+                Tile t = new Tile(false);
                 t.setImage(new Image("\\Assets\\Z_L_" + level + ".png"));
                 if (i == 0) {
                     t.setCoordinates(VALID_NEXT_X_COORDINATES[3], VALID_NEXT_Y_COORDINATES[1]);
@@ -32,21 +33,30 @@ public class Z implements Shape {
                 tiles.add(t);
             }
         } else {
+            Tile t;
             for (int i = 0; i < 4; i++) {
-                Tile t = new Tile();
+                if (i != 2) {
+                    t = new Tile(false);
+                } else {
+                    t = new Tile(true);
+                }
                 t.setImage(new Image("\\Assets\\Z_L_" + level + ".png"));
                 if (i == 0) {
+                    t.setXCoordinate(6);
+                    t.setYCoordinate(1);
                     t.setCoordinates(VALID_X_COORDINATES[3], VALID_Y_COORDINATES[1]);
-                    t.setCoordinates(7, 1);
                 } else if (i == 1) {
+                    t.setXCoordinate(5);
+                    t.setYCoordinate(1);
                     t.setCoordinates(VALID_X_COORDINATES[2], VALID_Y_COORDINATES[1]);
-                    t.setCoordinates(6, 1);
                 } else if (i == 2) {
+                    t.setXCoordinate(5);
+                    t.setYCoordinate(0);
                     t.setCoordinates(VALID_X_COORDINATES[2], VALID_Y_COORDINATES[0]);
-                    t.setCoordinates(6, 0);
                 } else {
+                    t.setXCoordinate(4);
+                    t.setYCoordinate(0);
                     t.setCoordinates(VALID_X_COORDINATES[1], VALID_Y_COORDINATES[0]);
-                    t.setCoordinates(5, 0);
                 }
                 tiles.add(t);
             }
@@ -92,24 +102,37 @@ public class Z implements Shape {
 
     @Override
     public void rightRotate() {
+        lastRotation = rotation;
         Tile t;
         switch (rotation) {
             case 0:
                 rotation++;
                 t = tiles.get(0);
+                t.setXCoordinate(t.getColumn());
+                t.setYCoordinate(t.getRow() - 2);
                 t.setCoordinates(t.getX(), t.getY() - VALID_COORDINATE_MODIFIERS[1]);
                 t = tiles.get(1);
+                t.setXCoordinate(t.getColumn() + 1);
+                t.setYCoordinate(t.getRow() - 1);
                 t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(3);
+                t.setXCoordinate(t.getColumn() + 1);
+                t.setYCoordinate(t.getRow() + 1);
                 t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 break;
             case 1:
                 rotation--;
                 t = tiles.get(0);
+                t.setXCoordinate(t.getColumn());
+                t.setYCoordinate(t.getRow() + 2);
                 t.setCoordinates(t.getX(), t.getY() + VALID_COORDINATE_MODIFIERS[1]);
                 t = tiles.get(1);
+                t.setXCoordinate(t.getColumn() - 1);
+                t.setYCoordinate(t.getRow() + 1);
                 t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() + VALID_COORDINATE_MODIFIERS[0]);
                 t = tiles.get(3);
+                t.setXCoordinate(t.getColumn() - 1);
+                t.setYCoordinate(t.getRow() - 1);
                 t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY() - VALID_COORDINATE_MODIFIERS[0]);
                 break;
         }
@@ -118,6 +141,11 @@ public class Z implements Shape {
     @Override
     public void unload(Pane pane) {
         pane.getChildren().removeAll(tiles);
+    }
+
+    @Override
+    public void undoRotation() {
+        rotation = lastRotation;
     }
 
     @Override
