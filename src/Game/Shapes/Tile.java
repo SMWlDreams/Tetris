@@ -13,8 +13,14 @@ public class Tile extends Rectangle {
     private int previousColumn;
     private double previousX = 0;
     private double previousY = 0;
+    private Shape shape;
 
     public Tile(boolean anchor) {
+        this(anchor, new Dummy());
+    }
+
+    public Tile(boolean anchor, Shape shape) {
+        this.shape = shape;
         this.anchor = anchor;
         this.setHeight(SQUARE_DIMENSIONS);
         this.setWidth(SQUARE_DIMENSIONS);
@@ -34,6 +40,10 @@ public class Tile extends Rectangle {
             this.setX(x);
             this.setY(y);
         }
+    }
+
+    public Shape getShape() {
+        return shape;
     }
 
     public void setImage(Image image) {

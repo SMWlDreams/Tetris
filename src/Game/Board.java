@@ -1,6 +1,7 @@
 package Game;
 
 import Game.Shapes.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
@@ -8,16 +9,15 @@ import java.util.List;
 import java.util.Random;
 
 public class Board {
-    private boolean test = false;
-    private boolean secondAuthentication = false;
-    private int blocksPlaced = 0;
+    private int previousLevelUpLine = 0;
+    private boolean levelUp = false;
     private boolean lock = false;
     private boolean clearLine = false;
     private boolean down = false;
     private int lockFrameCounter;
     private int dasCounter = 15;
     private int frameCount = 0;
-    private int level = 7;
+    private int level;
     private int startLevel;
     private boolean finishedFirstLevel;
     private Shape activeShape;
@@ -45,9 +45,64 @@ public class Board {
         frameCount++;
         if (lock) {
             if (clearLine) {
+                if (!finishedFirstLevel) {
+                    if (startLevel < 9) {
+                        if (linesCleared >= (startLevel * 10 + 10)) {
+                            levelUp();
+                            levelUp = true;
+                            finishedFirstLevel = true;
+                        }
+                    } else {
+                        if (linesCleared >= Math.max(100, startLevel * 10 - 50)) {
+                            levelUp();
+                            levelUp = true;
+                            finishedFirstLevel = true;
+                        }
+                    }
+                    previousLevelUpLine = linesCleared / 10;
+                } else if (linesCleared >= previousLevelUpLine + 10) {
+                    levelUp();
+                    levelUp = true;
+                    previousLevelUpLine = linesCleared / 10;
+                }
+                clearLine = false;
             }
             if (--lockFrameCounter == 0) {
                 lock = false;
+                if (levelUp) {
+                    int tempLevel = level;
+                    while (tempLevel >= 10) {
+                        tempLevel -= 10;
+                    }
+                    for (List<Tile> tiles : savedTiles) {
+                        for (Tile t : tiles) {
+                            switch (t.getShape().getClass().getName()) {
+                                case "Game.Shapes.I":
+                                    t.setImage(new Image("\\Assets\\Bar_Box_" + tempLevel + ".png"));
+                                    break;
+                                case "Game.Shapes.J":
+                                    t.setImage(new Image("\\Assets\\S_J_" + tempLevel + ".png"));
+                                    break;
+                                case "Game.Shapes.L":
+                                    t.setImage(new Image("\\Assets\\Z_L_" + tempLevel + ".png"));
+                                    break;
+                                case "Game.Shapes.O":
+                                    t.setImage(new Image("\\Assets\\Bar_Box_" + tempLevel + ".png"));
+                                    break;
+                                case "Game.Shapes.S":
+                                    t.setImage(new Image("\\Assets\\S_J_" + tempLevel + ".png"));
+                                    break;
+                                case "Game.Shapes.T":
+                                    t.setImage(new Image("\\Assets\\Bar_Box_" + tempLevel + ".png"));
+                                    break;
+                                case "Game.Shapes.Z":
+                                    t.setImage(new Image("\\Assets\\Z_L_" + tempLevel + ".png"));
+                                    break;
+                            }
+                        }
+                    }
+                    levelUp = false;
+                }
                 nextShape.unload(pane);
                 loadActiveShape(pane);
                 chooseNextShape(pane);
@@ -177,17 +232,15 @@ public class Board {
             List<Tile> tiles = activeShape.getTiles();
             try {
                 for (Tile t : tiles) {
-                    try {
-                        List<Boolean> bools = usedSpaces.get(t.getRow());
+                    int i = t.getRow();
+                    if (!(i < 0)) {
                         try {
-                            if (bools.get(t.getColumn())) {
+                            if (usedSpaces.get(i).get(t.getColumn())) {
                                 throw new InvalidNewCoordinateException("Invalid new coordinate for tile rotation");
                             }
                         } catch (IndexOutOfBoundsException e) {
                             throw new InvalidNewCoordinateException("Invalid new coordinate for tile rotation");
                         }
-                    } catch (IndexOutOfBoundsException e) {
-//                        System.out.println("oof");
                     }
                 }
             } catch (InvalidNewCoordinateException e) {
@@ -332,7 +385,7 @@ public class Board {
                         return false;
                     }
                 } catch (IndexOutOfBoundsException e) {
-//                    System.out.println("F");
+                    //Does nothing because you should still be able to move when above the board
                 }
             }
         } else {
@@ -350,7 +403,7 @@ public class Board {
                         return false;
                     }
                 } catch (IndexOutOfBoundsException e) {
-//                    System.out.println("F");
+                    //Does nothing because you should still be able to move when above the board
                 }
             }
         }
@@ -418,16 +471,6 @@ public class Board {
         } else {
             lockFrameCounter = 10;
         }
-        System.out.println(++blocksPlaced);
-        if (secondAuthentication) {
-            System.out.println("DEBUG");
-        }
-        if (test) {
-            secondAuthentication = true;
-        }
-//        if (blocksPlaced == 40) {
-//            System.out.println("ENTERED DEBUG MODE");
-//        }
     }
 
     private void clearLine(Pane pane) {
@@ -459,17 +502,13 @@ public class Board {
             }
         }
         linesCleared += clears;
-        if (blocksPlaced >= 40) {
-            test = true;
-        }
         while (tempSpaces.size() < usedSpaces.size()) {
-            tempSpaces.add(0, defaultList);
-            tempTile.add(0, defaultTiles);
+            tempSpaces.add(0, new ArrayList<>(defaultList));
+            tempTile.add(0, new ArrayList<>(defaultTiles));
         }
         usedSpaces = tempSpaces;
         savedTiles = tempTile;
         lockFrameCounter = 20;
-        System.out.println(linesCleared);
         clearLine = true;
     }
 

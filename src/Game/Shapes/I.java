@@ -30,9 +30,9 @@ public class I implements Shape {
             Tile t;
             for (int i = 0; i < 4; i++) {
                 if (i != 2) {
-                    t = new Tile(false);
+                    t = new Tile(false, this);
                 } else {
-                    t = new Tile(true);
+                    t = new Tile(true, this);
                 }
                 t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
                 t.setXCoordinate(i + COLUMN_START);

@@ -59,7 +59,7 @@ public class Game {
     }
 
     public void run() {
-        board.init(pane, 7);
+        board.init(pane, 0);
         timeline = new Timeline();
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(1.0/60.0), e -> board.nextFrame(pane));
         timeline.getKeyFrames().add(keyFrame);

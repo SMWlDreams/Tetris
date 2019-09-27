@@ -36,9 +36,9 @@ public class S implements Shape {
             Tile t;
             for (int i = 0; i < 4; i++) {
                 if (i != 2) {
-                    t = new Tile(false);
+                    t = new Tile(false, this);
                 } else {
-                    t = new Tile(true);
+                    t = new Tile(true, this);
                 }
                 t.setImage(new Image("\\Assets\\S_J_" + level + ".png"));
                 if (i == 0) {

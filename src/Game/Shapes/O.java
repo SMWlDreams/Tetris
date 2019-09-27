@@ -28,7 +28,7 @@ public class O implements Shape {
             }
         } else {
             for (int i = 0; i < 4; i++) {
-                Tile t = new Tile(false);
+                Tile t = new Tile(false, this);
                 t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
                 if (i % 2 == 0) {
                     t.setXCoordinate(4);
