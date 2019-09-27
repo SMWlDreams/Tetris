@@ -3,12 +3,70 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Game.Game">
+<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Game.Game">
    <children>
-      <ImageView fitHeight="450.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true">
          <image>
-            <Image url="/Assets/background_first_draft.png"/>
+<!--            <Image url="@../Assets/background_first_draft.png" />-->
+            <Image url="/Assets/background_first_draft.png" />
          </image></ImageView>
+      <Text fill="WHITE" layoutX="457.0" layoutY="193.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NEXT">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text fill="WHITE" layoutX="449.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SCORE">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text fx:id="score" fill="WHITE" layoutX="446.0" layoutY="129.0" strokeType="OUTSIDE" strokeWidth="0.0" text="000000">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text fill="WHITE" layoutX="454.0" layoutY="288.0" strokeType="OUTSIDE" strokeWidth="0.0" text="LEVEL">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text boundsType="VISUAL" fill="WHITE" layoutX="269.0" layoutY="44.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="LINES  -">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text fx:id="lines" boundsType="VISUAL" fill="WHITE" layoutX="374.0" layoutY="43.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="00">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text fill="WHITE" layoutX="449.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TOP">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text fill="WHITE" layoutX="446.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="WIP - 00">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text fx:id="level" fill="WHITE" layoutX="517.0" layoutY="303.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text boundsType="VISUAL" fill="WHITE" layoutX="55.0" layoutY="127.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="STATISTICS">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text boundsType="VISUAL" fill="WHITE" layoutX="57.0" layoutY="58.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="A  -  TYPE">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
    </children>
 </Pane>

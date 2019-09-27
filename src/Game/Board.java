@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Random;
 
 public class Board {
+    private int score;
+    private Game controller;
     private int previousLevelUpLine = 0;
     private boolean levelUp = false;
     private boolean lock = false;
@@ -40,6 +42,7 @@ public class Board {
     private List<Tile> defaultTiles;
     private int lastShapeIndex = 7;
     private int linesCleared = 0;
+    private int[] indicies = new int[4];
 
     public void nextFrame(Pane pane) {
         frameCount++;
@@ -59,15 +62,22 @@ public class Board {
                             finishedFirstLevel = true;
                         }
                     }
-                    previousLevelUpLine = linesCleared / 10;
+                    previousLevelUpLine = linesCleared;
+                    while (previousLevelUpLine % 10 != 0) {
+                        previousLevelUpLine--;
+                    }
                 } else if (linesCleared >= previousLevelUpLine + 10) {
                     levelUp();
                     levelUp = true;
-                    previousLevelUpLine = linesCleared / 10;
+                    previousLevelUpLine = linesCleared;
+                    while (previousLevelUpLine % 10 != 0) {
+                        previousLevelUpLine--;
+                    }
                 }
                 clearLine = false;
             }
             if (--lockFrameCounter == 0) {
+                controller.updateInfo(linesCleared, score, level);
                 lock = false;
                 if (levelUp) {
                     int tempLevel = level;
@@ -160,6 +170,7 @@ public class Board {
     }
 
     public void init(Pane pane, int level) {
+        score = 0;
         framesSinceLastMove = FRAMES_PER_GRIDCELL[level];
         this.level = level;
         startLevel = level;
@@ -474,6 +485,7 @@ public class Board {
     }
 
     private void clearLine(Pane pane) {
+        lockFrameCounter = 20;
         List<Boolean> l;
         List<List<Boolean>> tempSpaces = new ArrayList<>(usedSpaces);
         List<List<Tile>> tempTile = new ArrayList<>(savedTiles);
@@ -481,25 +493,112 @@ public class Board {
         for (int i = 0; i < 20; i++) {
             l = usedSpaces.get(i);
             if (l.equals(cmpList)) {
+                indicies[clears++] = i;
                 tempSpaces.set(i, null);
                 pane.getChildren().removeAll(savedTiles.get(i));
                 tempTile.set(i, null);
-                clears++;
             }
         }
-        for (List<Tile> tile : tempTile) {
-            if (tile == null) {
-                break;
-            }
-            for (Tile t : tile) {
-                t.setCoordinates(t.getX(), t.getY() + Tile.SQUARE_DIMENSIONS * clears);
-            }
+        boolean exit = false;
+            switch (clears) {
+                case 1:
+                    for (int i = 0; i < 20 && !exit; i++) {
+                        List<Tile> tile = tempTile.get(i);
+                        if (i < indicies[0]) {
+                            for (Tile t : tile) {
+                                t.setCoordinates(t.getX(), t.getY() + Tile.SQUARE_DIMENSIONS * clears);
+                            }
+                        } else {
+                            exit = true;
+                        }
+                    }
+                    break;
+                case 2:
+                    for (int i = 0; i < 20 && !exit; i++) {
+                        List<Tile> tile = tempTile.get(i);
+                        if (tile != null) {
+                            if (i < indicies[0]) {
+                                for (Tile t : tile) {
+                                    t.setCoordinates(t.getX(), t.getY() + Tile.SQUARE_DIMENSIONS * clears);
+                                }
+                            } else if (i < indicies[1]) {
+                                for (Tile t : tile) {
+                                    t.setCoordinates(t.getX(), t.getY() + Tile.SQUARE_DIMENSIONS * (clears - 1));
+                                }
+                            } else {
+                                exit = true;
+                            }
+                        }
+                    }
+                    break;
+                case 3:
+                    for (int i = 0; i < 20 && !exit; i++) {
+                        List<Tile> tile = tempTile.get(i);
+                        if (tile != null) {
+                            if (i < indicies[0]) {
+                                for (Tile t : tile) {
+                                    t.setCoordinates(t.getX(), t.getY() + Tile.SQUARE_DIMENSIONS * clears);
+                                }
+                            } else if (i < indicies[1]) {
+                                for (Tile t : tile) {
+                                    t.setCoordinates(t.getX(), t.getY() + Tile.SQUARE_DIMENSIONS * (clears - 1));
+                                }
+                            } else if (i < indicies[2]) {
+                                for (Tile t : tile) {
+                                    t.setCoordinates(t.getX(), t.getY() + Tile.SQUARE_DIMENSIONS * (clears - 2));
+                                }
+                            } else {
+                                exit = true;
+                            }
+                        }
+                    }
+                    break;
+                case 4:
+                    for (int i = 0; i < 20 && !exit; i++) {
+                        List<Tile> tile = tempTile.get(i);
+                        if (tile != null) {
+                            if (i < indicies[0]) {
+                                for (Tile t : tile) {
+                                    t.setCoordinates(t.getX(), t.getY() + Tile.SQUARE_DIMENSIONS * clears);
+                                }
+                            } else if (i < indicies[1]) {
+                                for (Tile t : tile) {
+                                    t.setCoordinates(t.getX(), t.getY() + Tile.SQUARE_DIMENSIONS * (clears - 1));
+                                }
+                            } else if (i < indicies[2]) {
+                                for (Tile t : tile) {
+                                    t.setCoordinates(t.getX(), t.getY() + Tile.SQUARE_DIMENSIONS * (clears - 2));
+                                }
+                            } else if (i < indicies[3]) {
+                                for (Tile t : tile) {
+                                    t.setCoordinates(t.getX(), t.getY() + Tile.SQUARE_DIMENSIONS * (clears - 3));
+                                }
+                            } else {
+                                exit = true;
+                            }
+                        }
+                    }
+                    break;
         }
         for (int i = 0; i < tempSpaces.size(); i++) {
             if (tempSpaces.get(i) == null) {
                 tempSpaces.remove(i);
                 tempTile.remove(i--);
             }
+        }
+        switch (clears) {
+            case 1:
+                score += (40 * (level + 1));
+                break;
+            case 2:
+                score += (100 * (level + 1));
+                break;
+            case 3:
+                score += (300 * (level + 1));
+                break;
+            case 4:
+                score += (1200 * (level + 1));
+                break;
         }
         linesCleared += clears;
         while (tempSpaces.size() < usedSpaces.size()) {
@@ -508,7 +607,6 @@ public class Board {
         }
         usedSpaces = tempSpaces;
         savedTiles = tempTile;
-        lockFrameCounter = 20;
         clearLine = true;
     }
 
@@ -521,5 +619,9 @@ public class Board {
             }
         }
         return false;
+    }
+
+    public void setController(Game game) {
+        controller = game;
     }
 }

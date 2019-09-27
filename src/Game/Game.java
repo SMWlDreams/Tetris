@@ -6,11 +6,18 @@ import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class Game {
     @FXML
     private Pane pane;
+    @FXML
+    private Text score;
+    @FXML
+    private Text lines;
+    @FXML
+    private Text level;
 
     private boolean moving = false;
     private Timeline timeline;
@@ -60,10 +67,31 @@ public class Game {
 
     public void run() {
         board.init(pane, 0);
+        board.setController(this);
         timeline = new Timeline();
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(1.0/60.0), e -> board.nextFrame(pane));
         timeline.getKeyFrames().add(keyFrame);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+    }
+
+    public void updateInfo(int lines, int score, int level) {
+        if (lines < 10) {
+            this.lines.setText("0" + lines);
+        } else {
+            this.lines.setText("" + lines);
+        }
+        if (score < 100) {
+            this.score.setText("0000" + score);
+        } else if (score < 1000) {
+            this.score.setText("000" + score);
+        } else if (score < 10000) {
+            this.score.setText("00" + score);
+        } else if (score < 100000) {
+            this.score.setText("0" + score);
+        } else {
+            this.score.setText(score + "");
+        }
+        this.level.setText("" + level);
     }
 }
