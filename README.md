@@ -14,13 +14,15 @@ Initial testing release
 
 Move your tetris pieces using A and D. Rotate them with the "." and "/" keys. Soft drop using S.
 
-## v0.1.1 Alpha
+## v0.2.0 Alpha
 
 ### Improvements
 
 ### Bug Fixes
 
 Score will no longer drop a digit after placing the first shape
+
+If you attempt to rotate a shape with a tile above the edge of the board it will no longer randomly become visible
 
 ### NOTE
 

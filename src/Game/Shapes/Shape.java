@@ -5,6 +5,7 @@ import javafx.scene.layout.Pane;
 import java.util.List;
 
 public interface Shape {
+    double[] X_COORDS = {240, 255, 270, 285, 300, 315, 330, 345, 360, 375};
     double[] VALID_X_COORDINATES = {285, 300, 315, 330};
     double[] VALID_Y_COORDINATES = {75, 90};
     double[] VALID_NEXT_X_COORDINATES = {420, 435, 450, 465};

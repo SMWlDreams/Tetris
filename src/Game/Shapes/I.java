@@ -17,6 +17,10 @@ public class I implements Shape {
     private int row;
     private int column;
 
+    public I() {
+        //DOES ABSOLUTELY NOTHING
+    }
+
     public I(int level) {
         while (level >= LEVEL_IMAGE_LOOP) {
             level -= LEVEL_IMAGE_LOOP;

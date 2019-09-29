@@ -3,6 +3,7 @@ package Game;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -10,6 +11,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Game {
     @FXML
@@ -36,7 +41,22 @@ public class Game {
     private Text i;
     @FXML
     private ImageView view;
+    @FXML
+    private Text linesT;
+    @FXML
+    private Text top;
+    @FXML
+    private Text best;
+    @FXML
+    private Text scoreT;
+    @FXML
+    private Text next;
+    @FXML
+    private Text levelT;
+    @FXML
+    private Text stats;
 
+    private List<Node> nodes;
     private boolean moving = false;
     private Timeline timeline;
     private Board board = new Board();
@@ -70,7 +90,26 @@ public class Game {
                     moving = true;
                 }
             }
+        } else {
+            restart();
         }
+    }
+
+    private void restart() {
+        board = new Board();
+        pane.getChildren().clear();
+        pane.getChildren().add(view);
+        view.setImage(new Image("background.png"));
+        pane.getChildren().addAll(new ArrayList<>(nodes));
+        board.init(pane, 0);
+        board.setController(this);
+        for (int i = 0; i < 7; i++) {
+            totalUses[i] = -1;
+            updateStats(i);
+        }
+        updateInfo(0, 0, 0);
+        stopped = false;
+        timeline.play();
     }
 
     public void stopMovement(KeyEvent keyEvent) {
@@ -88,6 +127,9 @@ public class Game {
     }
 
     public void run() {
+        Node[] node = {score, lines, level, l, s, t, j, z, o, i, linesT, best, scoreT, next, levelT, stats, top};
+        nodes = new ArrayList<>();
+        nodes.addAll(Arrays.asList(node));
         board.init(pane, 0);
         board.setController(this);
         timeline = new Timeline();
@@ -96,7 +138,7 @@ public class Game {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 //        view.setImage(new Image("Assets\\background_1.png"));
-        view.setImage(new Image("background_1.png"));
+        view.setImage(new Image("background.png"));
     }
 
     public void stop() {
@@ -200,5 +242,13 @@ public class Game {
                 }
                 break;
         }
+    }
+
+    public void tetris() {
+        view.setImage(new Image("tetris_flash.png"));
+    }
+
+    public void resetBG() {
+        view.setImage(new Image("background.png"));
     }
 }

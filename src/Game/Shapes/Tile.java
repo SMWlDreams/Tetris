@@ -1,12 +1,9 @@
 package Game.Shapes;
 
-import javafx.animation.StrokeTransition;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 
 public class Tile extends Rectangle {
     public static final int SQUARE_DIMENSIONS = 15;
@@ -74,6 +71,11 @@ public class Tile extends Rectangle {
             column = previousColumn;
             this.setX(previousX);
             this.setY(previousY);
+            if (previousY < 75) {
+                this.setVisible(false);
+            } else {
+                this.setVisible(true);
+            }
         }
     }
 
