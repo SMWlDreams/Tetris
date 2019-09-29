@@ -7,11 +7,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class L implements Shape {
+    private static int[] STAT_X_COORDINATES = {90, 105, 120};
+    private static int[] STAT_Y_COORDINATES = {90, 105};
     private int lastRotation = 0;
     private List<Tile> tiles = new ArrayList<>();
     private int column;
     private int row;
     private int rotation = 0;
+
+    public L(int level) {
+        while (level >= LEVEL_IMAGE_LOOP) {
+            level -= LEVEL_IMAGE_LOOP;
+        }
+        for (int i = 0; i < 4; i++) {
+            Tile t = new Tile(false);
+            t.setImage(new Image("\\Assets\\Z_L_" + level + ".png"));
+            if (i == 0) {
+                t.setCoordinates(STAT_X_COORDINATES[0], STAT_Y_COORDINATES[1]);
+            } else if (i == 1) {
+                t.setCoordinates(STAT_X_COORDINATES[0], STAT_Y_COORDINATES[0]);
+            } else if (i == 2) {
+                t.setCoordinates(STAT_X_COORDINATES[1], STAT_Y_COORDINATES[0]);
+            } else {
+                t.setCoordinates(STAT_X_COORDINATES[2], STAT_Y_COORDINATES[0]);
+            }
+            tiles.add(t);
+        }
+    }
 
     public L(int level, boolean next) {
         while (level >= LEVEL_IMAGE_LOOP) {

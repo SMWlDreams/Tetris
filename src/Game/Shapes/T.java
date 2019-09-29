@@ -7,12 +7,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class T implements Shape {
+    private static int[] STAT_X_COORDINATES = {90, 105, 120};
+    private static int[] STAT_Y_COORDINATES = {180, 195};
     private int lastRotation = 0;
     private List<Tile> tiles = new ArrayList<>();
     private static final int COLUMN_START = 4;
     private int column;
     private int row;
     private int rotation = 0;
+
+    public T(int level) {
+        while (level >= LEVEL_IMAGE_LOOP) {
+            level -= LEVEL_IMAGE_LOOP;
+        }
+        for (int i = 0; i < 4; i++) {
+            Tile t = new Tile(false);
+            t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
+            if (i < 3) {
+                t.setCoordinates(STAT_X_COORDINATES[i], STAT_Y_COORDINATES[0]);
+            } else {
+                t.setCoordinates(STAT_X_COORDINATES[1], STAT_Y_COORDINATES[1]);
+            }
+            tiles.add(t);
+        }
+    }
 
     public T(int level, boolean next) {
         while (level >= LEVEL_IMAGE_LOOP) {

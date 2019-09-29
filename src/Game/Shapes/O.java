@@ -7,9 +7,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class O implements Shape {
+    private static int[] STAT_X_COORDINATES = {90, 105};
+    private static int[] STAT_Y_COORDINATES = {315, 330};
     private List<Tile> tiles = new ArrayList<>();
     private int column;
     private int row;
+
+    public O(int level) {
+        while (level >= LEVEL_IMAGE_LOOP) {
+            level -= LEVEL_IMAGE_LOOP;
+        }
+        for (int i = 0; i < 4; i++) {
+            Tile t = new Tile(false);
+            t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
+            if (i % 2 == 0) {
+                t.setCoordinates(STAT_X_COORDINATES[0], STAT_Y_COORDINATES[i/2]);
+            } else {
+                t.setCoordinates(STAT_X_COORDINATES[1], STAT_Y_COORDINATES[i/2]);
+            }
+            tiles.add(t);
+        }
+    }
 
     public O(int level, boolean next) {
         while (level >= LEVEL_IMAGE_LOOP) {

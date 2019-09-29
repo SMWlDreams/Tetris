@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Board {
+    private int firstShapeID;
     private int score;
     private Game controller;
     private int previousLevelUpLine = 0;
@@ -43,8 +44,12 @@ public class Board {
     private int lastShapeIndex = 7;
     private int linesCleared = 0;
     private int[] indicies = new int[4];
+    private List<Shape> statShapes;
 
     public void nextFrame(Pane pane) {
+        if (frameCount == 0) {
+            controller.updateStats(firstShapeID);
+        }
         frameCount++;
         if (lock) {
             if (clearLine) {
@@ -111,6 +116,9 @@ public class Board {
                             }
                         }
                     }
+                    for (Shape s : statShapes) {
+                        s.updateImage(level);
+                    }
                     levelUp = false;
                 }
                 nextShape.unload(pane);
@@ -169,6 +177,10 @@ public class Board {
         }
     }
 
+    public void endGame() {
+        controller.stop();
+    }
+
     public void init(Pane pane, int level) {
         score = 0;
         framesSinceLastMove = FRAMES_PER_GRIDCELL[level];
@@ -177,6 +189,7 @@ public class Board {
         finishedFirstLevel = false;
         framesPerGridcell = framesSinceLastMove;
         drawFirstShape(pane);
+        firstShapeID = lastShapeIndex;
         chooseNextShape(pane);
         defaultList = new ArrayList<>();
         cmpList = new ArrayList<>();
@@ -191,6 +204,29 @@ public class Board {
             usedSpaces.add(i, new ArrayList<>(defaultList));
             savedTiles.add(i++, new ArrayList<>(defaultTiles));
         }
+        statShapes = new ArrayList<>();
+        Shape s;
+        s = new I(level);
+        s.spawn(pane);
+        statShapes.add(s);
+        s = new L(level);
+        s.spawn(pane);
+        statShapes.add(s);
+        s = new J(level);
+        s.spawn(pane);
+        statShapes.add(s);
+        s = new O(level);
+        s.spawn(pane);
+        statShapes.add(s);
+        s = new S(level);
+        s.spawn(pane);
+        statShapes.add(s);
+        s = new T(level);
+        s.spawn(pane);
+        statShapes.add(s);
+        s = new Z(level);
+        s.spawn(pane);
+        statShapes.add(s);
     }
 
     public void setDown(boolean bool) {
@@ -281,6 +317,7 @@ public class Board {
     }
 
     private void loadActiveShape(Pane pane) {
+        controller.updateStats(lastShapeIndex);
         String name = nextShape.getClass().getName();
         switch (name) {
             case "Game.Shapes.I":
@@ -467,9 +504,13 @@ public class Board {
                 row = r;
             }
             if (!(r < 0)) {
-                usedSpaces.get(r).set(t.getColumn(), true);
-                savedTiles.get(r).set(t.getColumn(), t);
-            }
+                if (usedSpaces.get(r).get(t.getColumn())) {
+                    endGame();
+                    break;
+                } else {
+                    usedSpaces.get(r).set(t.getColumn(), true);
+                    savedTiles.get(r).set(t.getColumn(), t);
+                }}
         }
         if (row < 4) {
             lockFrameCounter = 18;

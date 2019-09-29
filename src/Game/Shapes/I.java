@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class I implements Shape {
+    private static int[] STAT_X_COORDINATES = {90, 105, 120, 135};
+    private static int[] STAT_Y_COORDINATES = {360};
     private List<Tile> tiles = new ArrayList<>();
     private int lastRotation = 0;
     private static final int COLUMN_START = 3;
@@ -14,6 +16,18 @@ public class I implements Shape {
     private int rotation = 0;
     private int row;
     private int column;
+
+    public I(int level) {
+        while (level >= LEVEL_IMAGE_LOOP) {
+            level -= LEVEL_IMAGE_LOOP;
+        }
+        for (int i = 0; i < 4; i++) {
+            Tile t = new Tile(false);
+            t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
+            t.setCoordinates(STAT_X_COORDINATES[i], STAT_Y_COORDINATES[0]);
+            tiles.add(t);
+        }
+    }
 
     public I(int level, boolean next) {
         while (level >= LEVEL_IMAGE_LOOP) {
@@ -23,7 +37,7 @@ public class I implements Shape {
             for (int i = 0; i < 4; i++) {
                 Tile t = new Tile(false);
                 t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
-                t.setCoordinates(VALID_NEXT_X_COORDINATES[i], VALID_NEXT_Y_COORDINATES[0]);
+                t.setCoordinates(VALID_NEXT_X_COORDINATES[i], VALID_NEXT_Y_COORDINATES[1]);
                 tiles.add(t);
             }
         } else {

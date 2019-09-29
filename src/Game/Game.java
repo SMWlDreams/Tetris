@@ -18,6 +18,20 @@ public class Game {
     private Text lines;
     @FXML
     private Text level;
+    @FXML
+    private Text l;
+    @FXML
+    private Text s;
+    @FXML
+    private Text t;
+    @FXML
+    private Text j;
+    @FXML
+    private Text z;
+    @FXML
+    private Text o;
+    @FXML
+    private Text i;
 
     private boolean moving = false;
     private Timeline timeline;
@@ -26,27 +40,31 @@ public class Game {
     private boolean rotate = false;
     private KeyCode lastRotationKey;
     private boolean down = false;
+    private int[] totalUses = new int[7];
+    private boolean stopped = false;
 
     public void parseInput(KeyEvent keyEvent) {
-        if (keyEvent.getCode().equals(KeyCode.SLASH) && !rotate) {
-            lastRotationKey = KeyCode.SLASH;
-            board.rotate(true);
-            rotate = true;
-        } else if (keyEvent.getCode().equals(KeyCode.PERIOD) && !rotate) {
-            lastRotationKey = KeyCode.PERIOD;
-            board.rotate(false);
-            rotate = true;
-        } else if (!down && keyEvent.getCode().equals(KeyCode.S)) {
-            down = true;
-            board.setDown(true);
-        } else if (!moving) {
-            lastPressedKey = keyEvent.getCode();
-            if (lastPressedKey.equals(KeyCode.A)) {
-                board.moveLeft();
-                moving = true;
-            } else if (lastPressedKey.equals(KeyCode.D)) {
-                board.moveRight();
-                moving = true;
+        if (!stopped) {
+            if (keyEvent.getCode().equals(KeyCode.SLASH) && !rotate) {
+                lastRotationKey = KeyCode.SLASH;
+                board.rotate(true);
+                rotate = true;
+            } else if (keyEvent.getCode().equals(KeyCode.PERIOD) && !rotate) {
+                lastRotationKey = KeyCode.PERIOD;
+                board.rotate(false);
+                rotate = true;
+            } else if (!down && keyEvent.getCode().equals(KeyCode.S)) {
+                down = true;
+                board.setDown(true);
+            } else if (!moving) {
+                lastPressedKey = keyEvent.getCode();
+                if (lastPressedKey.equals(KeyCode.A)) {
+                    board.moveLeft();
+                    moving = true;
+                } else if (lastPressedKey.equals(KeyCode.D)) {
+                    board.moveRight();
+                    moving = true;
+                }
             }
         }
     }
@@ -75,6 +93,11 @@ public class Game {
         timeline.play();
     }
 
+    public void stop() {
+        timeline.stop();
+        stopped = true;
+    }
+
     public void updateInfo(int lines, int score, int level) {
         if (lines < 10) {
             this.lines.setText("0" + lines);
@@ -93,5 +116,81 @@ public class Game {
             this.score.setText(score + "");
         }
         this.level.setText("" + level);
+    }
+
+    public void updateStats(int identifier) {
+        int a;
+        switch (identifier) {
+            case 0:
+                a = ++totalUses[identifier];
+                if (a < 10) {
+                    i.setText("00" + a);
+                } else if (a < 100) {
+                    i.setText("0" + a);
+                } else {
+                    i.setText("" + a);
+                }
+                break;
+            case 1:
+                a = ++totalUses[identifier];
+                if (a < 10) {
+                    j.setText("00" + a);
+                } else if (a < 100) {
+                    j.setText("0" + a);
+                } else {
+                    j.setText("" + a);
+                }
+                break;
+            case 2:
+                a = ++totalUses[identifier];
+                if (a < 10) {
+                    l.setText("00" + a);
+                } else if (a < 100) {
+                    l.setText("0" + a);
+                } else {
+                    l.setText("" + a);
+                }
+                break;
+            case 3:
+                a = ++totalUses[identifier];
+                if (a < 10) {
+                    o.setText("00" + a);
+                } else if (a < 100) {
+                    o.setText("0" + a);
+                } else {
+                    o.setText("" + a);
+                }
+                break;
+            case 4:
+                a = ++totalUses[identifier];
+                if (a < 10) {
+                    s.setText("00" + a);
+                } else if (a < 100) {
+                    s.setText("0" + a);
+                } else {
+                    s.setText("" + a);
+                }
+                break;
+            case 5:
+                a = ++totalUses[identifier];
+                if (a < 10) {
+                    t.setText("00" + a);
+                } else if (a < 100) {
+                    t.setText("0" + a);
+                } else {
+                    t.setText("" + a);
+                }
+                break;
+            case 6:
+                a = ++totalUses[identifier];
+                if (a < 10) {
+                    z.setText("00" + a);
+                } else if (a < 100) {
+                    z.setText("0" + a);
+                } else {
+                    z.setText("" + a);
+                }
+                break;
+        }
     }
 }
