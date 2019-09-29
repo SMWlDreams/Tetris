@@ -93,25 +93,32 @@ public class Board {
                         for (Tile t : tiles) {
                             switch (t.getShape().getClass().getName()) {
                                 case "Game.Shapes.I":
-                                    t.setImage(new Image("\\Assets\\Bar_Box_" + tempLevel + ".png"));
+//                                    t.setImage(new Image("Assets\\Bar_Box_" + tempLevel + ".png"));
+                                    t.setImage(new Image("Bar_Box_" + tempLevel + ".png"));
                                     break;
                                 case "Game.Shapes.J":
-                                    t.setImage(new Image("\\Assets\\S_J_" + tempLevel + ".png"));
+//                                    t.setImage(new Image("Assets\\S_J_" + tempLevel + ".png"));
+                                    t.setImage(new Image("S_J_" + tempLevel + ".png"));
                                     break;
                                 case "Game.Shapes.L":
-                                    t.setImage(new Image("\\Assets\\Z_L_" + tempLevel + ".png"));
+//                                    t.setImage(new Image("Assets\\Z_L_" + tempLevel + ".png"));
+                                    t.setImage(new Image("Z_L_" + tempLevel + ".png"));
                                     break;
                                 case "Game.Shapes.O":
-                                    t.setImage(new Image("\\Assets\\Bar_Box_" + tempLevel + ".png"));
+//                                    t.setImage(new Image("Assets\\Bar_Box_" + tempLevel + ".png"));
+                                    t.setImage(new Image("Bar_Box_" + tempLevel + ".png"));
                                     break;
                                 case "Game.Shapes.S":
-                                    t.setImage(new Image("\\Assets\\S_J_" + tempLevel + ".png"));
+//                                    t.setImage(new Image("Assets\\S_J_" + tempLevel + ".png"));
+                                    t.setImage(new Image("S_J_" + tempLevel + ".png"));
                                     break;
                                 case "Game.Shapes.T":
-                                    t.setImage(new Image("\\Assets\\Bar_Box_" + tempLevel + ".png"));
+//                                    t.setImage(new Image("Assets\\Bar_Box_" + tempLevel + ".png"));
+                                    t.setImage(new Image("Bar_Box_" + tempLevel + ".png"));
                                     break;
                                 case "Game.Shapes.Z":
-                                    t.setImage(new Image("\\Assets\\Z_L_" + tempLevel + ".png"));
+//                                    t.setImage(new Image("Assets\\Z_L_" + tempLevel + ".png"));
+                                    t.setImage(new Image("Z_L_" + tempLevel + ".png"));
                                     break;
                             }
                         }

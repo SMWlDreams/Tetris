@@ -3,6 +3,8 @@ package Game;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
@@ -32,6 +34,8 @@ public class Game {
     private Text o;
     @FXML
     private Text i;
+    @FXML
+    private ImageView view;
 
     private boolean moving = false;
     private Timeline timeline;
@@ -91,6 +95,8 @@ public class Game {
         timeline.getKeyFrames().add(keyFrame);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+//        view.setImage(new Image("Assets\\background_1.png"));
+        view.setImage(new Image("background_1.png"));
     }
 
     public void stop() {
@@ -104,7 +110,9 @@ public class Game {
         } else {
             this.lines.setText("" + lines);
         }
-        if (score < 100) {
+        if (score < 10) {
+            this.score.setText("00000" + score);
+        } else if (score < 100) {
             this.score.setText("0000" + score);
         } else if (score < 1000) {
             this.score.setText("000" + score);

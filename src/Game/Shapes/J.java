@@ -21,7 +21,8 @@ public class J implements Shape {
         }
         for (int i = 0; i < 4; i++) {
             Tile t = new Tile(false);
-            t.setImage(new Image("\\Assets\\S_J_" + level + ".png"));
+//            t.setImage(new Image("Assets\\S_J_" + level + ".png"));
+            t.setImage(new Image("S_J_" + level + ".png"));
             if (i == 0) {
                 t.setCoordinates(STAT_X_COORDINATES[0], STAT_Y_COORDINATES[0]);
             } else if (i == 1) {
@@ -42,7 +43,8 @@ public class J implements Shape {
         if (next) {
             for (int i = 0; i < 4; i++) {
                 Tile t = new Tile(false);
-                t.setImage(new Image("\\Assets\\S_J_" + level + ".png"));
+//                t.setImage(new Image("Assets\\S_J_" + level + ".png"));
+                t.setImage(new Image("S_J_" + level + ".png"));
                 if (i == 0) {
                     t.setCoordinates(VALID_NEXT_X_COORDINATES[3], VALID_NEXT_Y_COORDINATES[1]);
                 } else if (i == 1) {
@@ -62,7 +64,8 @@ public class J implements Shape {
                 } else {
                     t = new Tile(true, this);
                 }
-                t.setImage(new Image("\\Assets\\S_J_" + level + ".png"));
+//                t.setImage(new Image("Assets\\S_J_" + level + ".png"));
+                t.setImage(new Image("S_J_" + level + ".png"));
                 if (i == 0) {
                     t.setXCoordinate(6);
                     t.setYCoordinate(1);
@@ -92,7 +95,8 @@ public class J implements Shape {
             level -= LEVEL_IMAGE_LOOP;
         }
         for (Tile t : tiles) {
-            t.setImage(new Image("\\Assets\\S_J_" + level + ".png"));
+//            t.setImage(new Image("Assets\\S_J_" + level + ".png"));
+            t.setImage(new Image("S_J_" + level + ".png"));
         }
     }
 

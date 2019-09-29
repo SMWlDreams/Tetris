@@ -19,7 +19,8 @@ public class O implements Shape {
         }
         for (int i = 0; i < 4; i++) {
             Tile t = new Tile(false);
-            t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
+//            t.setImage(new Image("Assets\\Bar_Box_" + level + ".png"));
+            t.setImage(new Image("Bar_Box_" + level + ".png"));
             if (i % 2 == 0) {
                 t.setCoordinates(STAT_X_COORDINATES[0], STAT_Y_COORDINATES[i/2]);
             } else {
@@ -36,7 +37,8 @@ public class O implements Shape {
         if (next) {
             for (int i = 0; i < 4; i++) {
                 Tile t = new Tile(false);
-                t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
+//                t.setImage(new Image("Assets\\Bar_Box_" + level + ".png"));
+                t.setImage(new Image("Bar_Box_" + level + ".png"));
                 if (i % 2 == 0) {
                     t.setCoordinates(VALID_NEXT_X_COORDINATES[1], VALID_NEXT_Y_COORDINATES[i/2]);
                 } else {
@@ -47,7 +49,8 @@ public class O implements Shape {
         } else {
             for (int i = 0; i < 4; i++) {
                 Tile t = new Tile(false, this);
-                t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
+//                t.setImage(new Image("Assets\\Bar_Box_" + level + ".png"));
+                t.setImage(new Image("Bar_Box_" + level + ".png"));
                 if (i % 2 == 0) {
                     t.setXCoordinate(4);
                     t.setYCoordinate(i/2);
@@ -69,7 +72,8 @@ public class O implements Shape {
             level -= LEVEL_IMAGE_LOOP;
         }
         for (Tile t : tiles) {
-            t.setImage(new Image("\\Assets\\Bar_Box_" + level + ".png"));
+//            t.setImage(new Image("Assets\\Bar_Box_" + level + ".png"));
+            t.setImage(new Image("Bar_Box_" + level + ".png"));
         }
     }
 
