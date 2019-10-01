@@ -7,9 +7,13 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.SamplePlayer;
 
 public class Music {
-    private static final String[] BACKGROUND_TRACK_PATHS = {System.getProperty("user.dir") + "\\src\\Theme_1.wav",
-            System.getProperty("user.dir") + "\\src\\Theme_2.wav",
-            System.getProperty("user.dir") + "\\src\\register_high_scores.wav"};
+    private static final String[] BACKGROUND_TRACK_PATHS = {System.getProperty("user.dir") + "\\audio\\Theme_1.wav",
+            System.getProperty("user.dir") + "\\audio\\Theme_2.wav",
+            System.getProperty("user.dir") + "\\audio\\register_high_scores.wav"};
+
+//    private final String[] BACKGROUND_TRACK_PATHS = {getClass().getResource("Theme_1.wav").toString(),
+//            getClass().getResource("Theme_2.wav").toString(),
+//            getClass().getResource("register_high_scores.wav").toString()};
 
     private AudioContext audioContext;
     private boolean play = false;

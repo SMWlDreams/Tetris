@@ -5,13 +5,13 @@ import javafx.scene.media.AudioClip;
 import java.io.File;
 
 public class SFX {
-    private static final String[] SFX_PATHS = {System.getProperty("user.dir") + "\\src\\blockmove.wav",
-            System.getProperty("user.dir") + "\\src\\blockplace.wav",
-            System.getProperty("user.dir") + "\\src\\blockrotate.wav",
-            System.getProperty("user.dir") + "\\src\\gameover.wav",
-            System.getProperty("user.dir") + "\\src\\lineclear.wav",
-            System.getProperty("user.dir") + "\\src\\linecleartetris.wav",
-            System.getProperty("user.dir") + "\\src\\levelup.wav"};
+    private static final String[] SFX_PATHS = {System.getProperty("user.dir") + "\\audio\\blockmove.wav",
+            System.getProperty("user.dir") + "\\audio\\blockplace.wav",
+            System.getProperty("user.dir") + "\\audio\\blockrotate.wav",
+            System.getProperty("user.dir") + "\\audio\\gameover.wav",
+            System.getProperty("user.dir") + "\\audio\\lineclear.wav",
+            System.getProperty("user.dir") + "\\audio\\linecleartetris.wav",
+            System.getProperty("user.dir") + "\\audio\\levelup.wav"};
 
     public void playClip(int identifier) {
         try {

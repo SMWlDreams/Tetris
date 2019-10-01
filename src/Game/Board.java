@@ -55,6 +55,7 @@ public class Board {
     private List<Shape> statShapes;
     private int index;
     private boolean play = false;
+    private Music music;
 
     public void nextFrame(Pane pane) {
         frameCount++;
@@ -226,6 +227,8 @@ public class Board {
             } else if (inputDelay != 0) {
                 if (--inputDelay == 0) {
                     controller.stop();
+                    play = false;
+                    gameOver = false;
                 }
             } else {
                 if (index == 20) {
@@ -252,12 +255,14 @@ public class Board {
     }
 
     public void setBGAudioPlayer(Music music) {
+        this.music = music;
     }
 
     public void endGame() {
         gameOver = true;
         startEndSequenceFrame = frameCount;
         index = 0;
+        music.stop();
         sfx.playClip(3);
 //        controller.stop();
     }

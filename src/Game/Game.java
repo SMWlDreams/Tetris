@@ -2,12 +2,15 @@ package Game;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
@@ -56,6 +59,34 @@ public class Game {
     private Text levelT;
     @FXML
     private Text stats;
+    @FXML
+    private Text menu;
+    @FXML
+    private Text musicText;
+    @FXML
+    private Text nesMusic;
+    @FXML
+    private Text gbaMusic;
+    @FXML
+    private Text noMusic;
+    @FXML
+    private Text highScores;
+    @FXML
+    private GridPane grid;
+    @FXML
+    private GridPane scoreGrid;
+    @FXML
+    private Text name1;
+    @FXML
+    private Text name2;
+    @FXML
+    private Text name3;
+    @FXML
+    private Text score1;
+    @FXML
+    private Text score2;
+    @FXML
+    private Text score3;
 
     private String state;
     private Music music;
@@ -74,6 +105,26 @@ public class Game {
     private int[] highScore = new int[3];
     private String restartProperty;
     private List<Node> menuNodes;
+    private int musicSelection = 0;
+
+    public void setMusicSelection(MouseEvent mouseEvent) {
+        if (mouseEvent.getSceneY() >= 175 && mouseEvent.getSceneY() <= 200) {
+            nesMusic.setStyle("-fx-text-fill: red");
+            gbaMusic.setStyle("-fx-text-fill: white");
+            noMusic.setStyle("-fx-text-fill: white");
+            musicSelection = 0;
+        } else if (mouseEvent.getSceneY() >= 225 && mouseEvent.getSceneY() <= 250) {
+            nesMusic.setStyle("-fx-text-fill: white");
+            gbaMusic.setStyle("-fx-text-fill: red");
+            noMusic.setStyle("-fx-text-fill: white");
+            musicSelection = 1;
+        } else if (mouseEvent.getSceneY() >= 275 && mouseEvent.getSceneY() <= 300) {
+            nesMusic.setStyle("-fx-text-fill: white");
+            gbaMusic.setStyle("-fx-text-fill: white");
+            noMusic.setStyle("-fx-text-fill: red");
+            musicSelection = 3;
+        }
+    }
 
     public void parseInput(KeyEvent keyEvent) {
         switch (state) {
@@ -83,6 +134,54 @@ public class Game {
             case "Menu":
                 start();
                 break;
+            case "Register":
+                switch (restartProperty) {
+                    case "Register 1":
+                        if (keyEvent.getCode().equals(KeyCode.BACK_SPACE)) {
+                            if (name1.getText().length() > 0) {
+                                name1.setText(name1.getText().substring(0, name1.getText().length() - 2));
+                            }
+                        } else if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                            names[0] = name1.getText();
+                            writeHighScores();
+                            setBGImage("Menu");
+                        } else {
+                            if (name1.getText().length() < 8) {
+                                name1.setText(name1.getText() + keyEvent.getCode().getChar());
+                            }
+                        }
+                        break;
+                    case "Register 2":
+                        if (keyEvent.getCode().equals(KeyCode.BACK_SPACE)) {
+                            if (name2.getText().length() > 0) {
+                                name2.setText(name2.getText().substring(0, name2.getText().length() - 2));
+                            }
+                        } else if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                            names[1] = name2.getText();
+                            writeHighScores();
+                            setBGImage("Menu");
+                        } else {
+                            if (name2.getText().length() < 8) {
+                                name2.setText(name2.getText() + keyEvent.getCode().getChar());
+                            }
+                        }
+                        break;
+                    case "Register 3":
+                        if (keyEvent.getCode().equals(KeyCode.BACK_SPACE)) {
+                            if (name3.getText().length() > 0) {
+                                name3.setText(name3.getText().substring(0, name3.getText().length() - 2));
+                            }
+                        } else if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                            names[2] = name3.getText();
+                            writeHighScores();
+                            setBGImage("Menu");
+                        } else {
+                            if (name3.getText().length() < 8) {
+                                name3.setText(name3.getText() + keyEvent.getCode().getChar());
+                            }
+                        }
+                        break;
+                }
             case "Game":
                 if (!stopped) {
                     if (keyEvent.getCode().equals(KeyCode.SLASH) && !rotate) {
@@ -106,6 +205,8 @@ public class Game {
                             moving = true;
                         }
                     }
+                } else {
+                    restart();
                 }
                 break;
         }
@@ -134,11 +235,14 @@ public class Game {
         Node[] node = {score, lines, level, l, s, t, j, z, o, i, linesT, best, scoreT, next, levelT, stats, top};
         gameNodes = new ArrayList<>();
         gameNodes.addAll(Arrays.asList(node));
-        Node[] nodes = {};
+//        Node[] nodes = {menu, musicText, nesMusic, gbaMusic, noMusic, highScores, grid,
+//                scoreGrid, name1, name2, name3, score1, score2, score3};
+        Node[] nodes = {menu, musicText, nesMusic, gbaMusic, noMusic, highScores, grid,
+                scoreGrid};
         menuNodes = new ArrayList<>();
         menuNodes.addAll(Arrays.asList(nodes));
-        board.setController(this);
         timeline = new Timeline();
+        board.setController(this);
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(1.0/60.0), e -> board.nextFrame(pane));
         timeline.getKeyFrames().add(keyFrame);
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -146,7 +250,6 @@ public class Game {
         setBGImage("Title");
         music = new Music();
         main.setBGAudioPlayer(music);
-        board.setBGAudioPlayer(music);
     }
 
     public void stop() {
@@ -290,7 +393,7 @@ public class Game {
                     n.setVisible(true);
                 }
                 for (Node n : menuNodes) {
-                    n.setVisible(true);
+                    n.setVisible(false);
                 }
                 view.setImage(new Image("background.png"));
                 break;
@@ -318,30 +421,69 @@ public class Game {
         names[2] = in.next();
         in.nextLine();
         highScore[2] = in.nextInt();
-        System.out.println("debug");
+        name1.setText(names[0]);
+        name2.setText(names[1]);
+        name3.setText(names[2]);
+        score1.setText(highScore[0] + "");
+        score2.setText(highScore[1] + "");
+        score3.setText(highScore[2] + "");
+    }
+
+    private void writeHighScores() {
+
     }
 
     private void start() {
+        board = new Board();
+        board.setController(this);
         board.init(pane, 0);
+        board.setBGAudioPlayer(music);
         setBGImage("Game");
-        music.selectTrack(2);
+        music.selectTrack(1);
         music.play();
     }
 
     private void restart() {
-        board = new Board();
         pane.getChildren().clear();
         pane.getChildren().add(view);
-        view.setImage(new Image("background.png"));
         pane.getChildren().addAll(new ArrayList<>(gameNodes));
-        board.init(pane, 0);
-        board.setController(this);
-        for (int i = 0; i < 7; i++) {
-            totalUses[i] = -1;
-            updateStats(i);
+        pane.getChildren().addAll(new ArrayList<>(menuNodes));
+        setBGImage("Menu");
+        String[] newNames = new String[3];
+        switch (restartProperty) {
+            case "Register 1":
+                System.arraycopy(names, 0, newNames, 1, 2);
+                names = newNames;
+                state = "Register";
+                break;
+            case "Register 2":
+                newNames[0] = names[0];
+                newNames[2] = names[1];
+                names = newNames;
+                state = "Register";
+                break;
+            case "Register 3":
+                System.arraycopy(names, 0, newNames, 0, 2);
+                names = newNames;
+                state = "Register";
+                break;
+            default:
+                break;
         }
-        updateInfo(0, 0, 0);
-        stopped = false;
         timeline.play();
+        stopped = false;
+//        board = new Board();
+//        pane.getChildren().add(view);
+//        view.setImage(new Image("backeground.png"));
+//        pane.getChildren().addAll(new ArrayList<>(gameNodes));
+//        board.init(pane, 0);
+//        board.setController(this);
+//        for (int i = 0; i < 7; i++) {
+//            totalUses[i] = -1;
+//            updateStats(i);
+//        }
+//        updateInfo(0, 0, 0);
+//        stopped = false;
+//        timeline.play();
     }
 }
