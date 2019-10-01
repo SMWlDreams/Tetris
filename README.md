@@ -4,6 +4,8 @@
 
 ### Created in Java 11 using JavaFX 11
 
+### Audio powered by Beads Java Audio Library
+
 ### Executable launcher created using JSmooth Java Wrapper
 
 # Change Log
