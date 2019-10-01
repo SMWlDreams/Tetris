@@ -20,6 +20,7 @@ public class Main extends Application {
         Game gameController = loader.getController();
         Scene scene = new Scene(root);
         gameController.setMain(this);
+        scene.setOnMouseClicked(gameController::setMusicSelection);
         scene.setOnKeyPressed(gameController::parseInput);
         scene.setOnKeyReleased(gameController::stopMovement);
         stage.setOnShown(e -> gameController.run());

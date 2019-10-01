@@ -2,7 +2,6 @@ package Game;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -12,6 +11,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
@@ -108,21 +108,41 @@ public class Game {
     private int musicSelection = 0;
 
     public void setMusicSelection(MouseEvent mouseEvent) {
-        if (mouseEvent.getSceneY() >= 175 && mouseEvent.getSceneY() <= 200) {
-            nesMusic.setStyle("-fx-text-fill: red");
-            gbaMusic.setStyle("-fx-text-fill: white");
-            noMusic.setStyle("-fx-text-fill: white");
-            musicSelection = 0;
-        } else if (mouseEvent.getSceneY() >= 225 && mouseEvent.getSceneY() <= 250) {
-            nesMusic.setStyle("-fx-text-fill: white");
-            gbaMusic.setStyle("-fx-text-fill: red");
-            noMusic.setStyle("-fx-text-fill: white");
-            musicSelection = 1;
-        } else if (mouseEvent.getSceneY() >= 275 && mouseEvent.getSceneY() <= 300) {
-            nesMusic.setStyle("-fx-text-fill: white");
-            gbaMusic.setStyle("-fx-text-fill: white");
-            noMusic.setStyle("-fx-text-fill: red");
-            musicSelection = 3;
+        System.out.println(mouseEvent.getX());
+        System.out.println(mouseEvent.getY());
+        if (state.equalsIgnoreCase("Menu")) {
+            if (mouseEvent.getX() >= 375 && mouseEvent.getX() <= 520) {
+                if (mouseEvent.getSceneY() >= 145 && mouseEvent.getSceneY() <= 180) {
+//                    nesMusic.setStyle("-fx-text-fill: red");
+//                    gbaMusic.setStyle("-fx-text-fill: white");
+//                    noMusic.setStyle("-fx-text-fill: white");
+                    nesMusic.setFill(Color.RED);
+                    gbaMusic.setFill(Color.WHITE);
+                    noMusic.setFill(Color.WHITE);
+                    musicSelection = 0;
+                    music.selectTrack(musicSelection);
+                    music.play();
+                } else if (mouseEvent.getSceneY() >= 195 && mouseEvent.getSceneY() <= 230) {
+//                    nesMusic.setStyle("-fx-text-fill: white");
+//                    gbaMusic.setStyle("-fx-text-fill: red");
+//                    noMusic.setStyle("-fx-text-fill: white");
+                    nesMusic.setFill(Color.WHITE);
+                    gbaMusic.setFill(Color.RED);
+                    noMusic.setFill(Color.WHITE);
+                    musicSelection = 1;
+                    music.selectTrack(musicSelection);
+                    music.play();
+                } else if (mouseEvent.getSceneY() >= 245 && mouseEvent.getSceneY() <= 280) {
+//                    nesMusic.setStyle("-fx-text-fill: white");
+//                    gbaMusic.setStyle("-fx-text-fill: white");
+//                    noMusic.setStyle("-fx-text-fill: red");
+                    nesMusic.setFill(Color.WHITE);
+                    gbaMusic.setFill(Color.WHITE);
+                    noMusic.setFill(Color.RED);
+                    musicSelection = 3;
+                    music.stop();
+                }
+            }
         }
     }
 
@@ -434,13 +454,16 @@ public class Game {
     }
 
     private void start() {
+        music.stop();
         board = new Board();
         board.setController(this);
         board.init(pane, 0);
         board.setBGAudioPlayer(music);
         setBGImage("Game");
-        music.selectTrack(1);
-        music.play();
+        if (musicSelection != 3) {
+            music.selectTrack(musicSelection);
+            music.play();
+        }
     }
 
     private void restart() {
