@@ -34,6 +34,24 @@ Score will no longer drop a digit after placing the first shape
 
 If you attempt to rotate a shape with a tile above the edge of the board it will no longer randomly become visible
 
+## v0.3.0 Alpha
+
+### Improvements
+
+Added a main menu and a stock title screen (actual title screen in progress)
+
+Added background audio looping and the speedup
+
+Added line clear and block rotation sfx
+
+### Bug Fixes
+
+Stats will no longer always increment the I-piece for the first piece placed in a game
+
+If you top out you will no longer get a counted line clear if the entire top row is full (note: You can still clear the top line normally)
+
+You can no longer lose by rotating pieces over other pieces at the edge of the board while they are off screen
+
 ### NOTE
 
 This is an alpha release. There is no audio currently. The game will run and can be restarted after a loss only. All core features of the hit NES game TETRIS are here.

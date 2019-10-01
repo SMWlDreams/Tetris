@@ -7,6 +7,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+    private Music music;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -17,11 +19,17 @@ public class Main extends Application {
         Pane root = loader.load(getClass().getResourceAsStream("Tetris.fxml"));
         Game gameController = loader.getController();
         Scene scene = new Scene(root);
-        scene.setOnKeyPressed(e -> gameController.parseInput(e));
-        scene.setOnKeyReleased(e -> gameController.stopMovement(e));
+        gameController.setMain(this);
+        scene.setOnKeyPressed(gameController::parseInput);
+        scene.setOnKeyReleased(gameController::stopMovement);
         stage.setOnShown(e -> gameController.run());
+        stage.setOnCloseRequest(e -> music.stop());
         stage.setScene(scene);
         stage.setTitle("Tetris");
         stage.show();
+    }
+
+    public void setBGAudioPlayer(Music music) {
+        this.music = music;
     }
 }
