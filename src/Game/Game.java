@@ -306,6 +306,13 @@ public class Game {
         } else {
             this.score.setText(score + "");
         }
+        if (score > highScore[0]) {
+            if (score < 100000) {
+                best.setText("0" + score);
+            } else {
+                best.setText(score + "");
+            }
+        }
         this.level.setText("" + level);
     }
 
@@ -455,6 +462,11 @@ public class Game {
 
     private void start() {
         music.stop();
+        if (highScore[0] < 100000) {
+            best.setText("0" + highScore[0]);
+        } else {
+            best.setText("" + highScore[0]);
+        }
         board = new Board();
         board.setController(this);
         board.init(pane, 0);
@@ -464,6 +476,7 @@ public class Game {
             music.selectTrack(musicSelection);
             music.play();
         }
+        updateInfo(0, 0, 0);
     }
 
     private void restart() {
@@ -471,6 +484,9 @@ public class Game {
         pane.getChildren().add(view);
         pane.getChildren().addAll(new ArrayList<>(gameNodes));
         pane.getChildren().addAll(new ArrayList<>(menuNodes));
+        for (int i : totalUses) {
+            i = 0;
+        }
         setBGImage("Menu");
         String[] newNames = new String[3];
         switch (restartProperty) {

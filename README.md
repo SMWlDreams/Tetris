@@ -38,11 +38,17 @@ If you attempt to rotate a shape with a tile above the edge of the board it will
 
 ### Improvements
 
-Added a main menu and a stock title screen (actual title screen in progress)
+Added a main menu and a stock title screen (actual title screen in progress).
 
-Added background audio looping and the speedup
+Added background audio looping, the audio will not speed up when you get a piece in the top 4 lines.
 
-Added line clear and block rotation sfx
+You can select a track by clicking on the respective name in the main menu.
+
+You can now select your starting level by clicking on the respective level. If you are holding down alt it will add 10 to the starting level.
+
+You can register high scores now and the display will properly show the top score, updating in real time if you beat to previous top score during a run
+
+Added line clear, block rotation, block movement, block placement, and game over sfx.
 
 ### Bug Fixes
 
