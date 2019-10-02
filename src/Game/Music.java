@@ -11,10 +11,6 @@ public class Music {
             System.getProperty("user.dir") + "\\audio\\Theme_2.wav",
             System.getProperty("user.dir") + "\\audio\\register_high_scores.wav"};
 
-//    private final String[] BACKGROUND_TRACK_PATHS = {getClass().getResource("Theme_1.wav").toString(),
-//            getClass().getResource("Theme_2.wav").toString(),
-//            getClass().getResource("register_high_scores.wav").toString()};
-
     private AudioContext audioContext;
     private boolean play = false;
 

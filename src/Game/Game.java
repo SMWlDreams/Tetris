@@ -349,9 +349,13 @@ public class Game {
                             names[0] = name1.getText();
                             writeHighScores();
                             setBGImage("Menu");
-                        } else {
+                        } else if (!(keyEvent.getCode().equals(KeyCode.SPACE))) {
                             if (name1.getText().length() < 7) {
-                                name1.setText(name1.getText() + keyEvent.getText());
+                                if (keyEvent.isShiftDown()) {
+                                    name1.setText(name1.getText() + keyEvent.getText().toUpperCase());
+                                } else {
+                                    name1.setText(name1.getText() + keyEvent.getText());
+                                }
                             }
                         }
                         break;
@@ -368,9 +372,13 @@ public class Game {
                             names[1] = name2.getText();
                             writeHighScores();
                             setBGImage("Menu");
-                        } else {
+                        } else if (!(keyEvent.getCode().equals(KeyCode.SPACE))) {
                             if (name2.getText().length() < 7) {
-                                name2.setText(name2.getText() + keyEvent.getText());
+                                if (keyEvent.isShiftDown()) {
+                                    name2.setText(name2.getText() + keyEvent.getText().toUpperCase());
+                                } else {
+                                    name2.setText(name2.getText() + keyEvent.getText());
+                                }
                             }
                         }
                         break;
@@ -387,9 +395,13 @@ public class Game {
                             names[2] = name3.getText();
                             writeHighScores();
                             setBGImage("Menu");
-                        } else {
+                        } else if (!(keyEvent.getCode().equals(KeyCode.SPACE))) {
                             if (name3.getText().length() < 7) {
-                                name3.setText(name3.getText() + keyEvent.getText());
+                                if (keyEvent.isShiftDown()) {
+                                    name3.setText(name3.getText() + keyEvent.getText().toUpperCase());
+                                } else {
+                                    name3.setText(name3.getText() + keyEvent.getText());
+                                }
                             }
                         }
                         break;
@@ -448,8 +460,6 @@ public class Game {
         Node[] node = {score, lines, level, l, s, t, j, z, o, i, linesT, best, scoreT, next, levelT, stats, top};
         gameNodes = new ArrayList<>();
         gameNodes.addAll(Arrays.asList(node));
-//        Node[] nodes = {menu, musicText, nesMusic, gbaMusic, noMusic, highScores, grid,
-//                scoreGrid, name1, name2, name3, score1, score2, score3};
         Node[] nodes = {menu, musicText, nesMusic, gbaMusic, noMusic, highScores, grid, scoreGrid};
         menuNodes = new ArrayList<>();
         menuNodes.addAll(Arrays.asList(nodes));
@@ -600,8 +610,10 @@ public class Game {
             case "Menu":
                 state = "Menu";
                 music.stop();
-                music.selectTrack(musicSelection);
-                board.startFrameDelay();
+                if (musicSelection != 3) {
+                    music.selectTrack(musicSelection);
+                    board.startFrameDelay();
+                }
                 loadHighScores();
                 for (Node n : gameNodes) {
                     n.setVisible(false);
@@ -633,7 +645,7 @@ public class Game {
     }
 
     private void loadHighScores() {
-        try (Scanner in = new Scanner(new File(System.getProperty("user.home") + "\\Tetris\\High Scores.txt"))) {
+        try (Scanner in = new Scanner(new File(System.getProperty("user.home") + "\\AppData\\Roaming\\Tetris\\High Scores.txt"))) {
             readFile(in);
         } catch (IOException e) {
             Scanner in = new Scanner(getClass().getResourceAsStream("High Scores.txt"));
@@ -663,7 +675,7 @@ public class Game {
     }
 
     private void writeHighScores() {
-        try (PrintWriter writer = new PrintWriter(new File(System.getProperty("user.home") + "\\Tetris\\High Scores.txt"))) {
+        try (PrintWriter writer = new PrintWriter(new File(System.getProperty("user.home") + "\\AppData\\Roaming\\Tetris\\High Scores.txt"))) {
             writer.write(names[0] + "\r\n");
             writer.write(highScore[0] + "\r\n");
             writer.write(names[1] + "\r\n");
@@ -671,7 +683,7 @@ public class Game {
             writer.write(names[2] + "\r\n");
             writer.write(highScore[2] + "\r\n");
         } catch (IOException e) {
-            File f = new File(System.getProperty("user.home") + "\\Tetris");
+            File f = new File(System.getProperty("user.home") + "\\AppData\\Roaming\\Tetris");
             if (f.mkdirs()) {
                 writeHighScores();
             }
@@ -706,7 +718,7 @@ public class Game {
         pane.getChildren().addAll(new ArrayList<>(menuNodes));
         for (int i = 0; i < totalUses.length; i++) {
             totalUses[i] = 0;
-            updateStats(i);
+            updateStats(i - 1);
         }
         setBGImage("Menu");
         String[] newNames = new String[3];

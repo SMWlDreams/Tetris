@@ -59,6 +59,7 @@ public class Board {
     private int index;
     private boolean play = false;
     private Music music;
+    private int scoreIncrement = 0;
 
     public void nextFrame(Pane pane) {
         frameCount++;
@@ -237,9 +238,12 @@ public class Board {
                         }
                     } else {
                         framesSinceLastMove = framesPerGridcell;
+                        scoreIncrement++;
                         if (verifyVerticalMovement(tiles)) {
                             adjustVertical(tiles);
                         } else {
+                            score += scoreIncrement;
+                            scoreIncrement = 0;
                             writeNewLines(tiles);
                             if (checkFullLine()) {
                                 clearLine(pane);
@@ -342,6 +346,9 @@ public class Board {
     }
 
     public void setDown(boolean bool) {
+        if (!bool) {
+            scoreIncrement = 0;
+        }
         down = bool;
     }
 

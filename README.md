@@ -62,25 +62,37 @@ You can no longer lose by rotating pieces over other pieces at the edge of the b
 
 ### Final Alpha Release
 
+### Improvements
+
+The first piece for each new game will be delayed 48 frames to allow the board time to load to make the game run more smoothly. This is also present in the original game.
+
+Added upper and lower case character support for names in high scores.
+
+Added in score incrementation for soft dropping pieces based on row you held down from.
+
+Moved saved high scores to the user.dir\AppData\Roaming\Tetris folder from the user.dir\Tetris folder.
+
 ### Projected Improvements
 
 Added a new title screen and new main menu
 
 Added in some stats found in the Classic Tetris World Championship to the GUI - An I-piece drought counter and the % of line clears that were a tetris
 
-The first piece for each new game will be delayed 48 frames to allow the board time to load to make the game run more smoothly. This is also present in the original game.
-
 Added a basic pause screen that can be invoked by pressing the space bar.
 
-Added upper and lower case character support for names in high scores.
+Added a special easter egg on the main menu. Input the secret code to gain access to a hidden song.
 
-Added in score incrementation for soft dropping pieces based on row you held down from.
+### Bug Fixes
+
+When restarting a game on the main menu the stats now properly go to 000 instead of 001.
+
+Ending a game with the music set to none will no longer crash the game.
 
 ### NOTE
 
-This is an alpha release. There is no audio currently. The game will run and can be restarted after a loss only. All core features of the hit NES game TETRIS are here.
+This is an alpha release. The game will run, all core features of the hit NES game TETRIS are here.
 
-The title screen is from the original game. A new title screen is currently be drawn by a close friend of mine.
+The title screen is from the original game. A new title screen is currently being drawn by a close friend of mine.
 
 The menu screen is simply a basic drawing meant to allow me to hold all the information, a new, better looking menu will be made for the next update.
 
