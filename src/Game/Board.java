@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Board {
+    private Tile defaultTile = new Tile(false);
     private int delay = 0;
     private SFX sfx = new SFX();
     private int inputDelay = 0;
@@ -60,6 +61,7 @@ public class Board {
     private boolean play = false;
     private Music music;
     private int scoreIncrement = 0;
+    private boolean pause = false;
 
     public void nextFrame(Pane pane) {
         frameCount++;
@@ -69,147 +71,162 @@ public class Board {
             }
         }
         if (play) {
-            if (!gameOver) {
-                if (lock) {
-                    if (clearLine) {
-                        if (!finishedFirstLevel) {
-                            if (startLevel < 9) {
-                                if (linesCleared >= (startLevel * 10 + 10)) {
-                                    levelUp();
-                                    levelUp = true;
-                                    finishedFirstLevel = true;
-                                }
-                            } else {
-                                if (linesCleared >= Math.max(100, startLevel * 10 - 50)) {
-                                    levelUp();
-                                    levelUp = true;
-                                    finishedFirstLevel = true;
-                                }
-                            }
-                            previousLevelUpLine = linesCleared;
-                            while (previousLevelUpLine % 10 != 0) {
-                                previousLevelUpLine--;
-                            }
-                        } else if (linesCleared >= previousLevelUpLine + 10) {
-                            levelUp();
-                            levelUp = true;
-                            previousLevelUpLine = linesCleared;
-                            while (previousLevelUpLine % 10 != 0) {
-                                previousLevelUpLine--;
-                            }
-                        }
-                        clearLine = false;
-                        clear = true;
-                    }
-                    if (flash) {
-                        controller.resetBG();
-                        flash = false;
-                    }
-                    if (clear) {
-                        if (lockFrameCounter % 4 == 0) {
-                            if (tetris) {
-                                controller.tetris();
-                                flash = true;
-                            }
-                            if (lockFrameCounter == 24) {
-                                index = 0;
-                            }
-                            if (lockFrameCounter != 4) {
-                                for (int i = 0; i < clears; i++) {
-                                    List<Tile> tiles = savedTiles.get(indicies[i]);
-                                    tiles.get(4 - index).unload(pane);
-                                    tiles.get(5 + index).unload(pane);
-                                }
-                                index++;
-                            }
-                        }
-                    }
-                    if (--lockFrameCounter == 0) {
-                        if (clear) {
-                            dropTiles();
-                            clear = false;
-                            tetris = false;
-                        }
-                        controller.updateInfo(linesCleared, score, level);
-                        lock = false;
-                        if (levelUp) {
-                            sfx.playClip(6);
-                            int tempLevel = level;
-                            while (tempLevel >= 10) {
-                                tempLevel -= 10;
-                            }
-                            for (List<Tile> tiles : savedTiles) {
-                                for (Tile t : tiles) {
-                                    switch (t.getShape().getClass().getName()) {
-                                        case "Game.Shapes.I":
-//                                    t.setImage(new Image("Assets\\Bar_Box_" + tempLevel + ".png"));
-                                            t.setImage(new Image("Bar_Box_" + tempLevel + ".png"));
-                                            break;
-                                        case "Game.Shapes.J":
-//                                    t.setImage(new Image("Assets\\S_J_" + tempLevel + ".png"));
-                                            t.setImage(new Image("S_J_" + tempLevel + ".png"));
-                                            break;
-                                        case "Game.Shapes.L":
-//                                    t.setImage(new Image("Assets\\Z_L_" + tempLevel + ".png"));
-                                            t.setImage(new Image("Z_L_" + tempLevel + ".png"));
-                                            break;
-                                        case "Game.Shapes.O":
-//                                    t.setImage(new Image("Assets\\Bar_Box_" + tempLevel + ".png"));
-                                            t.setImage(new Image("Bar_Box_" + tempLevel + ".png"));
-                                            break;
-                                        case "Game.Shapes.S":
-//                                    t.setImage(new Image("Assets\\S_J_" + tempLevel + ".png"));
-                                            t.setImage(new Image("S_J_" + tempLevel + ".png"));
-                                            break;
-                                        case "Game.Shapes.T":
-//                                    t.setImage(new Image("Assets\\Bar_Box_" + tempLevel + ".png"));
-                                            t.setImage(new Image("Bar_Box_" + tempLevel + ".png"));
-                                            break;
-                                        case "Game.Shapes.Z":
-//                                    t.setImage(new Image("Assets\\Z_L_" + tempLevel + ".png"));
-                                            t.setImage(new Image("Z_L_" + tempLevel + ".png"));
-                                            break;
+            if (!pause) {
+                if (!gameOver) {
+                    if (lock) {
+                        if (clearLine) {
+                            if (!finishedFirstLevel) {
+                                if (startLevel < 9) {
+                                    if (linesCleared >= (startLevel * 10 + 10)) {
+                                        levelUp();
+                                        levelUp = true;
+                                        finishedFirstLevel = true;
+                                    }
+                                } else {
+                                    if (linesCleared >= Math.max(100, startLevel * 10 - 50)) {
+                                        levelUp();
+                                        levelUp = true;
+                                        finishedFirstLevel = true;
                                     }
                                 }
+                                previousLevelUpLine = linesCleared;
+                                while (previousLevelUpLine % 10 != 0) {
+                                    previousLevelUpLine--;
+                                }
+                            } else if (linesCleared >= previousLevelUpLine + 10) {
+                                levelUp();
+                                levelUp = true;
+                                previousLevelUpLine = linesCleared;
+                                while (previousLevelUpLine % 10 != 0) {
+                                    previousLevelUpLine--;
+                                }
                             }
-                            for (Shape s : statShapes) {
-                                s.updateImage(level);
-                            }
-                            levelUp = false;
+                            clearLine = false;
+                            clear = true;
                         }
-                        nextShape.unload(pane);
-                        loadActiveShape(pane);
-                        chooseNextShape(pane);
-                    }
-                } else {
-                    List<Tile> tiles = activeShape.getTiles();
-                    if (moving) {
-                        dasCounter++;
-                    }
-                    if (frameCount == Integer.MAX_VALUE) {
-                        frameCount = 0;
-                    }
-                    if (!down) {
-                        framesSinceLastMove--;
-                        if (dasCounter > INITIAL_DAS_DELAY) {
-                            dasCounter = 0;
-                            if (verifyHorizMovement(tiles)) {
-                                adjustHoriz(tiles);
-                            }
-                        } else if (dasCounter == INITIAL_DAS_DELAY) {
-                            firstDasDelay = true;
-                            dasCounter = 0;
-                            if (verifyHorizMovement(tiles)) {
-                                adjustHoriz(tiles);
-                            }
-                        } else if (dasCounter == DAS_ACCELERATION && firstDasDelay) {
-                            dasCounter = 0;
-                            if (verifyHorizMovement(tiles)) {
-                                adjustHoriz(tiles);
+                        if (flash) {
+                            controller.resetBG();
+                            flash = false;
+                        }
+                        if (clear) {
+                            if (lockFrameCounter % 4 == 0) {
+                                if (tetris) {
+                                    controller.tetris();
+                                    flash = true;
+                                }
+                                if (lockFrameCounter == 24) {
+                                    index = 0;
+                                }
+                                if (lockFrameCounter != 4) {
+                                    for (int i = 0; i < clears; i++) {
+                                        List<Tile> tiles = savedTiles.get(indicies[i]);
+                                        tiles.get(4 - index).unload(pane);
+                                        tiles.get(5 + index).unload(pane);
+                                    }
+                                    index++;
+                                }
                             }
                         }
-                        if (firstPiece) {
-                            if (--firstPieceFrameDropDelay == 0) {
+                        if (--lockFrameCounter == 0) {
+                            if (clear) {
+                                dropTiles();
+                                clear = false;
+                                tetris = false;
+                            }
+                            controller.updateInfo(linesCleared, score, level);
+                            lock = false;
+                            if (levelUp) {
+                                sfx.playClip(6);
+                                int tempLevel = level;
+                                while (tempLevel >= 10) {
+                                    tempLevel -= 10;
+                                }
+                                for (List<Tile> tiles : savedTiles) {
+                                    for (Tile t : tiles) {
+                                        switch (t.getShape().getClass().getName()) {
+                                            case "Game.Shapes.I":
+//                                    t.setImage(new Image("Assets\\Bar_Box_" + tempLevel + ".png"));
+                                                t.setImage(new Image("Bar_Box_" + tempLevel + ".png"));
+                                                break;
+                                            case "Game.Shapes.J":
+//                                    t.setImage(new Image("Assets\\S_J_" + tempLevel + ".png"));
+                                                t.setImage(new Image("S_J_" + tempLevel + ".png"));
+                                                break;
+                                            case "Game.Shapes.L":
+//                                    t.setImage(new Image("Assets\\Z_L_" + tempLevel + ".png"));
+                                                t.setImage(new Image("Z_L_" + tempLevel + ".png"));
+                                                break;
+                                            case "Game.Shapes.O":
+//                                    t.setImage(new Image("Assets\\Bar_Box_" + tempLevel + ".png"));
+                                                t.setImage(new Image("Bar_Box_" + tempLevel + ".png"));
+                                                break;
+                                            case "Game.Shapes.S":
+//                                    t.setImage(new Image("Assets\\S_J_" + tempLevel + ".png"));
+                                                t.setImage(new Image("S_J_" + tempLevel + ".png"));
+                                                break;
+                                            case "Game.Shapes.T":
+//                                    t.setImage(new Image("Assets\\Bar_Box_" + tempLevel + ".png"));
+                                                t.setImage(new Image("Bar_Box_" + tempLevel + ".png"));
+                                                break;
+                                            case "Game.Shapes.Z":
+//                                    t.setImage(new Image("Assets\\Z_L_" + tempLevel + ".png"));
+                                                t.setImage(new Image("Z_L_" + tempLevel + ".png"));
+                                                break;
+                                        }
+                                    }
+                                }
+                                for (Shape s : statShapes) {
+                                    s.updateImage(level);
+                                }
+                                levelUp = false;
+                            }
+                            nextShape.unload(pane);
+                            loadActiveShape(pane);
+                            chooseNextShape(pane);
+                        }
+                    } else {
+                        List<Tile> tiles = activeShape.getTiles();
+                        if (moving) {
+                            dasCounter++;
+                        }
+                        if (frameCount == Integer.MAX_VALUE) {
+                            frameCount = 0;
+                        }
+                        if (!down) {
+                            framesSinceLastMove--;
+                            if (dasCounter > INITIAL_DAS_DELAY) {
+                                dasCounter = 0;
+                                if (verifyHorizMovement(tiles)) {
+                                    adjustHoriz(tiles);
+                                }
+                            } else if (dasCounter == INITIAL_DAS_DELAY) {
+                                firstDasDelay = true;
+                                dasCounter = 0;
+                                if (verifyHorizMovement(tiles)) {
+                                    adjustHoriz(tiles);
+                                }
+                            } else if (dasCounter == DAS_ACCELERATION && firstDasDelay) {
+                                dasCounter = 0;
+                                if (verifyHorizMovement(tiles)) {
+                                    adjustHoriz(tiles);
+                                }
+                            }
+                            if (firstPiece) {
+                                if (--firstPieceFrameDropDelay == 0) {
+                                    framesSinceLastMove = framesPerGridcell;
+                                    if (verifyVerticalMovement(tiles)) {
+                                        adjustVertical(tiles);
+                                    } else {
+                                        writeNewLines(tiles);
+                                        if (!gameOver) {
+                                            if (checkFullLine()) {
+                                                clearLine(pane);
+                                            }
+                                        }
+                                    }
+                                    firstPiece = false;
+                                }
+                            } else if (framesSinceLastMove == 0) {
                                 framesSinceLastMove = framesPerGridcell;
                                 if (verifyVerticalMovement(tiles)) {
                                     adjustVertical(tiles);
@@ -221,64 +238,78 @@ public class Board {
                                         }
                                     }
                                 }
-                                firstPiece = false;
                             }
-                        } else if (framesSinceLastMove == 0) {
+                        } else {
                             framesSinceLastMove = framesPerGridcell;
+                            scoreIncrement++;
                             if (verifyVerticalMovement(tiles)) {
                                 adjustVertical(tiles);
                             } else {
+                                score += scoreIncrement;
+                                scoreIncrement = 0;
                                 writeNewLines(tiles);
-                                if (!gameOver) {
-                                    if (checkFullLine()) {
-                                        clearLine(pane);
-                                    }
+                                if (checkFullLine()) {
+                                    clearLine(pane);
                                 }
                             }
                         }
-                    } else {
-                        framesSinceLastMove = framesPerGridcell;
-                        scoreIncrement++;
-                        if (verifyVerticalMovement(tiles)) {
-                            adjustVertical(tiles);
-                        } else {
-                            score += scoreIncrement;
-                            scoreIncrement = 0;
-                            writeNewLines(tiles);
-                            if (checkFullLine()) {
-                                clearLine(pane);
-                            }
+                    }
+                } else if (inputDelay != 0) {
+                    if (--inputDelay == 0) {
+                        controller.stop();
+                        play = false;
+                        gameOver = false;
+                    }
+                } else {
+                    if (index == 20) {
+                        inputDelay = 60;
+                    }
+                    if ((frameCount - startEndSequenceFrame) % 4 == 0) {
+                        int tempLevel = level;
+                        while (tempLevel >= 10) {
+                            tempLevel -= 10;
                         }
+                        pane.getChildren().removeAll(savedTiles.get(index));
+                        List<Tile> tiles = savedTiles.get(index);
+                        Tile t;
+                        for (int i = 0; i < 10; i++) {
+                            t = new Tile(false, new I());
+                            t.setImage(new Image("LEVEL_" + tempLevel + "_BLIND.png"));
+                            t.setCoordinates(Shape.X_COORDS[i], Shape.VALID_Y_COORDINATES[0] + (15 * index));
+                            tiles.set(i, t);
+                        }
+                        pane.getChildren().addAll(savedTiles.get(index++));
                     }
-                }
-            } else if (inputDelay != 0) {
-                if (--inputDelay == 0) {
-                    controller.stop();
-                    play = false;
-                    gameOver = false;
-                }
-            } else {
-                if (index == 20) {
-                    inputDelay = 60;
-                }
-                if ((frameCount - startEndSequenceFrame) % 4 == 0) {
-                    int tempLevel = level;
-                    while (tempLevel >= 10) {
-                        tempLevel -= 10;
-                    }
-                    pane.getChildren().removeAll(savedTiles.get(index));
-                    List<Tile> tiles = savedTiles.get(index);
-                    Tile t;
-                    for (int i = 0; i < 10; i++) {
-                        t = new Tile(false, new I());
-                        t.setImage(new Image("LEVEL_" + tempLevel + "_BLIND.png"));
-                        t.setCoordinates(Shape.X_COORDS[i], Shape.VALID_Y_COORDINATES[0] + (15 * index));
-                        tiles.set(i, t);
-                    }
-                    pane.getChildren().addAll(savedTiles.get(index++));
                 }
             }
         }
+    }
+
+    public void pause(Pane pane) {
+        if (pause) {
+            for (List<Tile> tls: savedTiles) {
+                for (Tile t : tls) {
+                    if (t != defaultTile) {
+                        pane.getChildren().add(t);
+                    }
+                }
+            }
+            activeShape.spawn(pane);
+            nextShape.spawn(pane);
+            for (Shape s : statShapes) {
+                s.spawn(pane);
+            }
+        } else {
+            for (List<Tile> t: savedTiles) {
+                pane.getChildren().removeAll(t);
+            }
+            activeShape.unload(pane);
+            nextShape.unload(pane);
+            for (Shape s : statShapes) {
+                s.unload(pane);
+            }
+        }
+        pause = !pause;
     }
 
     public void setBGAudioPlayer(Music music) {
@@ -312,7 +343,7 @@ public class Board {
         for (int j = 0; j < 10; j++) {
             defaultList.add(false);
             cmpList.add(true);
-            defaultTiles.add(new Tile(false));
+            defaultTiles.add(defaultTile);
         }
         int i = 0;
         while (i < 20) {

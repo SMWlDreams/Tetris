@@ -72,13 +72,13 @@ Added in score incrementation for soft dropping pieces based on row you held dow
 
 Moved saved high scores to the user.dir\AppData\Roaming\Tetris folder from the user.dir\Tetris folder.
 
+Added a basic pause screen that can be invoked by pressing the space bar.
+
 ### Projected Improvements
 
 Added a new title screen and new main menu
 
 Added in some stats found in the Classic Tetris World Championship to the GUI - An I-piece drought counter and the % of line clears that were a tetris
-
-Added a basic pause screen that can be invoked by pressing the space bar.
 
 Added a special easter egg on the main menu. Input the secret code to gain access to a hidden song.
 

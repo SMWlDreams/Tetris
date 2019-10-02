@@ -131,6 +131,7 @@ public class Game {
     private List<Node> menuNodes;
     private int musicSelection = 0;
     private int selectedLevel = 10;
+    private boolean pause = false;
 
     public void setMusicSelection(MouseEvent mouseEvent) {
         System.out.println(mouseEvent.getX());
@@ -417,6 +418,21 @@ public class Game {
                         lastRotationKey = KeyCode.PERIOD;
                         board.rotate(false);
                         rotate = true;
+                    } else if (keyEvent.getCode().equals(KeyCode.SPACE)) {
+                        board.pause(pane);
+                        pause = !pause;
+                        if (!pause) {
+                            setBGImage("Game");
+                            if (musicSelection != 3) {
+                                music.selectTrack(musicSelection);
+                                board.startFrameDelay();
+                            }
+                        } else {
+                            setBGImage("Pause");
+                            if (musicSelection != 3) {
+                                music.stop();
+                            }
+                        }
                     } else if (!down && keyEvent.getCode().equals(KeyCode.S)) {
                         down = true;
                         board.setDown(true);
@@ -632,6 +648,15 @@ public class Game {
                     n.setVisible(false);
                 }
                 view.setImage(new Image("background.png"));
+                break;
+            case "Pause":
+                for (Node n : gameNodes) {
+                    n.setVisible(false);
+                }
+                for (Node n : menuNodes) {
+                    n.setVisible(false);
+                }
+                view.setImage(new Image("pause.png"));
                 break;
         }
     }
