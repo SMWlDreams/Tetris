@@ -9,7 +9,9 @@ import net.beadsproject.beads.ugens.SamplePlayer;
 public class Music {
     private static final String[] BACKGROUND_TRACK_PATHS = {System.getProperty("user.dir") + "\\audio\\Theme_1.wav",
             System.getProperty("user.dir") + "\\audio\\Theme_2.wav",
-            System.getProperty("user.dir") + "\\audio\\register_high_scores.wav"};
+            System.getProperty("user.dir") + "\\audio\\register_high_scores.wav",
+            null,
+            System.getProperty("user.dir") + "\\audio\\special_song.wav"};
 
     private AudioContext audioContext;
     private boolean play = false;

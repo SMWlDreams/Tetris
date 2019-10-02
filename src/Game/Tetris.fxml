@@ -250,5 +250,30 @@
             </Text>
          </children>
       </GridPane>
+      <Text fx:id="extraStats" boundsType="VISUAL" fill="WHITE" layoutX="385.0" layoutY="51.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="SHOW EXTRA STATS" textAlignment="CENTER" wrappingWidth="137.9619140625">
+         <font>
+            <Font name="Arial Black" size="18.0" />
+         </font>
+      </Text>
+      <Text fx:id="tetrisT" boundsType="VISUAL" fill="WHITE" layoutX="242.0" layoutY="413.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="TRT%">
+         <font>
+            <Font name="Arial Black" size="18.0" />
+         </font>
+      </Text>
+      <Text fx:id="drought" boundsType="VISUAL" fill="WHITE" layoutX="337.0" layoutY="413.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="DRT">
+         <font>
+            <Font name="Arial Black" size="18.0" />
+         </font>
+      </Text>
+      <Text fx:id="tetrisP" boundsType="VISUAL" fill="WHITE" layoutX="260.0" layoutY="433.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="100" textAlignment="CENTER">
+         <font>
+            <Font name="Arial Black" size="18.0" />
+         </font>
+      </Text>
+      <Text fx:id="droughtP" boundsType="VISUAL" fill="WHITE" layoutX="363.0" layoutY="434.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="1" textAlignment="CENTER">
+         <font>
+            <Font name="Arial Black" size="18.0" />
+         </font>
+      </Text>
    </children>
 </Pane>

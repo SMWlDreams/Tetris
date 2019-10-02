@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Board {
+    private int droughtCounter;
     private Tile defaultTile = new Tile(false);
     private int delay = 0;
     private SFX sfx = new SFX();
@@ -62,6 +63,7 @@ public class Board {
     private Music music;
     private int scoreIncrement = 0;
     private boolean pause = false;
+    private int tetrisLineClears;
 
     public void nextFrame(Pane pane) {
         frameCount++;
@@ -75,6 +77,7 @@ public class Board {
                 if (!gameOver) {
                     if (lock) {
                         if (clearLine) {
+                            controller.updateTetrisPercentage((tetrisLineClears * 100)/linesCleared);
                             if (!finishedFirstLevel) {
                                 if (startLevel < 9) {
                                     if (linesCleared >= (startLevel * 10 + 10)) {
@@ -181,6 +184,12 @@ public class Board {
                                 levelUp = false;
                             }
                             nextShape.unload(pane);
+                            if (lastShapeIndex != 0) {
+                                droughtCounter++;
+                            } else {
+                                droughtCounter = 0;
+                            }
+                            controller.updateDroughtCounter(droughtCounter);
                             loadActiveShape(pane);
                             chooseNextShape(pane);
                         }
@@ -285,31 +294,35 @@ public class Board {
         }
     }
 
-    public void pause(Pane pane) {
-        if (pause) {
-            for (List<Tile> tls: savedTiles) {
-                for (Tile t : tls) {
-                    if (t != defaultTile) {
-                        pane.getChildren().add(t);
+    public boolean pause(Pane pane) {
+        if (!gameOver) {
+            if (pause) {
+                for (List<Tile> tls : savedTiles) {
+                    for (Tile t : tls) {
+                        if (t != defaultTile) {
+                            pane.getChildren().add(t);
+                        }
                     }
                 }
+                activeShape.spawn(pane);
+                nextShape.spawn(pane);
+                for (Shape s : statShapes) {
+                    s.spawn(pane);
+                }
+            } else {
+                for (List<Tile> t : savedTiles) {
+                    pane.getChildren().removeAll(t);
+                }
+                activeShape.unload(pane);
+                nextShape.unload(pane);
+                for (Shape s : statShapes) {
+                    s.unload(pane);
+                }
             }
-            activeShape.spawn(pane);
-            nextShape.spawn(pane);
-            for (Shape s : statShapes) {
-                s.spawn(pane);
-            }
-        } else {
-            for (List<Tile> t: savedTiles) {
-                pane.getChildren().removeAll(t);
-            }
-            activeShape.unload(pane);
-            nextShape.unload(pane);
-            for (Shape s : statShapes) {
-                s.unload(pane);
-            }
+            pause = !pause;
+            return true;
         }
-        pause = !pause;
+        return false;
     }
 
     public void setBGAudioPlayer(Music music) {
@@ -327,6 +340,7 @@ public class Board {
 
     public void init(Pane pane, int level) {
         score = 0;
+        tetrisLineClears = 0;
         framesSinceLastMove = FRAMES_PER_GRIDCELL[level];
         firstPieceFrameDropDelay = FRAMES_PER_GRIDCELL[0];
         firstPiece = true;
@@ -336,6 +350,12 @@ public class Board {
         framesPerGridcell = framesSinceLastMove;
         drawFirstShape(pane);
         controller.updateStats(lastShapeIndex);
+        if (lastShapeIndex == 0) {
+            droughtCounter = 0;
+        } else {
+            droughtCounter = 1;
+        }
+        controller.updateDroughtCounter(droughtCounter);
         chooseNextShape(pane);
         defaultList = new ArrayList<>();
         cmpList = new ArrayList<>();
@@ -719,6 +739,7 @@ public class Board {
                 sfx.playClip(5);
                 score += (1200 * (level + 1));
                 tetris = true;
+                tetrisLineClears += clears;
                 break;
         }
         linesCleared += clears;

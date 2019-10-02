@@ -111,6 +111,16 @@ public class Game {
     private Text eight;
     @FXML
     private Text nine;
+    @FXML
+    private Text extraStats;
+    @FXML
+    private Text tetrisT;
+    @FXML
+    private Text drought;
+    @FXML
+    private Text tetrisP;
+    @FXML
+    private Text droughtP;
 
     private String state;
     private Music music;
@@ -129,16 +139,23 @@ public class Game {
     private int[] highScore = new int[3];
     private String restartProperty;
     private List<Node> menuNodes;
+    private List<Node> extraNodes;
     private int musicSelection = 0;
     private int selectedLevel = 10;
     private boolean pause = false;
+    private boolean showExtraStats = false;
 
     public void setMusicSelection(MouseEvent mouseEvent) {
-        System.out.println(mouseEvent.getX());
-        System.out.println(mouseEvent.getY());
         if (state.equalsIgnoreCase("Menu")) {
             if (mouseEvent.getX() >= 375 && mouseEvent.getX() <= 520) {
-                if (mouseEvent.getSceneY() >= 145 && mouseEvent.getSceneY() <= 180 && musicSelection != 0) {
+                if (mouseEvent.getY() >= 37 && mouseEvent.getY() <= 77) {
+                    showExtraStats = !showExtraStats;
+                    if (showExtraStats) {
+                        extraStats.setFill(Color.RED);
+                    } else {
+                        extraStats.setFill(Color.WHITE);
+                    }
+                } else if (mouseEvent.getSceneY() >= 145 && mouseEvent.getSceneY() <= 180 && musicSelection != 0) {
                     music.stop();
                     board.startFrameDelay();
                     nesMusic.setFill(Color.RED);
@@ -419,18 +436,19 @@ public class Game {
                         board.rotate(false);
                         rotate = true;
                     } else if (keyEvent.getCode().equals(KeyCode.SPACE)) {
-                        board.pause(pane);
-                        pause = !pause;
-                        if (!pause) {
-                            setBGImage("Game");
-                            if (musicSelection != 3) {
-                                music.selectTrack(musicSelection);
-                                board.startFrameDelay();
-                            }
-                        } else {
-                            setBGImage("Pause");
-                            if (musicSelection != 3) {
-                                music.stop();
+                        if (board.pause(pane)) {
+                            pause = !pause;
+                            if (!pause) {
+                                setBGImage("Game");
+                                if (musicSelection != 3) {
+                                    music.selectTrack(musicSelection);
+                                    board.startFrameDelay();
+                                }
+                            } else {
+                                setBGImage("Pause");
+                                if (musicSelection != 3) {
+                                    music.stop();
+                                }
                             }
                         }
                     } else if (!down && keyEvent.getCode().equals(KeyCode.S)) {
@@ -476,9 +494,12 @@ public class Game {
         Node[] node = {score, lines, level, l, s, t, j, z, o, i, linesT, best, scoreT, next, levelT, stats, top};
         gameNodes = new ArrayList<>();
         gameNodes.addAll(Arrays.asList(node));
-        Node[] nodes = {menu, musicText, nesMusic, gbaMusic, noMusic, highScores, grid, scoreGrid};
+        Node[] nodes = {menu, musicText, nesMusic, gbaMusic, noMusic, highScores, grid, scoreGrid, extraStats};
         menuNodes = new ArrayList<>();
         menuNodes.addAll(Arrays.asList(nodes));
+        Node[] nodess = {tetrisP, tetrisT, drought, droughtP};
+        extraNodes = new ArrayList<>();
+        extraNodes.addAll(Arrays.asList(nodess));
         timeline = new Timeline();
         board.setController(this);
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(1.0/60.0), e -> board.nextFrame(pane));
@@ -621,6 +642,9 @@ public class Game {
                 for (Node n : menuNodes) {
                     n.setVisible(false);
                 }
+                for (Node n : extraNodes) {
+                    n.setVisible(false);
+                }
                 view.setImage(new Image("title_screen_temp.png"));
                 break;
             case "Menu":
@@ -637,6 +661,9 @@ public class Game {
                 for (Node n : menuNodes) {
                     n.setVisible(true);
                 }
+                for (Node n : extraNodes) {
+                    n.setVisible(false);
+                }
                 view.setImage(new Image("main_menu.png"));
                 break;
             case "Game":
@@ -647,7 +674,17 @@ public class Game {
                 for (Node n : menuNodes) {
                     n.setVisible(false);
                 }
-                view.setImage(new Image("background.png"));
+                if (!showExtraStats) {
+                    view.setImage(new Image("background.png"));
+                    for (Node n : extraNodes) {
+                        n.setVisible(false);
+                    }
+                } else {
+                    view.setImage(new Image("stats_background.png"));
+                    for (Node n : extraNodes) {
+                        n.setVisible(true);
+                    }
+                }
                 break;
             case "Pause":
                 for (Node n : gameNodes) {
@@ -656,17 +693,41 @@ public class Game {
                 for (Node n : menuNodes) {
                     n.setVisible(false);
                 }
+                for (Node n : extraNodes) {
+                    n.setVisible(false);
+                }
                 view.setImage(new Image("pause.png"));
                 break;
         }
     }
 
     public void tetris() {
-        view.setImage(new Image("tetris_flash.png"));
+        if (!showExtraStats) {
+            view.setImage(new Image("tetris_flash.png"));
+        } else {
+            view.setImage(new Image("stats_tetris_flash.png"));
+        }
     }
 
     public void resetBG() {
-        view.setImage(new Image("background.png"));
+        if (!showExtraStats) {
+            view.setImage(new Image("background.png"));
+        } else {
+            view.setImage(new Image("stats_background.png"));
+        }
+    }
+
+    public void updateDroughtCounter(int droughtCounter) {
+        droughtP.setText(droughtCounter + "");
+        if (droughtCounter >= 13) {
+            droughtP.setFill(Color.RED);
+        } else {
+            droughtP.setFill(Color.WHITE);
+        }
+    }
+
+    public void updateTetrisPercentage(int tetrisPercentage) {
+        tetrisP.setText(tetrisPercentage + "");
     }
 
     private void loadHighScores() {
@@ -741,10 +802,12 @@ public class Game {
         pane.getChildren().add(view);
         pane.getChildren().addAll(new ArrayList<>(gameNodes));
         pane.getChildren().addAll(new ArrayList<>(menuNodes));
+        pane.getChildren().addAll(new ArrayList<>(extraNodes));
         for (int i = 0; i < totalUses.length; i++) {
             totalUses[i] = -1;
             updateStats(i);
         }
+        tetrisP.setText("100");
         setBGImage("Menu");
         String[] newNames = new String[3];
         int[] newScores = new int[3];

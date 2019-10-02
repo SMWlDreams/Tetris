@@ -74,19 +74,21 @@ Moved saved high scores to the user.dir\AppData\Roaming\Tetris folder from the u
 
 Added a basic pause screen that can be invoked by pressing the space bar.
 
+Added in some stats found in the Classic Tetris World Championship to the GUI - An I-piece drought counter and the % of line clears that were a tetris. This can be enabled by clicking on the show extra stats option on the menu.
+
+Added a special easter egg on the main menu. Input the secret code to gain access to a hidden song.
+
 ### Projected Improvements
 
 Added a new title screen and new main menu
-
-Added in some stats found in the Classic Tetris World Championship to the GUI - An I-piece drought counter and the % of line clears that were a tetris
-
-Added a special easter egg on the main menu. Input the secret code to gain access to a hidden song.
 
 ### Bug Fixes
 
 When restarting a game on the main menu the stats now properly go to 000 instead of 001.
 
 Ending a game with the music set to none will no longer crash the game.
+
+You can no longer pause the game after you have already lost.
 
 ### NOTE
 
