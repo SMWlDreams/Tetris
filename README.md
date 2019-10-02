@@ -78,10 +78,6 @@ Added in some stats found in the Classic Tetris World Championship to the GUI - 
 
 Added a special easter egg on the main menu. Input the secret code to gain access to a hidden song.
 
-### Projected Improvements
-
-Added a new title screen and new main menu
-
 ### Bug Fixes
 
 When restarting a game on the main menu the stats now properly go to 000 instead of 001.
@@ -89,6 +85,12 @@ When restarting a game on the main menu the stats now properly go to 000 instead
 Ending a game with the music set to none will no longer crash the game.
 
 You can no longer pause the game after you have already lost.
+
+## Version 1.0.0 Expected Changes
+
+#### Added a new title screen and new main menu
+
+#### Any needed bug fixes
 
 ### NOTE
 
