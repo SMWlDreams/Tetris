@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Board {
+    private int delay = 0;
     private SFX sfx = new SFX();
     private int inputDelay = 0;
     private int startEndSequenceFrame = 0;
@@ -59,6 +60,11 @@ public class Board {
 
     public void nextFrame(Pane pane) {
         frameCount++;
+        if (delay != 0) {
+            if(--delay == 0) {
+                music.play();
+            }
+        }
         if (play) {
             if (!gameOver) {
                 if (lock) {
@@ -776,5 +782,13 @@ public class Board {
 
     public void loadMainMenu() {
         controller.setBGImage("Menu");
+    }
+
+    public void startFrameDelay() {
+        delay = 11;
+    }
+
+    public int getDelay() {
+        return delay;
     }
 }
