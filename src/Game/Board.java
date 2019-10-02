@@ -34,6 +34,8 @@ public class Board {
     private boolean finishedFirstLevel;
     private Shape activeShape;
     private Shape nextShape;
+    private boolean firstPiece = true;
+    private int firstPieceFrameDropDelay = 0;
     private static final int[] FRAMES_PER_GRIDCELL = {48, 43, 38, 33, 28, 23, 18, 13, 8, 6, 5, 5,
             5, 4, 4, 4, 3, 3, 3, 2};
     private static final int FINAL_FRAME_PER_GRIDCELL = 1;
@@ -205,7 +207,22 @@ public class Board {
                                 adjustHoriz(tiles);
                             }
                         }
-                        if (framesSinceLastMove == 0) {
+                        if (firstPiece) {
+                            if (--firstPieceFrameDropDelay == 0) {
+                                framesSinceLastMove = framesPerGridcell;
+                                if (verifyVerticalMovement(tiles)) {
+                                    adjustVertical(tiles);
+                                } else {
+                                    writeNewLines(tiles);
+                                    if (!gameOver) {
+                                        if (checkFullLine()) {
+                                            clearLine(pane);
+                                        }
+                                    }
+                                }
+                                firstPiece = false;
+                            }
+                        } else if (framesSinceLastMove == 0) {
                             framesSinceLastMove = framesPerGridcell;
                             if (verifyVerticalMovement(tiles)) {
                                 adjustVertical(tiles);
@@ -276,6 +293,8 @@ public class Board {
     public void init(Pane pane, int level) {
         score = 0;
         framesSinceLastMove = FRAMES_PER_GRIDCELL[level];
+        firstPieceFrameDropDelay = FRAMES_PER_GRIDCELL[0];
+        firstPiece = true;
         this.level = level;
         startLevel = level;
         finishedFirstLevel = false;

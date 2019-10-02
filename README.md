@@ -74,6 +74,8 @@ Added a basic pause screen that can be invoked by pressing the space bar.
 
 Added upper and lower case character support for names in high scores.
 
+Added in score incrementation for soft dropping pieces based on row you held down from.
+
 ### NOTE
 
 This is an alpha release. There is no audio currently. The game will run and can be restarted after a loss only. All core features of the hit NES game TETRIS are here.
