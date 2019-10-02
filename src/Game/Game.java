@@ -717,8 +717,8 @@ public class Game {
         pane.getChildren().addAll(new ArrayList<>(gameNodes));
         pane.getChildren().addAll(new ArrayList<>(menuNodes));
         for (int i = 0; i < totalUses.length; i++) {
-            totalUses[i] = 0;
-            updateStats(i - 1);
+            totalUses[i] = -1;
+            updateStats(i);
         }
         setBGImage("Menu");
         String[] newNames = new String[3];
@@ -776,18 +776,5 @@ public class Game {
         }
         timeline.play();
         stopped = false;
-//        board = new Board();
-//        pane.getChildren().add(view);
-//        view.setImage(new Image("backeground.png"));
-//        pane.getChildren().addAll(new ArrayList<>(gameNodes));
-//        board.init(pane, 0);
-//        board.setController(this);
-//        for (int i = 0; i < 7; i++) {
-//            totalUses[i] = -1;
-//            updateStats(i);
-//        }
-//        updateInfo(0, 0, 0);
-//        stopped = false;
-//        timeline.play();
     }
 }
