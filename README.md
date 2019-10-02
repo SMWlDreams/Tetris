@@ -68,6 +68,12 @@ Added a new title screen and new main menu
 
 Added in some stats found in the Classic Tetris World Championship to the GUI - An I-piece drought counter and the % of line clears that were a tetris
 
+The first piece for each new game will be delayed 48 frames to allow the board time to load to make the game run more smoothly. This is also present in the original game.
+
+Added a basic pause screen that can be invoked by pressing the space bar.
+
+Added upper and lower case character support for names in high scores.
+
 ### NOTE
 
 This is an alpha release. There is no audio currently. The game will run and can be restarted after a loss only. All core features of the hit NES game TETRIS are here.
