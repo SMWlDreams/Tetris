@@ -122,6 +122,7 @@ public class Game {
     @FXML
     private Text droughtP;
 
+    private static final String ID = "CORNDILLY";
     private String state;
     private Music music;
     private List<Node> gameNodes;
@@ -144,6 +145,7 @@ public class Game {
     private int selectedLevel = 10;
     private boolean pause = false;
     private boolean showExtraStats = false;
+    private String specialSong = "";
 
     public void setMusicSelection(MouseEvent mouseEvent) {
         if (state.equalsIgnoreCase("Menu")) {
@@ -351,6 +353,21 @@ public class Game {
                 board.loadMainMenu();
                 break;
             case "Menu":
+                if (keyEvent.getText().toUpperCase().charAt(0) == ID.charAt(specialSong.length())) {
+                    specialSong += keyEvent.getText();
+                    if (specialSong.equalsIgnoreCase(ID)) {
+                        specialSong = "";
+                        music.stop();
+                        board.startFrameDelay();
+                        nesMusic.setFill(Color.WHITE);
+                        gbaMusic.setFill(Color.WHITE);
+                        noMusic.setFill(Color.WHITE);
+                        musicSelection = 4;
+                        music.selectTrack(musicSelection);
+                    }
+                } else {
+                    specialSong = "";
+                }
                 break;
             case "Register":
                 switch (restartProperty) {
