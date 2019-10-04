@@ -46,7 +46,7 @@ You can select a track by clicking on the respective name in the main menu.
 
 You can now select your starting level by clicking on the respective level. If you right click the level it will add 10 to the starting level.
 
-You can register high scores now and the display will properly show the top score, updating in real time if you beat to previous top score during a run.
+You can register high scores now and the display will properly show the top score, updating in real time if you beat the previous top score during a run.
 
 Added line clear, block rotation, block movement, block placement, and game over sfx.
 
@@ -70,7 +70,7 @@ Added upper and lower case character support for names in high scores.
 
 Added in score incrementation for soft dropping pieces based on row you held down from.
 
-Moved saved high scores to the user.dir\AppData\Roaming\Tetris folder from the user.dir\Tetris folder.
+Moved saved high scores to the user.home\AppData\Roaming\Tetris folder from the user.home\Tetris folder.
 
 Added a basic pause screen that can be invoked by pressing the space bar.
 
@@ -85,6 +85,17 @@ When restarting a game on the main menu the stats now properly go to 000 instead
 Ending a game with the music set to none will no longer crash the game.
 
 You can no longer pause the game after you have already lost.
+
+## v0.4.1 Alpha
+
+### Important Bugfix Release
+
+#### The application no longer memory leaks causing the application 
+
+#### You can no longer enter blank names into the high score dialogue. If you have entered a blank name previously and the application crashed, please go to %appdata%\Tetris and change the blank line to have a value in it.
+
+#### In the event that the background audio will not play properly, please run the Audio Setup .jar file in the same directory as the Tetris.jar file. This will prompt you to select the proper audio mixer to enable audio playback. This is due to an issue with the Beads audio library where it may not always select the proper mixer for your computer. 
+
 
 ## Version 1.0.0 Expected Changes
 

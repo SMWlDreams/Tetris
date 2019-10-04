@@ -312,41 +312,6 @@ public class Game {
         }
     }
 
-    private void clearSelectedLevel() {
-        switch (selectedLevel) {
-            case 0:
-                zero.setFill(Color.WHITE);
-                break;
-            case 1:
-                one.setFill(Color.WHITE);
-                break;
-            case 2:
-                two.setFill(Color.WHITE);
-                break;
-            case 3:
-                three.setFill(Color.WHITE);
-                break;
-            case 4:
-                four.setFill(Color.WHITE);
-                break;
-            case 5:
-                five.setFill(Color.WHITE);
-                break;
-            case 6:
-                six.setFill(Color.WHITE);
-                break;
-            case 7:
-                seven.setFill(Color.WHITE);
-                break;
-            case 8:
-                eight.setFill(Color.WHITE);
-                break;
-            case 9:
-                nine.setFill(Color.WHITE);
-                break;
-        }
-    }
-
     public void parseInput(KeyEvent keyEvent) {
         switch (state) {
             case "Title":
@@ -381,9 +346,11 @@ public class Game {
                                 }
                             }
                         } else if (keyEvent.getCode().equals(KeyCode.ENTER)) {
-                            names[0] = name1.getText();
-                            writeHighScores();
-                            setBGImage("Menu");
+                            if (name1.getText().length() > 0) {
+                                names[0] = name1.getText();
+                                writeHighScores();
+                                setBGImage("Menu");
+                            }
                         } else if (!(keyEvent.getCode().equals(KeyCode.SPACE))) {
                             if (name1.getText().length() < 7) {
                                 if (keyEvent.isShiftDown()) {
@@ -404,9 +371,11 @@ public class Game {
                                 }
                             }
                         } else if (keyEvent.getCode().equals(KeyCode.ENTER)) {
-                            names[1] = name2.getText();
-                            writeHighScores();
-                            setBGImage("Menu");
+                            if (name2.getText().length() > 0) {
+                                names[1] = name2.getText();
+                                writeHighScores();
+                                setBGImage("Menu");
+                            }
                         } else if (!(keyEvent.getCode().equals(KeyCode.SPACE))) {
                             if (name2.getText().length() < 7) {
                                 if (keyEvent.isShiftDown()) {
@@ -427,9 +396,11 @@ public class Game {
                                 }
                             }
                         } else if (keyEvent.getCode().equals(KeyCode.ENTER)) {
-                            names[2] = name3.getText();
-                            writeHighScores();
-                            setBGImage("Menu");
+                            if (name3.getText().length() > 0) {
+                                names[2] = name3.getText();
+                                writeHighScores();
+                                setBGImage("Menu");
+                            }
                         } else if (!(keyEvent.getCode().equals(KeyCode.SPACE))) {
                             if (name3.getText().length() < 7) {
                                 if (keyEvent.isShiftDown()) {
@@ -881,5 +852,40 @@ public class Game {
         }
         timeline.play();
         stopped = false;
+    }
+
+    private void clearSelectedLevel() {
+        switch (selectedLevel) {
+            case 0:
+                zero.setFill(Color.WHITE);
+                break;
+            case 1:
+                one.setFill(Color.WHITE);
+                break;
+            case 2:
+                two.setFill(Color.WHITE);
+                break;
+            case 3:
+                three.setFill(Color.WHITE);
+                break;
+            case 4:
+                four.setFill(Color.WHITE);
+                break;
+            case 5:
+                five.setFill(Color.WHITE);
+                break;
+            case 6:
+                six.setFill(Color.WHITE);
+                break;
+            case 7:
+                seven.setFill(Color.WHITE);
+                break;
+            case 8:
+                eight.setFill(Color.WHITE);
+                break;
+            case 9:
+                nine.setFill(Color.WHITE);
+                break;
+        }
     }
 }
