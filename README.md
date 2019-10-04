@@ -90,7 +90,7 @@ You can no longer pause the game after you have already lost.
 
 ### Important Bugfix Release
 
-#### The application no longer memory leaks causing the application 
+#### The application no longer memory leaks
 
 #### You can no longer enter blank names into the high score dialogue. If you have entered a blank name previously and the application crashed, please go to %appdata%\Tetris and change the blank line to have a value in it.
 
