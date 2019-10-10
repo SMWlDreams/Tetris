@@ -6,7 +6,11 @@
 
 ### Audio powered by Beads Java Audio Library
 
-### Executable launcher created using JSmooth Java Wrapper
+## Note
+
+This application requires JRE 11 or higher to run. In order to download the JRE, please go hereand select your operating system:
+
+https://adoptopenjdk.net/releases.html?variant=openjdk11&jvmVariant=hotspot
 
 # Change Log
 
