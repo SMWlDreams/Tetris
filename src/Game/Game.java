@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Game {
@@ -147,7 +148,12 @@ public class Game {
     private boolean showExtraStats = false;
     private String specialSong = "";
 
-    public void setMusicSelection(MouseEvent mouseEvent) {
+    /**
+     * Highlights whatever is under where the user clicks as long as it is over a clickable menu
+     * item
+     * @param mouseEvent    Event holding information about the mouse position and button click
+     */
+    public void select(MouseEvent mouseEvent) {
         if (state.equalsIgnoreCase("Menu")) {
             if (mouseEvent.getX() >= 375 && mouseEvent.getX() <= 520) {
                 if (mouseEvent.getY() >= 37 && mouseEvent.getY() <= 77) {
@@ -312,6 +318,11 @@ public class Game {
         }
     }
 
+    /**
+     * Parses user input for writing high score names, moving pieces, advancing the game state
+     * and loading the secret song
+     * @param keyEvent  Event sent by pressing a button on the keyboard sent by JavaFX
+     */
     public void parseInput(KeyEvent keyEvent) {
         switch (state) {
             case "Title":
@@ -459,6 +470,10 @@ public class Game {
         }
     }
 
+    /**
+     * Stops any block commands that have been input upon releasing the corresponding key
+     * @param keyEvent  Event sent by pressing a button on the keyboard sent by JavaFX
+     */
     public void stopMovement(KeyEvent keyEvent) {
         if (keyEvent.getCode().equals(lastRotationKey)) {
             rotate = false;
@@ -473,10 +488,18 @@ public class Game {
         }
     }
 
+    /**
+     * Sets a reference to the main class to allow the platform to invoke close commands
+     * @param main  Reference to Main
+     */
     public void setMain(Main main) {
         this.main = main;
     }
 
+    /**
+     * Initializes the game and sets up the frame counter, should be called immediately upon
+     * loading the window
+     */
     public void run() {
         loadHighScores();
         Node[] node = {score, lines, level, l, s, t, j, z, o, i, linesT, best, scoreT, next, levelT, stats, top};
@@ -500,6 +523,9 @@ public class Game {
         board.setBGAudioPlayer(music);
     }
 
+    /**
+     * Stops the application frame timeline until a user input at the end of a game
+     */
     public void stop() {
         timeline.stop();
         stopped = true;
@@ -515,6 +541,12 @@ public class Game {
         }
     }
 
+    /**
+     * Updates the on screen stats from the new info given from the Board class
+     * @param lines The new number of line clears
+     * @param score The new user score
+     * @param level The level of the current game
+     */
     public void updateInfo(int lines, int score, int level) {
         if (lines < 10) {
             this.lines.setText("0" + lines);
@@ -544,6 +576,11 @@ public class Game {
         this.level.setText("" + level);
     }
 
+    /**
+     * Updates the block counters on the left side of the screen upon a block being loaded
+     * @param identifier    The identifier code for the specific block in alphabetical order, 0
+     *                      for i and 6 for z
+     */
     public void updateStats(int identifier) {
         int a;
         switch (identifier) {
@@ -620,6 +657,10 @@ public class Game {
         }
     }
 
+    /**
+     * Changes the background image and UI elements when loading a new scene during game play
+     * @param element   The code to determine which screen to load
+     */
     public void setBGImage(String element) {
         switch (element) {
             case "Title":
@@ -689,6 +730,9 @@ public class Game {
         }
     }
 
+    /**
+     * Flashes a new background image for one frame when the user gets a tetris
+     */
     public void tetris() {
         if (!showExtraStats) {
             view.setImage(new Image("tetris_flash.png"));
@@ -697,6 +741,9 @@ public class Game {
         }
     }
 
+    /**
+     * Reverts the background image the frame after a flash
+     */
     public void resetBG() {
         if (!showExtraStats) {
             view.setImage(new Image("background.png"));
@@ -705,6 +752,11 @@ public class Game {
         }
     }
 
+    /**
+     * Updates the drought counter after a piece spawns that is not an I piece, changing color to
+     * red after 13 spawns which is the start of a drought
+     * @param droughtCounter    The amount of consecutive non-I pieces spawned
+     */
     public void updateDroughtCounter(int droughtCounter) {
         droughtP.setText(droughtCounter + "");
         if (droughtCounter >= 13) {
@@ -714,20 +766,32 @@ public class Game {
         }
     }
 
+    /**
+     * Updates the tetris percentage when the player clears a line
+     * @param tetrisPercentage  The new percentage as an int, intended to be truncated rather
+     *                          than rounded
+     */
     public void updateTetrisPercentage(int tetrisPercentage) {
         tetrisP.setText(tetrisPercentage + "");
     }
 
+    /**
+     * Loads the high score file, either one saved on the computer or the one in the JAR
+     */
     private void loadHighScores() {
         try (Scanner in = new Scanner(new File(System.getProperty("user.home") + "\\AppData\\Roaming\\Tetris\\High Scores.txt"))) {
             readFile(in);
-        } catch (IOException e) {
+        } catch (IOException | NoSuchElementException e) {
             Scanner in = new Scanner(getClass().getResourceAsStream("High Scores.txt"));
             readFile(in);
             in.close();
         }
     }
 
+    /**
+     * Reads the desired high score file
+     * @param in    Scanner holding the data for the file
+     */
     private void readFile(Scanner in) {
         names[0] = in.next();
         in.nextLine();
@@ -748,6 +812,9 @@ public class Game {
         score3.setText(highScore[2] + "");
     }
 
+    /**
+     * Writes the new high score with user entered name to a file located on the computer
+     */
     private void writeHighScores() {
         try (PrintWriter writer = new PrintWriter(new File(System.getProperty("user.home") + "\\AppData\\Roaming\\Tetris\\High Scores.txt"))) {
             writer.write(names[0] + "\r\n");
@@ -764,6 +831,9 @@ public class Game {
         }
     }
 
+    /**
+     * Starts a game by reinitializing the board and playing the desired background track
+     */
     private void start() {
         if (board.getDelay() == 0) {
             if (highScore[0] < 100000) {
@@ -785,6 +855,9 @@ public class Game {
         }
     }
 
+    /**
+     * Loads the desired menu option based on if the user gets a new high score or not
+     */
     private void restart() {
         pane.getChildren().clear();
         pane.getChildren().add(view);
@@ -854,6 +927,9 @@ public class Game {
         stopped = false;
     }
 
+    /**
+     * Clears the selected level option when the user clicks on a different level option
+     */
     private void clearSelectedLevel() {
         switch (selectedLevel) {
             case 0:

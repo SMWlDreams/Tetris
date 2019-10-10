@@ -65,7 +65,13 @@ public class Board {
     private boolean pause = false;
     private int tetrisLineClears;
 
+    /**
+     * Plays the next frame of the game and applies any translations based on user input and
+     * frame counters
+     * @param pane  The main pane of the game to draw or move shapes on
+     */
     public void nextFrame(Pane pane) {
+        //TODO Break this into subroutines
         frameCount++;
         if (delay != 0) {
             if(--delay == 0) {
@@ -229,7 +235,7 @@ public class Board {
                                         writeNewLines(tiles);
                                         if (!gameOver) {
                                             if (checkFullLine()) {
-                                                clearLine(pane);
+                                                clearLine();
                                             }
                                         }
                                     }
@@ -243,7 +249,7 @@ public class Board {
                                     writeNewLines(tiles);
                                     if (!gameOver) {
                                         if (checkFullLine()) {
-                                            clearLine(pane);
+                                            clearLine();
                                         }
                                     }
                                 }
@@ -258,7 +264,7 @@ public class Board {
                                 scoreIncrement = 0;
                                 writeNewLines(tiles);
                                 if (checkFullLine()) {
-                                    clearLine(pane);
+                                    clearLine();
                                 }
                             }
                         }
@@ -294,6 +300,11 @@ public class Board {
         }
     }
 
+    /**
+     * Pauses the game when the user presses the space bar
+     * @param pane  The main pane to remove the shapes from
+     * @return      True if the game was successfully paused of unpaused
+     */
     public boolean pause(Pane pane) {
         if (!gameOver) {
             if (pause) {
@@ -325,19 +336,30 @@ public class Board {
         return false;
     }
 
+    /**
+     * Sets the background audio player
+     * @param music The music wrapper of the audio files
+     */
     public void setBGAudioPlayer(Music music) {
         this.music = music;
     }
 
+    /**
+     * Changes values to end the game, playing sfx and stopping music
+     */
     public void endGame() {
         gameOver = true;
         startEndSequenceFrame = frameCount;
         index = 0;
         music.stop();
         sfx.playClip(3);
-//        controller.stop();
     }
 
+    /**
+     * Initializes the games and the first shapes
+     * @param pane  Pane to draw the first shape to
+     * @param level The desired starting level
+     */
     public void init(Pane pane, int level) {
         score = 0;
         tetrisLineClears = 0;
@@ -396,6 +418,10 @@ public class Board {
         play = true;
     }
 
+    /**
+     * Speeds up the downward movement of options when the user holds down the S key
+     * @param bool  Whether to speed up or stop holding down
+     */
     public void setDown(boolean bool) {
         if (!bool) {
             scoreIncrement = 0;
@@ -403,6 +429,9 @@ public class Board {
         down = bool;
     }
 
+    /**
+     * Sets the block movement to go left and resets the DAS counter
+     */
     public void moveLeft() {
         if (!lock) {
             dasCounter = INITIAL_DAS_DELAY;
@@ -411,6 +440,9 @@ public class Board {
         }
     }
 
+    /**
+     * Sets the block movement to go to the right and resets the sad counter
+     */
     public void moveRight() {
         if (!lock) {
             dasCounter = INITIAL_DAS_DELAY;
@@ -419,26 +451,41 @@ public class Board {
         }
     }
 
-    private void levelUp() {
-        level++;
-        if (level >= 19 && level < 29) {
-            framesSinceLastMove = FRAMES_PER_GRIDCELL[FRAMES_PER_GRIDCELL.length - 1];
-            framesPerGridcell = framesSinceLastMove;
-        } else if (level >= 29) {
-            framesSinceLastMove = FINAL_FRAME_PER_GRIDCELL;
-            framesPerGridcell = framesSinceLastMove;
-        } else {
-            framesSinceLastMove = FRAMES_PER_GRIDCELL[level];
-            framesPerGridcell = framesSinceLastMove;
-        }
+    /**
+     * Loads the main menu after a game
+     */
+    public void loadMainMenu() {
+        controller.setBGImage("Menu");
     }
 
+    /**
+     * Basic frame delay for loading new music
+     */
+    public void startFrameDelay() {
+        delay = 11;
+    }
+
+    /**
+     * Gets the total amount of frames left in the music delay
+     * @return  Frames remaining in the delay as an int
+     */
+    public int getDelay() {
+        return delay;
+    }
+
+    /**
+     * Stops the block movement when the key is released
+     */
     public void stopMovement() {
         xAdjustment = 0;
         moving = false;
         firstDasDelay = false;
     }
 
+    /**
+     * Rotates the active block and plays the audio clip
+     * @param dir   True if rotating to the right, false if rotating to the left
+     */
     public void rotate(boolean dir) {
         if (!lock) {
             sfx.playClip(2);
@@ -470,6 +517,18 @@ public class Board {
         }
     }
 
+    /**
+     * Sets the main controller
+     * @param game  Reference to the controller class
+     */
+    public void setController(Game game) {
+        controller = game;
+    }
+
+    /**
+     * Selects a random number to load the next shape
+     * @return  The number selected after verifying it is not a repeat
+     */
     private int selectRandom() {
         int get = r.nextInt(7);
         boolean verify = false;
@@ -487,6 +546,10 @@ public class Board {
         return get;
     }
 
+    /**
+     * Loads a new active shape from the current next shape
+     * @param pane  The pane to draw the shape to
+     */
     private void loadActiveShape(Pane pane) {
         controller.updateStats(lastShapeIndex);
         String name = nextShape.getClass().getName();
@@ -522,6 +585,10 @@ public class Board {
         }
     }
 
+    /**
+     * Selects the next shape after calling RNG
+     * @param pane  Pane to draw the next shape to
+     */
     private void chooseNextShape(Pane pane) {
         switch (selectRandom()) {
             case 0:
@@ -555,6 +622,10 @@ public class Board {
         }
     }
 
+    /**
+     * Draws the first spawned shape to the board
+     * @param pane  The pane to draw the shape on
+     */
     private void drawFirstShape(Pane pane) {
         switch (selectRandom()) {
             case 0:
@@ -588,6 +659,11 @@ public class Board {
         }
     }
 
+    /**
+     * Verifies any sideways movement
+     * @param tiles The individual tiles for the active shape
+     * @return      True if the movement can go through, false if it cannot
+     */
     private boolean verifyHorizMovement(List<Tile> tiles) {
         if (xAdjustment > 0) {
             for (Tile t : tiles) {
@@ -629,6 +705,11 @@ public class Board {
         return true;
     }
 
+    /**
+     * Verifies if the piece can move downward
+     * @param tiles The individual tiles from the active shape
+     * @return      True if it can move down, false if it cannot
+     */
     private boolean verifyVerticalMovement(List<Tile> tiles) {
         try {
             for (Tile t : tiles) {
@@ -648,6 +729,10 @@ public class Board {
         }
     }
 
+    /**
+     * Moves the piece to the side if the movement was validated
+     * @param tiles The individual tiles for the active shape
+     */
     private void adjustHoriz(List<Tile> tiles) {
         sfx.playClip(0);
         if (xAdjustment > 0) {
@@ -663,6 +748,10 @@ public class Board {
         }
     }
 
+    /**
+     * Moves the piece down if the movement was validated
+     * @param tiles The individual tiles for the active shape
+     */
     private void adjustVertical(List<Tile> tiles) {
         for (Tile t : tiles) {
             t.setYCoordinate(t.getRow() + 1);
@@ -670,6 +759,10 @@ public class Board {
         }
     }
 
+    /**
+     * Writes the tiles from the active shape to the list of tiles and disables the active shape
+     * @param tiles The individual tiles from the active shape
+     */
     private void writeNewLines(List<Tile> tiles) {
         lock = true;
         sfx.playClip(1);
@@ -687,7 +780,8 @@ public class Board {
                 } else {
                     usedSpaces.get(r).set(t.getColumn(), true);
                     savedTiles.get(r).set(t.getColumn(), t);
-                }}
+                }
+            }
         }
         if (row < 4) {
             lockFrameCounter = 18;
@@ -702,7 +796,10 @@ public class Board {
         }
     }
 
-    private void clearLine(Pane pane) {
+    /**
+     * Clears any full lines off the board
+     */
+    private void clearLine() {
         lockFrameCounter = 24;
         List<Boolean> l;
         List<List<Boolean>> tempSpaces = new ArrayList<>(usedSpaces);
@@ -713,7 +810,6 @@ public class Board {
             if (l.equals(cmpList)) {
                 indicies[clears++] = i;
                 tempSpaces.set(i, null);
-//                pane.getChildren().removeAll(savedTiles.get(i));
                 tempTile.set(i, null);
             }
         }
@@ -750,6 +846,10 @@ public class Board {
         clearLine = true;
     }
 
+    /**
+     * Checks if any of the lines on the board are complete
+     * @return  True if there is a complete line, false if there is not
+     */
     private boolean checkFullLine() {
         List<Boolean> l;
         for (int i = 0; i < 20; i++) {
@@ -761,10 +861,10 @@ public class Board {
         return false;
     }
 
-    public void setController(Game game) {
-        controller = game;
-    }
-
+    /**
+     * Drops any layers of tiles located above any cleared lines, works with asynchronous line
+     * clears
+     */
     private void dropTiles() {
         boolean exit = false;
         switch (clears) {
@@ -858,15 +958,20 @@ public class Board {
         savedTiles = new ArrayList<>(tempTile);
     }
 
-    public void loadMainMenu() {
-        controller.setBGImage("Menu");
-    }
-
-    public void startFrameDelay() {
-        delay = 11;
-    }
-
-    public int getDelay() {
-        return delay;
+    /**
+     * Changes the level and sets the frame count for blocks to fall
+     */
+    private void levelUp() {
+        level++;
+        if (level >= 19 && level < 29) {
+            framesSinceLastMove = FRAMES_PER_GRIDCELL[FRAMES_PER_GRIDCELL.length - 1];
+            framesPerGridcell = framesSinceLastMove;
+        } else if (level >= 29) {
+            framesSinceLastMove = FINAL_FRAME_PER_GRIDCELL;
+            framesPerGridcell = framesSinceLastMove;
+        } else {
+            framesSinceLastMove = FRAMES_PER_GRIDCELL[level];
+            framesPerGridcell = framesSinceLastMove;
+        }
     }
 }

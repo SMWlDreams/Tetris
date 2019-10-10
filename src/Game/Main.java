@@ -1,7 +1,6 @@
 package Game;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -21,7 +20,7 @@ public class Main extends Application {
         Game gameController = loader.getController();
         Scene scene = new Scene(root);
         gameController.setMain(this);
-        scene.setOnMouseClicked(gameController::setMusicSelection);
+        scene.setOnMouseClicked(gameController::select);
         scene.setOnKeyPressed(gameController::parseInput);
         scene.setOnKeyReleased(gameController::stopMovement);
         stage.setOnShown(e -> gameController.run());

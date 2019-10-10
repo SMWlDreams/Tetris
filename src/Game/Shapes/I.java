@@ -66,6 +66,10 @@ public class I implements Shape {
         column = 4;
     }
 
+    /**
+     * Updates the image for this shape and by nature all of its tiles
+     * @param level The new level to load the image
+     */
     public void updateImage(int level) {
         while (level >= LEVEL_IMAGE_LOOP) {
             level -= LEVEL_IMAGE_LOOP;
@@ -76,32 +80,38 @@ public class I implements Shape {
         }
     }
 
-    @Override
-    public void updateCoordinates(int col, int row) {
-        if (row > this.row) {
-            this.row++;
-            for (Tile t : tiles) {
-                t.setCoordinates(t.getX(), t.getY() + VALID_COORDINATE_MODIFIERS[0]);
-            }
-        }
-        if (col < column) {
-            column--;
-            for (Tile t : tiles) {
-                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY());
-            }
-        } else if (col > column) {
-            column++;
-            for (Tile t : tiles) {
-                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY());
-            }
-        }
-    }
+//    @Override
+//    public void updateCoordinates(int col, int row) {
+//        if (row > this.row) {
+//            this.row++;
+//            for (Tile t : tiles) {
+//                t.setCoordinates(t.getX(), t.getY() + VALID_COORDINATE_MODIFIERS[0]);
+//            }
+//        }
+//        if (col < column) {
+//            column--;
+//            for (Tile t : tiles) {
+//                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY());
+//            }
+//        } else if (col > column) {
+//            column++;
+//            for (Tile t : tiles) {
+//                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY());
+//            }
+//        }
+//    }
 
+    /**
+     * Rotates this shape to the left
+     */
     @Override
     public void leftRotate() {
         rightRotate();
     }
 
+    /**
+     * Rotates this shape to the right
+     */
     @Override
     public void rightRotate() {
         lastRotation = rotation;
@@ -140,31 +150,54 @@ public class I implements Shape {
         }
     }
 
+    /**
+     * Unloads this shape and all its sub-tiles
+     * @param pane  The pane to unload the sub-tiles from
+     */
     @Override
     public void unload(Pane pane) {
         pane.getChildren().removeAll(tiles);
     }
 
+    /**
+     * Reverses the rotation if the rotation is determined to be invalid
+     */
     @Override
     public void undoRotation() {
         rotation = lastRotation;
     }
 
+    /**
+     * Gets the list of tiles within this shape
+     * @return  The tiles within this shape as a list
+     */
     @Override
     public List<Tile> getTiles() {
         return tiles;
     }
 
+    /**
+     * Gets the current column index of this shape
+     * @return  Column index as an int
+     */
     @Override
     public int getColumn() {
         return column;
     }
 
+    /**
+     * Gets the current row index of this shape
+     * @return  Row index as an int
+     */
     @Override
     public int getRow() {
         return row;
     }
 
+    /**
+     * Spawns this shape and loads its tiles
+     * @param pane  Pane to load the tiles to
+     */
     @Override
     public void spawn(Pane pane) {
         pane.getChildren().addAll(tiles);

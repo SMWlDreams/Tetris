@@ -22,10 +22,16 @@ public class Music {
     private AudioContext audioContext;
     private boolean play = false;
 
+    /**
+     * Creates a new music reference and loads the first track
+     */
     public Music() {
         selectTrack(0);
     }
 
+    /**
+     * Plays the selected track
+     */
     public void play() {
         if (!play) {
             play = true;
@@ -33,6 +39,11 @@ public class Music {
         }
     }
 
+    /**
+     * Selects a new track from the list of background audio tracks, will not change if the music
+     * was not properly stopped
+     * @param trackNumber   The ID number for the specific track
+     */
     public void selectTrack(int trackNumber) {
         if (!play) {
             JavaSoundAudioIO io = new JavaSoundAudioIO();
@@ -42,7 +53,6 @@ public class Music {
             } catch (IOException | InputMismatchException e) {
                 io.selectMixer(3);
             }
-//            io.selectMixer(3);
             audioContext = new AudioContext(io);
             SamplePlayer samplePlayer = new SamplePlayer(audioContext, SampleManager.sample(BACKGROUND_TRACK_PATHS[trackNumber]));
             samplePlayer.getLoopStartUGen().setValue(0);
@@ -54,6 +64,9 @@ public class Music {
         }
     }
 
+    /**
+     * Stops the bg music if it is already playing
+     */
     public void stop() {
         if (play) {
             play = false;
@@ -61,6 +74,9 @@ public class Music {
         }
     }
 
+    /**
+     * Kills the music if it is running and force closes the JavaFX application thread
+     */
     public void kill() {
         if (play) {
             play = false;
