@@ -71,7 +71,6 @@ public class Board {
      * @param pane  The main pane of the game to draw or move shapes on
      */
     public void nextFrame(Pane pane) {
-        //TODO Break this into subroutines
         frameCount++;
         if (delay != 0) {
             if(--delay == 0) {
@@ -83,58 +82,14 @@ public class Board {
                 if (!gameOver) {
                     if (lock) {
                         if (clearLine) {
-                            controller.updateTetrisPercentage((tetrisLineClears * 100)/linesCleared);
-                            if (!finishedFirstLevel) {
-                                if (startLevel < 9) {
-                                    if (linesCleared >= (startLevel * 10 + 10)) {
-                                        levelUp();
-                                        levelUp = true;
-                                        finishedFirstLevel = true;
-                                    }
-                                } else {
-                                    if (linesCleared >= Math.max(100, startLevel * 10 - 50)) {
-                                        levelUp();
-                                        levelUp = true;
-                                        finishedFirstLevel = true;
-                                    }
-                                }
-                                previousLevelUpLine = linesCleared;
-                                while (previousLevelUpLine % 10 != 0) {
-                                    previousLevelUpLine--;
-                                }
-                            } else if (linesCleared >= previousLevelUpLine + 10) {
-                                levelUp();
-                                levelUp = true;
-                                previousLevelUpLine = linesCleared;
-                                while (previousLevelUpLine % 10 != 0) {
-                                    previousLevelUpLine--;
-                                }
-                            }
-                            clearLine = false;
-                            clear = true;
+                            clearLines();
                         }
                         if (flash) {
                             controller.resetBG();
                             flash = false;
                         }
                         if (clear) {
-                            if (lockFrameCounter % 4 == 0) {
-                                if (tetris) {
-                                    controller.tetris();
-                                    flash = true;
-                                }
-                                if (lockFrameCounter == 24) {
-                                    index = 0;
-                                }
-                                if (lockFrameCounter != 4) {
-                                    for (int i = 0; i < clears; i++) {
-                                        List<Tile> tiles = savedTiles.get(indicies[i]);
-                                        tiles.get(4 - index).unload(pane);
-                                        tiles.get(5 + index).unload(pane);
-                                    }
-                                    index++;
-                                }
-                            }
+                            tileUnload(pane);
                         }
                         if (--lockFrameCounter == 0) {
                             if (clear) {
@@ -146,48 +101,8 @@ public class Board {
                             lock = false;
                             if (levelUp) {
                                 sfx.playClip(6);
-                                int tempLevel = level;
-                                while (tempLevel >= 10) {
-                                    tempLevel -= 10;
-                                }
-                                for (List<Tile> tiles : savedTiles) {
-                                    for (Tile t : tiles) {
-                                        switch (t.getShape().getClass().getName()) {
-                                            case "Game.Shapes.I":
-//                                    t.setImage(new Image("Assets\\Bar_Box_" + tempLevel + ".png"));
-                                                t.setImage(new Image("Bar_Box_" + tempLevel + ".png"));
-                                                break;
-                                            case "Game.Shapes.J":
-//                                    t.setImage(new Image("Assets\\S_J_" + tempLevel + ".png"));
-                                                t.setImage(new Image("S_J_" + tempLevel + ".png"));
-                                                break;
-                                            case "Game.Shapes.L":
-//                                    t.setImage(new Image("Assets\\Z_L_" + tempLevel + ".png"));
-                                                t.setImage(new Image("Z_L_" + tempLevel + ".png"));
-                                                break;
-                                            case "Game.Shapes.O":
-//                                    t.setImage(new Image("Assets\\Bar_Box_" + tempLevel + ".png"));
-                                                t.setImage(new Image("Bar_Box_" + tempLevel + ".png"));
-                                                break;
-                                            case "Game.Shapes.S":
-//                                    t.setImage(new Image("Assets\\S_J_" + tempLevel + ".png"));
-                                                t.setImage(new Image("S_J_" + tempLevel + ".png"));
-                                                break;
-                                            case "Game.Shapes.T":
-//                                    t.setImage(new Image("Assets\\Bar_Box_" + tempLevel + ".png"));
-                                                t.setImage(new Image("Bar_Box_" + tempLevel + ".png"));
-                                                break;
-                                            case "Game.Shapes.Z":
-//                                    t.setImage(new Image("Assets\\Z_L_" + tempLevel + ".png"));
-                                                t.setImage(new Image("Z_L_" + tempLevel + ".png"));
-                                                break;
-                                        }
-                                    }
-                                }
-                                for (Shape s : statShapes) {
-                                    s.updateImage(level);
-                                }
-                                levelUp = false;
+                                int tempLevel = level % Shape.LEVEL_IMAGE_LOOP;
+                                updateImages(tempLevel);
                             }
                             nextShape.unload(pane);
                             if (lastShapeIndex != 0) {
@@ -207,66 +122,11 @@ public class Board {
                         if (frameCount == Integer.MAX_VALUE) {
                             frameCount = 0;
                         }
+                        updateDasMovement(tiles);
                         if (!down) {
-                            framesSinceLastMove--;
-                            if (dasCounter > INITIAL_DAS_DELAY) {
-                                dasCounter = 0;
-                                if (verifyHorizMovement(tiles)) {
-                                    adjustHoriz(tiles);
-                                }
-                            } else if (dasCounter == INITIAL_DAS_DELAY) {
-                                firstDasDelay = true;
-                                dasCounter = 0;
-                                if (verifyHorizMovement(tiles)) {
-                                    adjustHoriz(tiles);
-                                }
-                            } else if (dasCounter == DAS_ACCELERATION && firstDasDelay) {
-                                dasCounter = 0;
-                                if (verifyHorizMovement(tiles)) {
-                                    adjustHoriz(tiles);
-                                }
-                            }
-                            if (firstPiece) {
-                                if (--firstPieceFrameDropDelay == 0) {
-                                    framesSinceLastMove = framesPerGridcell;
-                                    if (verifyVerticalMovement(tiles)) {
-                                        adjustVertical(tiles);
-                                    } else {
-                                        writeNewLines(tiles);
-                                        if (!gameOver) {
-                                            if (checkFullLine()) {
-                                                clearLine();
-                                            }
-                                        }
-                                    }
-                                    firstPiece = false;
-                                }
-                            } else if (framesSinceLastMove == 0) {
-                                framesSinceLastMove = framesPerGridcell;
-                                if (verifyVerticalMovement(tiles)) {
-                                    adjustVertical(tiles);
-                                } else {
-                                    writeNewLines(tiles);
-                                    if (!gameOver) {
-                                        if (checkFullLine()) {
-                                            clearLine();
-                                        }
-                                    }
-                                }
-                            }
+                            updateFrameCounterNotDown(tiles);
                         } else {
-                            framesSinceLastMove = framesPerGridcell;
-                            scoreIncrement++;
-                            if (verifyVerticalMovement(tiles)) {
-                                adjustVertical(tiles);
-                            } else {
-                                score += scoreIncrement;
-                                scoreIncrement = 0;
-                                writeNewLines(tiles);
-                                if (checkFullLine()) {
-                                    clearLine();
-                                }
-                            }
+                            updateFrameCounterDown(tiles);
                         }
                     }
                 } else if (inputDelay != 0) {
@@ -973,5 +833,181 @@ public class Board {
             framesSinceLastMove = FRAMES_PER_GRIDCELL[level];
             framesPerGridcell = framesSinceLastMove;
         }
+    }
+    /**
+     * Moves the tile to the side if the DAS counter calls for it
+     * @param tiles Tiles from the active shape
+     */
+    private void updateDasMovement(List<Tile> tiles) {
+        if (dasCounter > INITIAL_DAS_DELAY) {
+            dasCounter = 0;
+            if (verifyHorizMovement(tiles)) {
+                adjustHoriz(tiles);
+            }
+        } else if (dasCounter == INITIAL_DAS_DELAY) {
+            firstDasDelay = true;
+            dasCounter = 0;
+            if (verifyHorizMovement(tiles)) {
+                adjustHoriz(tiles);
+            }
+        } else if (dasCounter == DAS_ACCELERATION && firstDasDelay) {
+            dasCounter = 0;
+            if (verifyHorizMovement(tiles)) {
+                adjustHoriz(tiles);
+            }
+        }
+    }
+
+    /**
+     * Updates the position of the shape if the user is holding down
+     * @param tiles List of tiles from the active shape
+     */
+    private void updateFrameCounterDown(List<Tile> tiles) {
+        framesSinceLastMove = framesPerGridcell;
+        scoreIncrement++;
+        if (verifyVerticalMovement(tiles)) {
+            adjustVertical(tiles);
+        } else {
+            score += scoreIncrement;
+            scoreIncrement = 0;
+            writeNewLines(tiles);
+            if (checkFullLine()) {
+                clearLine();
+            }
+        }
+    }
+
+    /**
+     * Updates the position of the shape if needed and decrements the frame since last piece
+     * vertical movement counter if necessary
+     * @param tiles Tiles from the active shape
+     */
+    private void updateFrameCounterNotDown(List<Tile> tiles) {
+        framesSinceLastMove--;
+        if (firstPiece) {
+            if (--firstPieceFrameDropDelay == 0) {
+                framesSinceLastMove = framesPerGridcell;
+                if (verifyVerticalMovement(tiles)) {
+                    adjustVertical(tiles);
+                } else {
+                    writeNewLines(tiles);
+                    if (!gameOver) {
+                        if (checkFullLine()) {
+                            clearLine();
+                        }
+                    }
+                }
+                firstPiece = false;
+            }
+        } else if (framesSinceLastMove == 0) {
+            framesSinceLastMove = framesPerGridcell;
+            if (verifyVerticalMovement(tiles)) {
+                adjustVertical(tiles);
+            } else {
+                writeNewLines(tiles);
+                if (!gameOver) {
+                    if (checkFullLine()) {
+                        clearLine();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Updates the images for all tiles currently on the board
+     * @param tempLevel The level % 10 to load the image with
+     */
+    private void updateImages(int tempLevel) {
+        for (List<Tile> tiles : savedTiles) {
+            for (Tile t : tiles) {
+                switch (t.getShape().getClass().getName()) {
+                    case "Game.Shapes.I":
+                        t.setImage(new Image("Bar_Box_" + tempLevel + ".png"));
+                        break;
+                    case "Game.Shapes.J":
+                        t.setImage(new Image("S_J_" + tempLevel + ".png"));
+                        break;
+                    case "Game.Shapes.L":
+                        t.setImage(new Image("Z_L_" + tempLevel + ".png"));
+                        break;
+                    case "Game.Shapes.O":
+                        t.setImage(new Image("Bar_Box_" + tempLevel + ".png"));
+                        break;
+                    case "Game.Shapes.S":
+                        t.setImage(new Image("S_J_" + tempLevel + ".png"));
+                        break;
+                    case "Game.Shapes.T":
+                        t.setImage(new Image("Bar_Box_" + tempLevel + ".png"));
+                        break;
+                    case "Game.Shapes.Z":
+                        t.setImage(new Image("Z_L_" + tempLevel + ".png"));
+                        break;
+                }
+            }
+        }
+        for (Shape s : statShapes) {
+            s.updateImage(level);
+        }
+        levelUp = false;
+    }
+
+    /**
+     * Unloads the tiles if the frame counter is a multiple of 4
+     * @param pane  Pane the tiles are on
+     */
+    private void tileUnload(Pane pane) {
+        if (lockFrameCounter % 4 == 0) {
+            if (tetris) {
+                controller.tetris();
+                flash = true;
+            }
+            if (lockFrameCounter == 24) {
+                index = 0;
+            }
+            if (lockFrameCounter != 4) {
+                for (int i = 0; i < clears; i++) {
+                    List<Tile> tiles = savedTiles.get(indicies[i]);
+                    tiles.get(4 - index).unload(pane);
+                    tiles.get(5 + index).unload(pane);
+                }
+                index++;
+            }
+        }
+    }
+
+    /**
+     * Begins the line clear animation if a line clear has been requested
+     */
+    private void clearLines() {
+        controller.updateTetrisPercentage((tetrisLineClears * 100)/linesCleared);
+        if (!finishedFirstLevel) {
+            if (startLevel < 9) {
+                if (linesCleared >= (startLevel * 10 + 10)) {
+                    levelUp();
+                    levelUp = true;
+                    finishedFirstLevel = true;
+                }
+            } else {
+                if (linesCleared >= Math.max(100, startLevel * 10 - 50)) {
+                    levelUp();
+                    levelUp = true;
+                    finishedFirstLevel = true;
+                }
+            }
+            previousLevelUpLine = linesCleared;
+            while (previousLevelUpLine % 10 != 0) {
+                previousLevelUpLine--;
+            }
+        } else if (linesCleared >= previousLevelUpLine + 10) {
+            levelUp();
+            levelUp = true;
+            previousLevelUpLine = linesCleared;
+            while (previousLevelUpLine % 10 != 0) {
+                previousLevelUpLine--;
+            }
+        }
+        clearLine = false;
+        clear = true;
     }
 }

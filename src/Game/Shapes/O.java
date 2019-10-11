@@ -6,6 +6,9 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Holds information for the "O" shape
+ */
 public class O implements Shape {
     private static final int[] STAT_X_COORDINATES = {90, 105};
     private static final int[] STAT_Y_COORDINATES = {315, 330};
@@ -13,13 +16,17 @@ public class O implements Shape {
     private int column;
     private int row;
 
+    /**
+     * Creates a new O piece in the "STATISTICS" box
+     * @param level Current level
+     */
     public O(int level) {
-        while (level >= LEVEL_IMAGE_LOOP) {
-            level -= LEVEL_IMAGE_LOOP;
-        }
+        level %= LEVEL_IMAGE_LOOP;
+//        while (level >= LEVEL_IMAGE_LOOP) {
+//            level -= LEVEL_IMAGE_LOOP;
+//        }
         for (int i = 0; i < 4; i++) {
             Tile t = new Tile(false);
-//            t.setImage(new Image("Assets\\Bar_Box_" + level + ".png"));
             t.setImage(new Image("Bar_Box_" + level + ".png"));
             if (i % 2 == 0) {
                 t.setCoordinates(STAT_X_COORDINATES[0], STAT_Y_COORDINATES[i/2]);
@@ -30,14 +37,19 @@ public class O implements Shape {
         }
     }
 
+    /**
+     * Creates a new O piece
+     * @param level The current level
+     * @param next  Whether or not the piece is to be loaded in the "NEXT" box
+     */
     public O(int level, boolean next) {
-        while (level >= LEVEL_IMAGE_LOOP) {
-            level -= LEVEL_IMAGE_LOOP;
-        }
+        level %= LEVEL_IMAGE_LOOP;
+//        while (level >= LEVEL_IMAGE_LOOP) {
+//            level -= LEVEL_IMAGE_LOOP;
+//        }
         if (next) {
             for (int i = 0; i < 4; i++) {
                 Tile t = new Tile(false);
-//                t.setImage(new Image("Assets\\Bar_Box_" + level + ".png"));
                 t.setImage(new Image("Bar_Box_" + level + ".png"));
                 if (i % 2 == 0) {
                     t.setCoordinates(VALID_NEXT_X_COORDINATES[1], VALID_NEXT_Y_COORDINATES[i/2]);
@@ -49,7 +61,6 @@ public class O implements Shape {
         } else {
             for (int i = 0; i < 4; i++) {
                 Tile t = new Tile(false, this);
-//                t.setImage(new Image("Assets\\Bar_Box_" + level + ".png"));
                 t.setImage(new Image("Bar_Box_" + level + ".png"));
                 if (i % 2 == 0) {
                     t.setXCoordinate(4);
@@ -71,12 +82,12 @@ public class O implements Shape {
      * Updates the image for this shape and by nature all of its tiles
      * @param level The new level to load the image
      */
+    @Override
     public void updateImage(int level) {
         while (level >= LEVEL_IMAGE_LOOP) {
             level -= LEVEL_IMAGE_LOOP;
         }
         for (Tile t : tiles) {
-//            t.setImage(new Image("Assets\\Bar_Box_" + level + ".png"));
             t.setImage(new Image("Bar_Box_" + level + ".png"));
         }
     }

@@ -6,9 +6,12 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Holds information for the "T" shape
+ */
 public class T implements Shape {
-    private static int[] STAT_X_COORDINATES = {90, 105, 120};
-    private static int[] STAT_Y_COORDINATES = {180, 195};
+    private static final int[] STAT_X_COORDINATES = {90, 105, 120};
+    private static final int[] STAT_Y_COORDINATES = {180, 195};
     private int lastRotation = 0;
     private List<Tile> tiles = new ArrayList<>();
     private static final int COLUMN_START = 4;
@@ -16,13 +19,17 @@ public class T implements Shape {
     private int row;
     private int rotation = 0;
 
+    /**
+     * Creates a new T piece in the "STATISTICS" box
+     * @param level Current level
+     */
     public T(int level) {
-        while (level >= LEVEL_IMAGE_LOOP) {
-            level -= LEVEL_IMAGE_LOOP;
-        }
+        level %= LEVEL_IMAGE_LOOP;
+//        while (level >= LEVEL_IMAGE_LOOP) {
+//            level -= LEVEL_IMAGE_LOOP;
+//        }
         for (int i = 0; i < 4; i++) {
             Tile t = new Tile(false);
-//            t.setImage(new Image("Assets\\Bar_Box_" + level + ".png"));
             t.setImage(new Image("Bar_Box_" + level + ".png"));
             if (i < 3) {
                 t.setCoordinates(STAT_X_COORDINATES[i], STAT_Y_COORDINATES[0]);
@@ -33,14 +40,19 @@ public class T implements Shape {
         }
     }
 
+    /**
+     * Creates a new T piece
+     * @param level The current level
+     * @param next  Whether or not the piece is to be loaded in the "NEXT" box
+     */
     public T(int level, boolean next) {
-        while (level >= LEVEL_IMAGE_LOOP) {
-            level -= LEVEL_IMAGE_LOOP;
-        }
+        level %= LEVEL_IMAGE_LOOP;
+//        while (level >= LEVEL_IMAGE_LOOP) {
+//            level -= LEVEL_IMAGE_LOOP;
+//        }
         if (next) {
             for (int i = 0; i < 4; i++) {
                 Tile t = new Tile(false);
-//                t.setImage(new Image("Assets\\Bar_Box_" + level + ".png"));
                 t.setImage(new Image("Bar_Box_" + level + ".png"));
                 if (i < 3) {
                     t.setCoordinates(VALID_NEXT_X_COORDINATES[i + 1], VALID_NEXT_Y_COORDINATES[0]);
@@ -57,7 +69,6 @@ public class T implements Shape {
                 } else {
                     t = new Tile(true, this);
                 }
-//                t.setImage(new Image("Assets\\Bar_Box_" + level + ".png"));
                 t.setImage(new Image("Bar_Box_" + level + ".png"));
                 if (i < 3) {
                     t.setXCoordinate(COLUMN_START + i);
@@ -79,12 +90,12 @@ public class T implements Shape {
      * Updates the image for this shape and by nature all of its tiles
      * @param level The new level to load the image
      */
+    @Override
     public void updateImage(int level) {
         while (level >= LEVEL_IMAGE_LOOP) {
             level -= LEVEL_IMAGE_LOOP;
         }
         for (Tile t : tiles) {
-//            t.setImage(new Image("Assets\\Bar_Box_" + level + ".png"));
             t.setImage(new Image("Bar_Box_" + level + ".png"));
         }
     }
