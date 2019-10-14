@@ -156,163 +156,12 @@ public class Game {
     public void select(MouseEvent mouseEvent) {
         if (state.equalsIgnoreCase("Menu")) {
             if (mouseEvent.getX() >= 375 && mouseEvent.getX() <= 520) {
-                if (mouseEvent.getY() >= 37 && mouseEvent.getY() <= 77) {
-                    showExtraStats = !showExtraStats;
-                    if (showExtraStats) {
-                        extraStats.setFill(Color.RED);
-                    } else {
-                        extraStats.setFill(Color.WHITE);
-                    }
-                } else if (mouseEvent.getSceneY() >= 145 && mouseEvent.getSceneY() <= 180 && musicSelection != 0) {
-                    music.stop();
-                    board.startFrameDelay();
-                    nesMusic.setFill(Color.RED);
-                    gbaMusic.setFill(Color.WHITE);
-                    noMusic.setFill(Color.WHITE);
-                    musicSelection = 0;
-                    music.selectTrack(musicSelection);
-                } else if (mouseEvent.getSceneY() >= 195 && mouseEvent.getSceneY() <= 230 && musicSelection != 1) {
-                    music.stop();
-                    board.startFrameDelay();
-                    nesMusic.setFill(Color.WHITE);
-                    gbaMusic.setFill(Color.RED);
-                    noMusic.setFill(Color.WHITE);
-                    musicSelection = 1;
-                    music.selectTrack(musicSelection);
-                } else if (mouseEvent.getSceneY() >= 245 && mouseEvent.getSceneY() <= 280) {
-                    nesMusic.setFill(Color.WHITE);
-                    gbaMusic.setFill(Color.WHITE);
-                    noMusic.setFill(Color.RED);
-                    musicSelection = 3;
-                    music.stop();
-                }
+                updateRightPanelItem(mouseEvent);
             } else {
                 if (mouseEvent.getY() >= 95 && mouseEvent.getY() <= 129) {
-                    if (mouseEvent.getX() < 78) {
-                        //Do nothing
-                    } else if (mouseEvent.getX() <= 116) {
-                        if (selectedLevel == 0) {
-                            if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
-                                selectedLevel += 10;
-                            }
-                            start();
-                        } else {
-                            clearSelectedLevel();
-                            selectedLevel = 0;
-                            zero.setFill(Color.RED);
-                        }
-                    } else if (mouseEvent.getX() <= 154) {
-                        if (selectedLevel == 1) {
-                            if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
-                                selectedLevel += 10;
-                            }
-                            start();
-                        } else {
-                            clearSelectedLevel();
-                            selectedLevel = 1;
-                            one.setFill(Color.RED);
-                        }
-                    } else if (mouseEvent.getX() <= 193) {
-                        if (selectedLevel == 2) {
-                            if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
-                                selectedLevel += 10;
-                            }
-                            start();
-                        } else {
-                            clearSelectedLevel();
-                            selectedLevel = 2;
-                            two.setFill(Color.RED);
-                        }
-
-                    } else if (mouseEvent.getX() <= 231) {
-                        if (selectedLevel == 3) {
-                            if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
-                                selectedLevel += 10;
-                            }
-                            start();
-                        } else {
-                            clearSelectedLevel();
-                            selectedLevel = 3;
-                            three.setFill(Color.RED);
-                        }
-
-                    } else if (mouseEvent.getX() <= 270) {
-                        if (selectedLevel == 4) {
-                            if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
-                                selectedLevel += 10;
-                            }
-                            start();
-                        } else {
-                            clearSelectedLevel();
-                            selectedLevel = 4;
-                            four.setFill(Color.RED);
-                        }
-
-                    }
+                    updateTopLevelRow(mouseEvent);
                 } else if (mouseEvent.getY() >= 130 && mouseEvent.getY() < 175) {
-                    if (mouseEvent.getX() < 78) {
-                        //Do nothing
-                    } else if (mouseEvent.getX() <= 116) {
-                        if (selectedLevel == 5) {
-                            if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
-                                selectedLevel += 10;
-                            }
-                            start();
-                        } else {
-                            clearSelectedLevel();
-                            selectedLevel = 5;
-                            five.setFill(Color.RED);
-                        }
-
-                    } else if (mouseEvent.getX() <= 154) {
-                        if (selectedLevel == 6) {
-                            if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
-                                selectedLevel += 10;
-                            }
-                            start();
-                        } else {
-                            clearSelectedLevel();
-                            selectedLevel = 6;
-                            six.setFill(Color.RED);
-                        }
-
-                    } else if (mouseEvent.getX() <= 193) {
-                        if (selectedLevel == 7) {
-                            if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
-                                selectedLevel += 10;
-                            }
-                            start();
-                        } else {
-                            clearSelectedLevel();
-                            selectedLevel = 7;
-                            seven.setFill(Color.RED);
-                        }
-
-                    } else if (mouseEvent.getX() <= 231) {
-                        if (selectedLevel == 8) {
-                            if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
-                                selectedLevel += 10;
-                            }
-                            start();
-                        } else {
-                            clearSelectedLevel();
-                            selectedLevel = 8;
-                            eight.setFill(Color.RED);
-                        }
-
-                    } else if (mouseEvent.getX() <= 270) {
-                        if (selectedLevel == 9) {
-                            if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
-                                selectedLevel += 10;
-                            }
-                            start();
-                        } else {
-                            clearSelectedLevel();
-                            selectedLevel = 9;
-                            nine.setFill(Color.RED);
-                        }
-
-                    }
+                    updateBottomLevelRow(mouseEvent);
                 }
             }
         }
@@ -329,140 +178,24 @@ public class Game {
                 board.loadMainMenu();
                 break;
             case "Menu":
-                if (keyEvent.getText().toUpperCase().charAt(0) == ID.charAt(specialSong.length())) {
-                    specialSong += keyEvent.getText();
-                    if (specialSong.equalsIgnoreCase(ID)) {
-                        specialSong = "";
-                        music.stop();
-                        board.startFrameDelay();
-                        nesMusic.setFill(Color.WHITE);
-                        gbaMusic.setFill(Color.WHITE);
-                        noMusic.setFill(Color.WHITE);
-                        musicSelection = 4;
-                        music.selectTrack(musicSelection);
-                    }
-                } else {
-                    specialSong = "";
-                }
+                parseMenuInputs(keyEvent);
                 break;
             case "Register":
                 switch (restartProperty) {
                     case "Register 1":
-                        if (keyEvent.getCode().equals(KeyCode.BACK_SPACE)) {
-                            if (name1.getText().length() > 0) {
-                                if (name1.getText().length() == 1) {
-                                    name1.setText("");
-                                } else {
-                                    name1.setText(name1.getText().substring(0, name1.getText().length() - 1));
-                                }
-                            }
-                        } else if (keyEvent.getCode().equals(KeyCode.ENTER)) {
-                            if (name1.getText().length() > 0) {
-                                names[0] = name1.getText();
-                                writeHighScores();
-                                setBGImage("Menu");
-                            }
-                        } else if (!(keyEvent.getCode().equals(KeyCode.SPACE))) {
-                            if (name1.getText().length() < 7) {
-                                if (keyEvent.isShiftDown()) {
-                                    name1.setText(name1.getText() + keyEvent.getText().toUpperCase());
-                                } else {
-                                    name1.setText(name1.getText() + keyEvent.getText());
-                                }
-                            }
-                        }
+                        parseRegisterOneInput(keyEvent);
                         break;
                     case "Register 2":
-                        if (keyEvent.getCode().equals(KeyCode.BACK_SPACE)) {
-                            if (name2.getText().length() > 0) {
-                                if (name2.getText().length() == 1) {
-                                    name2.setText("");
-                                } else {
-                                    name2.setText(name2.getText().substring(0, name2.getText().length() - 1));
-                                }
-                            }
-                        } else if (keyEvent.getCode().equals(KeyCode.ENTER)) {
-                            if (name2.getText().length() > 0) {
-                                names[1] = name2.getText();
-                                writeHighScores();
-                                setBGImage("Menu");
-                            }
-                        } else if (!(keyEvent.getCode().equals(KeyCode.SPACE))) {
-                            if (name2.getText().length() < 7) {
-                                if (keyEvent.isShiftDown()) {
-                                    name2.setText(name2.getText() + keyEvent.getText().toUpperCase());
-                                } else {
-                                    name2.setText(name2.getText() + keyEvent.getText());
-                                }
-                            }
-                        }
+                        parseRegisterTwoInput(keyEvent);
                         break;
                     case "Register 3":
-                        if (keyEvent.getCode().equals(KeyCode.BACK_SPACE)) {
-                            if (name3.getText().length() > 0) {
-                                if (name3.getText().length() == 1) {
-                                    name3.setText("");
-                                } else {
-                                    name3.setText(name3.getText().substring(0, name3.getText().length() - 1));
-                                }
-                            }
-                        } else if (keyEvent.getCode().equals(KeyCode.ENTER)) {
-                            if (name3.getText().length() > 0) {
-                                names[2] = name3.getText();
-                                writeHighScores();
-                                setBGImage("Menu");
-                            }
-                        } else if (!(keyEvent.getCode().equals(KeyCode.SPACE))) {
-                            if (name3.getText().length() < 7) {
-                                if (keyEvent.isShiftDown()) {
-                                    name3.setText(name3.getText() + keyEvent.getText().toUpperCase());
-                                } else {
-                                    name3.setText(name3.getText() + keyEvent.getText());
-                                }
-                            }
-                        }
+                        parseRegisterThreeInput(keyEvent);
                         break;
                 }
                 break;
             case "Game":
                 if (!stopped) {
-                    if (keyEvent.getCode().equals(KeyCode.SLASH) && !rotate) {
-                        lastRotationKey = KeyCode.SLASH;
-                        board.rotate(true);
-                        rotate = true;
-                    } else if (keyEvent.getCode().equals(KeyCode.PERIOD) && !rotate) {
-                        lastRotationKey = KeyCode.PERIOD;
-                        board.rotate(false);
-                        rotate = true;
-                    } else if (keyEvent.getCode().equals(KeyCode.SPACE)) {
-                        if (board.pause(pane)) {
-                            pause = !pause;
-                            if (!pause) {
-                                setBGImage("Game");
-                                if (musicSelection != 3) {
-                                    music.selectTrack(musicSelection);
-                                    board.startFrameDelay();
-                                }
-                            } else {
-                                setBGImage("Pause");
-                                if (musicSelection != 3) {
-                                    music.stop();
-                                }
-                            }
-                        }
-                    } else if (!down && keyEvent.getCode().equals(KeyCode.S)) {
-                        down = true;
-                        board.setDown(true);
-                    } else if (!moving) {
-                        lastPressedKey = keyEvent.getCode();
-                        if (lastPressedKey.equals(KeyCode.A)) {
-                            board.moveLeft();
-                            moving = true;
-                        } else if (lastPressedKey.equals(KeyCode.D)) {
-                            board.moveRight();
-                            moving = true;
-                        }
-                    }
+                    parseGameInputs(keyEvent);
                 } else {
                     restart();
                 }
@@ -962,6 +695,332 @@ public class Game {
             case 9:
                 nine.setFill(Color.WHITE);
                 break;
+        }
+    }
+
+    /**
+     * Updates the level selected on the bottom row of level select
+     * @param mouseEvent    Event with details where the mouse is clicked
+     */
+    private void updateBottomLevelRow(MouseEvent mouseEvent) {
+        if (mouseEvent.getX() < 78) {
+            //Do nothing
+        } else if (mouseEvent.getX() <= 116) {
+            if (selectedLevel == 5) {
+                if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
+                    selectedLevel += 10;
+                }
+                start();
+            } else {
+                clearSelectedLevel();
+                selectedLevel = 5;
+                five.setFill(Color.RED);
+            }
+        } else if (mouseEvent.getX() <= 154) {
+            if (selectedLevel == 6) {
+                if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
+                    selectedLevel += 10;
+                }
+                start();
+            } else {
+                clearSelectedLevel();
+                selectedLevel = 6;
+                six.setFill(Color.RED);
+            }
+        } else if (mouseEvent.getX() <= 193) {
+            if (selectedLevel == 7) {
+                if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
+                    selectedLevel += 10;
+                }
+                start();
+            } else {
+                clearSelectedLevel();
+                selectedLevel = 7;
+                seven.setFill(Color.RED);
+            }
+        } else if (mouseEvent.getX() <= 231) {
+            if (selectedLevel == 8) {
+                if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
+                    selectedLevel += 10;
+                }
+                start();
+            } else {
+                clearSelectedLevel();
+                selectedLevel = 8;
+                eight.setFill(Color.RED);
+            }
+        } else if (mouseEvent.getX() <= 270) {
+            if (selectedLevel == 9) {
+                if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
+                    selectedLevel += 10;
+                }
+                start();
+            } else {
+                clearSelectedLevel();
+                selectedLevel = 9;
+                nine.setFill(Color.RED);
+            }
+        }
+    }
+
+    /**
+     * Updates the level selected on the top row of level select
+     * @param mouseEvent    Event with details where the mouse is clicked
+     */
+    private void updateTopLevelRow(MouseEvent mouseEvent) {
+        if (mouseEvent.getX() < 78) {
+            //Do nothing
+        } else if (mouseEvent.getX() <= 116) {
+            if (selectedLevel == 0) {
+                if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
+                    selectedLevel += 10;
+                }
+                start();
+            } else {
+                clearSelectedLevel();
+                selectedLevel = 0;
+                zero.setFill(Color.RED);
+            }
+        } else if (mouseEvent.getX() <= 154) {
+            if (selectedLevel == 1) {
+                if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
+                    selectedLevel += 10;
+                }
+                start();
+            } else {
+                clearSelectedLevel();
+                selectedLevel = 1;
+                one.setFill(Color.RED);
+            }
+        } else if (mouseEvent.getX() <= 193) {
+            if (selectedLevel == 2) {
+                if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
+                    selectedLevel += 10;
+                }
+                start();
+            } else {
+                clearSelectedLevel();
+                selectedLevel = 2;
+                two.setFill(Color.RED);
+            }
+
+        } else if (mouseEvent.getX() <= 231) {
+            if (selectedLevel == 3) {
+                if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
+                    selectedLevel += 10;
+                }
+                start();
+            } else {
+                clearSelectedLevel();
+                selectedLevel = 3;
+                three.setFill(Color.RED);
+            }
+
+        } else if (mouseEvent.getX() <= 270) {
+            if (selectedLevel == 4) {
+                if (mouseEvent.getButton().equals(MouseButton.SECONDARY)) {
+                    selectedLevel += 10;
+                }
+                start();
+            } else {
+                clearSelectedLevel();
+                selectedLevel = 4;
+                four.setFill(Color.RED);
+            }
+
+        }
+    }
+
+    /**
+     * Updates items on the right side of the menu screen
+     * @param mouseEvent    Event with details where the mouse is clicked
+     */
+    private void updateRightPanelItem(MouseEvent mouseEvent) {
+        if (mouseEvent.getY() >= 37 && mouseEvent.getY() <= 77) {
+            showExtraStats = !showExtraStats;
+            if (showExtraStats) {
+                extraStats.setFill(Color.RED);
+            } else {
+                extraStats.setFill(Color.WHITE);
+            }
+        } else if (mouseEvent.getSceneY() >= 145 && mouseEvent.getSceneY() <= 180 && musicSelection != 0) {
+            music.stop();
+            board.startFrameDelay();
+            nesMusic.setFill(Color.RED);
+            gbaMusic.setFill(Color.WHITE);
+            noMusic.setFill(Color.WHITE);
+            musicSelection = 0;
+            music.selectTrack(musicSelection);
+        } else if (mouseEvent.getSceneY() >= 195 && mouseEvent.getSceneY() <= 230 && musicSelection != 1) {
+            music.stop();
+            board.startFrameDelay();
+            nesMusic.setFill(Color.WHITE);
+            gbaMusic.setFill(Color.RED);
+            noMusic.setFill(Color.WHITE);
+            musicSelection = 1;
+            music.selectTrack(musicSelection);
+        } else if (mouseEvent.getSceneY() >= 245 && mouseEvent.getSceneY() <= 280) {
+            nesMusic.setFill(Color.WHITE);
+            gbaMusic.setFill(Color.WHITE);
+            noMusic.setFill(Color.RED);
+            musicSelection = 3;
+            music.stop();
+        }
+    }
+
+    /**
+     * Parses the input if the game is running
+     * @param keyEvent  Information about the key pressed by the user
+     */
+    private void parseGameInputs(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.SLASH) && !rotate) {
+            lastRotationKey = KeyCode.SLASH;
+            board.rotate(true);
+            rotate = true;
+        } else if (keyEvent.getCode().equals(KeyCode.PERIOD) && !rotate) {
+            lastRotationKey = KeyCode.PERIOD;
+            board.rotate(false);
+            rotate = true;
+        } else if (keyEvent.getCode().equals(KeyCode.SPACE)) {
+            if (board.pause(pane)) {
+                pause = !pause;
+                if (!pause) {
+                    setBGImage("Game");
+                    if (musicSelection != 3) {
+                        music.selectTrack(musicSelection);
+                        board.startFrameDelay();
+                    }
+                } else {
+                    setBGImage("Pause");
+                    if (musicSelection != 3) {
+                        music.stop();
+                    }
+                }
+            }
+        } else if (!down && keyEvent.getCode().equals(KeyCode.S)) {
+            down = true;
+            board.setDown(true);
+        } else if (!moving) {
+            lastPressedKey = keyEvent.getCode();
+            if (lastPressedKey.equals(KeyCode.A)) {
+                board.moveLeft();
+                moving = true;
+            } else if (lastPressedKey.equals(KeyCode.D)) {
+                board.moveRight();
+                moving = true;
+            }
+        }
+    }
+
+    /**
+     * Parses the input if the user needs to register the third place high score
+     * @param keyEvent  Information about the key pressed by the user
+     */
+    private void parseRegisterThreeInput(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.BACK_SPACE)) {
+            if (name3.getText().length() > 0) {
+                if (name3.getText().length() == 1) {
+                    name3.setText("");
+                } else {
+                    name3.setText(name3.getText().substring(0, name3.getText().length() - 1));
+                }
+            }
+        } else if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+            if (name3.getText().length() > 0) {
+                names[2] = name3.getText();
+                writeHighScores();
+                setBGImage("Menu");
+            }
+        } else if (!(keyEvent.getCode().equals(KeyCode.SPACE))) {
+            if (name3.getText().length() < 7) {
+                if (keyEvent.isShiftDown()) {
+                    name3.setText(name3.getText() + keyEvent.getText().toUpperCase());
+                } else {
+                    name3.setText(name3.getText() + keyEvent.getText());
+                }
+            }
+        }
+    }
+
+    /**
+     * Parses the input if the user needs to register the second place high score
+     * @param keyEvent  Information about the key pressed by the user
+     */
+    private void parseRegisterTwoInput(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.BACK_SPACE)) {
+            if (name2.getText().length() > 0) {
+                if (name2.getText().length() == 1) {
+                    name2.setText("");
+                } else {
+                    name2.setText(name2.getText().substring(0, name2.getText().length() - 1));
+                }
+            }
+        } else if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+            if (name2.getText().length() > 0) {
+                names[1] = name2.getText();
+                writeHighScores();
+                setBGImage("Menu");
+            }
+        } else if (!(keyEvent.getCode().equals(KeyCode.SPACE))) {
+            if (name2.getText().length() < 7) {
+                if (keyEvent.isShiftDown()) {
+                    name2.setText(name2.getText() + keyEvent.getText().toUpperCase());
+                } else {
+                    name2.setText(name2.getText() + keyEvent.getText());
+                }
+            }
+        }
+    }
+
+    /**
+     * Parses the input if the user needs to register the first place high score
+     * @param keyEvent  Information about the key pressed by the user
+     */
+    private void parseRegisterOneInput(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.BACK_SPACE)) {
+            if (name1.getText().length() > 0) {
+                if (name1.getText().length() == 1) {
+                    name1.setText("");
+                } else {
+                    name1.setText(name1.getText().substring(0, name1.getText().length() - 1));
+                }
+            }
+        } else if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+            if (name1.getText().length() > 0) {
+                names[0] = name1.getText();
+                writeHighScores();
+                setBGImage("Menu");
+            }
+        } else if (!(keyEvent.getCode().equals(KeyCode.SPACE))) {
+            if (name1.getText().length() < 7) {
+                if (keyEvent.isShiftDown()) {
+                    name1.setText(name1.getText() + keyEvent.getText().toUpperCase());
+                } else {
+                    name1.setText(name1.getText() + keyEvent.getText());
+                }
+            }
+        }
+    }
+
+    /**
+     * Parses the input if the user is on the main menu
+     * @param keyEvent  Information about the key pressed by the user
+     */
+    private void parseMenuInputs(KeyEvent keyEvent) {
+        if (keyEvent.getText().toUpperCase().charAt(0) == ID.charAt(specialSong.length())) {
+            specialSong += keyEvent.getText();
+            if (specialSong.equalsIgnoreCase(ID)) {
+                specialSong = "";
+                music.stop();
+                board.startFrameDelay();
+                nesMusic.setFill(Color.WHITE);
+                gbaMusic.setFill(Color.WHITE);
+                noMusic.setFill(Color.WHITE);
+                musicSelection = 4;
+                music.selectTrack(musicSelection);
+            }
+        } else {
+            specialSong = "";
         }
     }
 }
