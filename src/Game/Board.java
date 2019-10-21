@@ -175,7 +175,9 @@ public class Board {
                         }
                     }
                 }
-                activeShape.spawn(pane);
+                if (activeShape != null) {
+                    activeShape.spawn(pane);
+                }
                 nextShape.spawn(pane);
                 for (Shape s : statShapes) {
                     s.spawn(pane);
@@ -184,7 +186,9 @@ public class Board {
                 for (List<Tile> t : savedTiles) {
                     pane.getChildren().removeAll(t);
                 }
-                activeShape.unload(pane);
+                if (activeShape != null) {
+                    activeShape.unload(pane);
+                }
                 nextShape.unload(pane);
                 for (Shape s : statShapes) {
                     s.unload(pane);
@@ -347,7 +351,7 @@ public class Board {
      * @param dir   True if rotating to the right, false if rotating to the left
      */
     public void rotate(boolean dir) {
-        if (!lock) {
+        if (!lock && activeShape != null) {
             sfx.playClip(2);
             if (dir) {
                 activeShape.rightRotate();
@@ -654,6 +658,7 @@ public class Board {
         } else {
             lockFrameCounter = 10;
         }
+        activeShape = null;
     }
 
     /**

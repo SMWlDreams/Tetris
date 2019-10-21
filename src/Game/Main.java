@@ -6,6 +6,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 public class Main extends Application {
     private Music music;
 
@@ -15,6 +18,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
         FXMLLoader loader = new FXMLLoader();
         Pane root = loader.load(getClass().getResourceAsStream("Tetris.fxml"));
         Game gameController = loader.getController();
