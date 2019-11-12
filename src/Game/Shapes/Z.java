@@ -24,9 +24,6 @@ public class Z implements Shape {
      */
     public Z(int level) {
         level %= LEVEL_IMAGE_LOOP;
-//        while (level >= LEVEL_IMAGE_LOOP) {
-//            level -= LEVEL_IMAGE_LOOP;
-//        }
         for (int i = 0; i < 4; i++) {
             Tile t = new Tile(false);
             t.setImage(new Image("Z_L_" + level + ".png"));
@@ -50,9 +47,6 @@ public class Z implements Shape {
      */
     public Z(int level, boolean next) {
         level %= LEVEL_IMAGE_LOOP;
-//        while (level >= LEVEL_IMAGE_LOOP) {
-//            level -= LEVEL_IMAGE_LOOP;
-//        }
         if (next) {
             for (int i = 0; i < 4; i++) {
                 Tile t = new Tile(false);
@@ -114,27 +108,6 @@ public class Z implements Shape {
             t.setImage(new Image("Z_L_" + level + ".png"));
         }
     }
-
-//    @Override
-//    public void updateCoordinates(int col, int row) {
-//        if (row > this.row) {
-//            this.row++;
-//            for (Tile t : tiles) {
-//                t.setCoordinates(t.getX(), t.getY() + VALID_COORDINATE_MODIFIERS[0]);
-//            }
-//        }
-//        if (col < column) {
-//            column--;
-//            for (Tile t : tiles) {
-//                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY());
-//            }
-//        } else if (col > column) {
-//            column++;
-//            for (Tile t : tiles) {
-//                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY());
-//            }
-//        }
-//    }
 
     /**
      * Rotates this shape to the left

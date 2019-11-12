@@ -94,27 +94,6 @@ public class T implements Shape {
         }
     }
 
-//    @Override
-//    public void updateCoordinates(int col, int row) {
-//        if (row > this.row) {
-//            this.row++;
-//            for (Tile t : tiles) {
-//                t.setCoordinates(t.getX(), t.getY() + VALID_COORDINATE_MODIFIERS[0]);
-//            }
-//        }
-//        if (col < column) {
-//            column--;
-//            for (Tile t : tiles) {
-//                t.setCoordinates(t.getX() - VALID_COORDINATE_MODIFIERS[0], t.getY());
-//            }
-//        } else if (col > column) {
-//            column++;
-//            for (Tile t : tiles) {
-//                t.setCoordinates(t.getX() + VALID_COORDINATE_MODIFIERS[0], t.getY());
-//            }
-//        }
-//    }
-
     /**
      * Rotates this shape to the left
      */
