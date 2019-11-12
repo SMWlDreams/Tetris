@@ -103,6 +103,8 @@ You can no longer pause the game after you have already lost.
 
 #### You can no longer pause during line clears
 
+#### DAS Acceleration now carries over until you press the opposite direction so you can "Load" DAS
+
 #### Any needed bug fixes
 
 Pausing the game during the delay between a piece being placed and a piece spawning no longer causes the game to be stuck on the pause screen after attempting to un-pause.
