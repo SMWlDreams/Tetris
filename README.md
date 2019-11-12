@@ -101,9 +101,15 @@ You can no longer pause the game after you have already lost.
 
 #### Added a new title screen and new main menu
 
+#### You can no longer pause during line clears
+
 #### Any needed bug fixes
 
-Pausing the game during the delay between a piece being placed and a piece spawning no longer causes the game to be stuck on the pause screen after attempting to un-pause. 
+Pausing the game during the delay between a piece being placed and a piece spawning no longer causes the game to be stuck on the pause screen after attempting to un-pause.
+
+Pausing the game during a line clear no longer screws up the board by pieces just being appearing there 
+
+Running the game for over 2,147,483,647 frames while on the pause screen no longer crashes
 
 ### NOTE
 

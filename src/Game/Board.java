@@ -64,6 +64,7 @@ public class Board {
     private int scoreIncrement = 0;
     private boolean pause = false;
     private int tetrisLineClears;
+    private String lastDir = "None";
 
     /**
      * Plays the next frame of the game and applies any translations based on user input and
@@ -72,6 +73,9 @@ public class Board {
      */
     public void nextFrame(Pane pane) {
         frameCount++;
+        if (frameCount == Integer.MAX_VALUE) {
+            frameCount = 0;
+        }
         if (delay != 0) {
             if(--delay == 0) {
                 music.play();
@@ -119,9 +123,6 @@ public class Board {
                         if (moving) {
                             dasCounter++;
                         }
-                        if (frameCount == Integer.MAX_VALUE) {
-                            frameCount = 0;
-                        }
                         updateDasMovement(tiles);
                         if (!down) {
                             updateFrameCounterNotDown(tiles);
@@ -163,10 +164,10 @@ public class Board {
     /**
      * Pauses the game when the user presses the space bar
      * @param pane  The main pane to remove the shapes from
-     * @return      True if the game was successfully paused of unpaused
+     * @return      True if the game was successfully paused or unpaused
      */
     public boolean pause(Pane pane) {
-        if (!gameOver) {
+        if (!gameOver && !lock) {
             if (pause) {
                 for (List<Tile> tls : savedTiles) {
                     for (Tile t : tls) {
@@ -297,8 +298,12 @@ public class Board {
      * Sets the block movement to go left and resets the DAS counter
      */
     public void moveLeft() {
-        if (!lock) {
-            dasCounter = INITIAL_DAS_DELAY;
+        if (!lock && !moving) {
+            if (!lastDir.equalsIgnoreCase("Left")) {
+                lastDir = "Left";
+                dasCounter = INITIAL_DAS_DELAY;
+                firstDasDelay = false;
+            }
             moving = true;
             xAdjustment = -1;
         }
@@ -308,8 +313,12 @@ public class Board {
      * Sets the block movement to go to the right and resets the sad counter
      */
     public void moveRight() {
-        if (!lock) {
-            dasCounter = INITIAL_DAS_DELAY;
+        if (!lock && !moving) {
+            if (!lastDir.equalsIgnoreCase("Right")) {
+                lastDir = "Right";
+                dasCounter = INITIAL_DAS_DELAY;
+                firstDasDelay = false;
+            }
             moving = true;
             xAdjustment = 1;
         }
@@ -326,7 +335,7 @@ public class Board {
      * Basic frame delay for loading new music
      */
     public void startFrameDelay() {
-        delay = 11;
+        delay = 12;
     }
 
     /**
@@ -343,7 +352,7 @@ public class Board {
     public void stopMovement() {
         xAdjustment = 0;
         moving = false;
-        firstDasDelay = false;
+        dasCounter = 0;
     }
 
     /**

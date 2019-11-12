@@ -25,9 +25,6 @@ public class T implements Shape {
      */
     public T(int level) {
         level %= LEVEL_IMAGE_LOOP;
-//        while (level >= LEVEL_IMAGE_LOOP) {
-//            level -= LEVEL_IMAGE_LOOP;
-//        }
         for (int i = 0; i < 4; i++) {
             Tile t = new Tile(false);
             t.setImage(new Image("Bar_Box_" + level + ".png"));
@@ -47,9 +44,6 @@ public class T implements Shape {
      */
     public T(int level, boolean next) {
         level %= LEVEL_IMAGE_LOOP;
-//        while (level >= LEVEL_IMAGE_LOOP) {
-//            level -= LEVEL_IMAGE_LOOP;
-//        }
         if (next) {
             for (int i = 0; i < 4; i++) {
                 Tile t = new Tile(false);
