@@ -301,11 +301,13 @@ public class Board {
         if (!lock && !moving) {
             if (!lastDir.equalsIgnoreCase("Left")) {
                 lastDir = "Left";
-                dasCounter = INITIAL_DAS_DELAY;
                 firstDasDelay = false;
             }
             moving = true;
             xAdjustment = -1;
+            if (verifyHorizMovement(activeShape.getTiles())) {
+                adjustHoriz(activeShape.getTiles());
+            }
         }
     }
 
@@ -316,11 +318,13 @@ public class Board {
         if (!lock && !moving) {
             if (!lastDir.equalsIgnoreCase("Right")) {
                 lastDir = "Right";
-                dasCounter = INITIAL_DAS_DELAY;
                 firstDasDelay = false;
             }
             moving = true;
             xAdjustment = 1;
+            if (verifyHorizMovement(activeShape.getTiles())) {
+                adjustHoriz(activeShape.getTiles());
+            }
         }
     }
 
@@ -853,12 +857,7 @@ public class Board {
      * @param tiles Tiles from the active shape
      */
     private void updateDasMovement(List<Tile> tiles) {
-        if (dasCounter > INITIAL_DAS_DELAY) {
-            dasCounter = 0;
-            if (verifyHorizMovement(tiles)) {
-                adjustHoriz(tiles);
-            }
-        } else if (dasCounter == INITIAL_DAS_DELAY) {
+        if (dasCounter == INITIAL_DAS_DELAY) {
             firstDasDelay = true;
             dasCounter = 0;
             if (verifyHorizMovement(tiles)) {
