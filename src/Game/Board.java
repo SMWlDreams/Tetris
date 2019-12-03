@@ -72,7 +72,7 @@ public class Board {
      * frame counters
      * @param pane  The main pane of the game to draw or move shapes on
      */
-    public void nextFrame(Pane pane) {
+    public synchronized void nextFrame(Pane pane) {
         frameCount++;
         if (frameCount == Integer.MAX_VALUE) {
             frameCount = 0;
@@ -341,7 +341,7 @@ public class Board {
      * Basic frame delay for loading new music
      */
     public void startFrameDelay() {
-        delay = 12;
+        delay = 13;
     }
 
     /**
