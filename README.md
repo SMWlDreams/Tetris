@@ -115,6 +115,8 @@ Running the game for over 2,147,483,647 frames while on the pause screen no long
 
 You can no longer store das across games
 
+DAS no longer starts loaded at the beginning of each game
+
 ### NOTE
 
 This is an alpha release. The game will run, all core features of the hit NES game TETRIS are here.
