@@ -1007,20 +1007,22 @@ public class Game {
      * @param keyEvent  Information about the key pressed by the user
      */
     private void parseMenuInputs(KeyEvent keyEvent) {
-        if (keyEvent.getText().toUpperCase().charAt(0) == ID.charAt(specialSong.length())) {
-            specialSong += keyEvent.getText();
-            if (specialSong.equalsIgnoreCase(ID)) {
+        try {
+            if (keyEvent.getText().toUpperCase().charAt(0) == ID.charAt(specialSong.length())) {
+                specialSong += keyEvent.getText();
+                if (specialSong.equalsIgnoreCase(ID)) {
+                    specialSong = "";
+                    music.stop();
+                    board.startFrameDelay();
+                    nesMusic.setFill(Color.WHITE);
+                    gbaMusic.setFill(Color.WHITE);
+                    noMusic.setFill(Color.WHITE);
+                    musicSelection = 4;
+                    music.selectTrack(musicSelection);
+                }
+            } else {
                 specialSong = "";
-                music.stop();
-                board.startFrameDelay();
-                nesMusic.setFill(Color.WHITE);
-                gbaMusic.setFill(Color.WHITE);
-                noMusic.setFill(Color.WHITE);
-                musicSelection = 4;
-                music.selectTrack(musicSelection);
             }
-        } else {
-            specialSong = "";
-        }
+        } catch (StringIndexOutOfBoundsException ignored) { }
     }
 }
