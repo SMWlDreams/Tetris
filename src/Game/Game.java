@@ -505,7 +505,7 @@ public class Game {
      *                          than rounded
      */
     public void updateTetrisPercentage(int tetrisPercentage) {
-        tetrisP.setText(tetrisPercentage + "");
+        tetrisP.setText(tetrisPercentage + "%");
     }
 
     /**
@@ -601,7 +601,7 @@ public class Game {
             totalUses[i] = -1;
             updateStats(i);
         }
-        tetrisP.setText("100");
+        tetrisP.setText("100%");
         setBGImage("Menu");
         String[] newNames = new String[3];
         int[] newScores = new int[3];
