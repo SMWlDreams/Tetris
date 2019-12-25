@@ -29,7 +29,7 @@ public class Board {
     private boolean clearLine = false;
     private boolean down = false;
     private int lockFrameCounter;
-    private int dasCounter = 15;
+    private int dasCounter;
     private int frameCount = 0;
     private int level;
     private int startLevel;
@@ -286,6 +286,7 @@ public class Board {
         lastDir = "None";
         firstDasDelay = false;
         moving = false;
+        dasCounter = 0;
     }
 
     /**
