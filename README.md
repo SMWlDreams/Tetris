@@ -113,6 +113,8 @@ Pausing the game during a line clear no longer screws up the board by pieces jus
 
 Running the game for over 2,147,483,647 frames while on the pause screen no longer crashes
 
+You can no longer store das across games
+
 ### NOTE
 
 This is an alpha release. The game will run, all core features of the hit NES game TETRIS are here.
