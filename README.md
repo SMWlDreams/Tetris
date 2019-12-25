@@ -117,6 +117,10 @@ You can no longer store das across games
 
 DAS no longer starts loaded at the beginning of each game
 
+No longer complains in the JVM when you use an unbound key on the main menu
+
+When you have a tetris rate of 0% it now shows the % sign
+
 ### NOTE
 
 This is an alpha release. The game will run, all core features of the hit NES game TETRIS are here.
