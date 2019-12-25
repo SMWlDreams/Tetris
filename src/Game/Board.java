@@ -283,6 +283,9 @@ public class Board {
         s.spawn(pane);
         statShapes.add(s);
         play = true;
+        lastDir = "None";
+        firstDasDelay = false;
+        moving = false;
     }
 
     /**
