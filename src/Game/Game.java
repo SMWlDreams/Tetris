@@ -14,9 +14,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -124,15 +130,16 @@ public class Game {
     private Text droughtP;
 
     private static final String ID = "CORNDILLY";
+    private static final String TAS = "TAS";
     private String state;
     private Music music;
     private List<Node> gameNodes;
     private boolean moving = false;
     private Timeline timeline;
     private Board board = new Board();
-    private KeyCode lastPressedKey;
+    private KeyCode lastPressedKey = KeyCode.CONTEXT_MENU;
     private boolean rotate = false;
-    private KeyCode lastRotationKey;
+    private KeyCode lastRotationKey = KeyCode.CONTEXT_MENU;
     private boolean down = false;
     private int[] totalUses = new int[7];
     private boolean stopped = false;
@@ -147,6 +154,19 @@ public class Game {
     private boolean pause = false;
     private boolean showExtraStats = false;
     private String specialSong = "";
+    private BufferedInputStream stream;
+    private List<Move> moves;
+    private Timeline tasTimeline;
+    private int index = 0;
+    private boolean leftLastFrame = false;
+    private boolean rightLastFrame = false;
+    private boolean moveLeft = false;
+    private boolean moveRight = false;
+    private boolean paused = false;
+    private List<Move> moveList = new ArrayList<>();
+    private long storedSeed = 0;
+    private int storedLevel = 0;
+    private String backupState = "";
 
     /**
      * Highlights whatever is under where the user clicks as long as it is over a clickable menu
@@ -200,7 +220,111 @@ public class Game {
                     restart();
                 }
                 break;
+            case "TAS":
+                if (keyEvent.getCode().equals(KeyCode.TAB)) {
+                    writeInputByte();
+                    board.nextFrame(pane);
+                } else if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                } else {
+                    parseGameInputs(keyEvent);
+                }
+            case "PLAYBACK":
+                if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                    if (board.getDelay() == 0) {
+                        TASFileReader.read(stream);
+                        moves = TASFileReader.getMoves();
+                        timeline.stop();
+                        index = 0;
+                        KeyFrame frame = new KeyFrame(Duration.seconds(1.0/60.0), e -> nextFrame());
+                        tasTimeline = new Timeline();
+                        tasTimeline.getKeyFrames().add(frame);
+                        tasTimeline.setCycleCount(Timeline.INDEFINITE);
+                        if (highScore[0] < 100000) {
+                            best.setText("0" + highScore[0]);
+                        } else {
+                            best.setText("" + highScore[0]);
+                        }
+                        board = new Board();
+                        board.setController(this);
+                        board.init(pane, TASFileReader.getLevel(), TASFileReader.getSeed());
+                        board.setBGAudioPlayer(music);
+                        setBGImage("Game");
+                        state = "PLAYBACK";
+                        updateInfo(0, 0, selectedLevel);
+                        if (selectedLevel >= 10) {
+                            selectedLevel -= 10;
+                        }
+                        clearSelectedLevel();
+                        selectedLevel = 99;
+                        tasTimeline.play();
+                    }
+                }
         }
+    }
+
+    private void writeInputByte() {
+        Move m = new Move();
+        if (paused) {
+            m.setSpaceDown(true);
+            paused = false;
+            board.pause(pane);
+        }
+        if (lastRotationKey.equals(KeyCode.PERIOD)) {
+            m.setRotateLeftDown(true);
+            board.rotate(false);
+        }
+        if (lastRotationKey.equals(KeyCode.SLASH)) {
+            m.setRotateRightDown(true);
+            board.rotate(true);
+        }
+        if (lastPressedKey.equals(KeyCode.A)) {
+            m.setLeftDown(true);
+            if (!leftLastFrame) {
+                leftLastFrame = true;
+                board.moveLeft();
+            }
+        } else leftLastFrame = false;
+        if (lastPressedKey.equals(KeyCode.D)) {
+            m.setRightDown(true);
+            if (!rightLastFrame) {
+                rightLastFrame = true;
+                board.moveRight();
+            }
+        } else rightLastFrame = false;
+        if (down) {
+            m.setDownDown(true);
+        }
+        moveList.add(m);
+    }
+
+    private synchronized void nextFrame() {
+        board.stopMovement();
+        Move m = moves.get(index++);
+        if (m.getSpaceDown()) {
+            board.pause(pane);
+            paused = true;
+        } else if (paused) {
+            board.pause(pane);
+            paused = false;
+        }
+        if (m.getRotateLeftDown()) board.rotate(false);
+        if (m.getRotateRightDown()) board.rotate(true);
+        if (m.getLeftDown() && !moveLeft) {
+            board.moveLeft();
+            moveLeft = true;
+        } else if (!m.getLeftDown() && moveLeft) {
+            board.stopMovement();
+            moveLeft = false;
+        }
+        if (m.getRightDown() && !moveRight && !moveLeft) {
+            board.moveRight();
+            moveRight = true;
+        } else if (!m.getRightDown() && moveRight) {
+            board.stopMovement();
+            moveRight = false;
+        }
+        if (m.getDownDown()) board.setDown(true); else board.setDown(false);
+        board.nextFrame(pane);
     }
 
     /**
@@ -209,9 +333,11 @@ public class Game {
      */
     public void stopMovement(KeyEvent keyEvent) {
         if (keyEvent.getCode().equals(lastRotationKey)) {
+            lastRotationKey = KeyCode.CONTEXT_MENU;
             rotate = false;
         }
         if (keyEvent.getCode().equals(lastPressedKey)) {
+            lastPressedKey = KeyCode.CONTEXT_MENU;
             moving = false;
             board.stopMovement();
         }
@@ -260,17 +386,21 @@ public class Game {
      * Stops the application frame timeline until a user input at the end of a game
      */
     public void stop() {
-        timeline.stop();
-        stopped = true;
-        int i = Integer.parseInt(score.getText());
-        if (i >= highScore[0]) {
-            restartProperty = "Register 1";
-        } else if (i >= highScore[1]) {
-            restartProperty = "Register 2";
-        } else if (i >= highScore[2]) {
-            restartProperty = "Register 3";
+        if (state.equals("TAS")) {
+            TASFileWriter.write(moveList, storedSeed, storedLevel);
         } else {
-            restartProperty = "Menu";
+            timeline.stop();
+            stopped = true;
+            int i = Integer.parseInt(score.getText());
+            if (i >= highScore[0]) {
+                restartProperty = "Register 1";
+            } else if (i >= highScore[1]) {
+                restartProperty = "Register 2";
+            } else if (i >= highScore[2]) {
+                restartProperty = "Register 3";
+            } else {
+                restartProperty = "Menu";
+            }
         }
     }
 
@@ -430,6 +560,9 @@ public class Game {
                 break;
             case "Game":
                 state = "Game";
+                if (backupState.equals("TAS")) {
+                    state = "TAS";
+                }
                 for (Node n : gameNodes) {
                     n.setVisible(true);
                 }
@@ -576,7 +709,14 @@ public class Game {
             }
             board = new Board();
             board.setController(this);
-            board.init(pane, selectedLevel);
+            if (backupState.equals("TAS")) {
+                storedLevel = selectedLevel;
+                storedSeed = System.nanoTime();
+                board.init(pane, selectedLevel, storedSeed);
+                timeline.stop();
+            } else {
+                board.init(pane, selectedLevel);
+            }
             board.setBGAudioPlayer(music);
             setBGImage("Game");
             updateInfo(0, 0, selectedLevel);
@@ -875,14 +1015,19 @@ public class Game {
     private void parseGameInputs(KeyEvent keyEvent) {
         if (keyEvent.getCode().equals(KeyCode.SLASH) && !rotate) {
             lastRotationKey = KeyCode.SLASH;
-            board.rotate(true);
-            rotate = true;
+            if (!state.equals("TAS")) {
+                board.rotate(true);
+                rotate = true;
+            }
         } else if (keyEvent.getCode().equals(KeyCode.PERIOD) && !rotate) {
             lastRotationKey = KeyCode.PERIOD;
-            board.rotate(false);
-            rotate = true;
+            if (!state.equals("TAS")) {
+                board.rotate(false);
+                rotate = true;
+            }
         } else if (keyEvent.getCode().equals(KeyCode.SPACE)) {
-            if (board.pause(pane)) {
+            paused = !paused;
+            if (!state.equals("TAS") && board.pause(pane)) {
                 pause = !pause;
                 if (!pause) {
                     setBGImage("Game");
@@ -902,10 +1047,10 @@ public class Game {
             board.setDown(true);
         } else if (!moving) {
             lastPressedKey = keyEvent.getCode();
-            if (lastPressedKey.equals(KeyCode.A)) {
+            if (lastPressedKey.equals(KeyCode.A) && !state.equals("TAS")) {
                 board.moveLeft();
                 moving = true;
-            } else if (lastPressedKey.equals(KeyCode.D)) {
+            } else if (lastPressedKey.equals(KeyCode.D) && !state.equals("TAS")) {
                 board.moveRight();
                 moving = true;
             }
@@ -1008,7 +1153,8 @@ public class Game {
      */
     private void parseMenuInputs(KeyEvent keyEvent) {
         try {
-            if (keyEvent.getText().toUpperCase().charAt(0) == ID.charAt(specialSong.length())) {
+            if (keyEvent.getText().toUpperCase().charAt(0) == ID.charAt(specialSong.length()) ||
+                    keyEvent.getText().toUpperCase().charAt(0) == TAS.charAt(specialSong.length())) {
                 specialSong += keyEvent.getText();
                 if (specialSong.equalsIgnoreCase(ID)) {
                     specialSong = "";
@@ -1019,10 +1165,120 @@ public class Game {
                     noMusic.setFill(Color.WHITE);
                     musicSelection = 4;
                     music.selectTrack(musicSelection);
+                } else if (specialSong.equalsIgnoreCase(TAS)) {
+                    loadTasInput();
                 }
             } else {
                 specialSong = "";
             }
         } catch (StringIndexOutOfBoundsException ignored) { }
+    }
+
+    private void loadTasInput() {
+        FileChooser chooser = new FileChooser();
+        chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Tetris replay file",
+                "*.tts"));
+        File f = chooser.showOpenDialog(new Stage());
+        if (f == null) {
+            backupState = "TAS";
+        } else {
+            state = "PLAYBACK";
+            try  {
+                stream = new BufferedInputStream(new FileInputStream(f));
+            } catch (Exception e) {
+                
+            }
+        }
+    }
+
+    private static class TASFileWriter {
+        private static final String BASE_OUTPUT =
+                "0000000000000000000000000000000000000000000000000000000000000000";
+
+        public static void write(List<Move> moves, long seed, int level) {
+            try {
+                BufferedOutputStream stream = new BufferedOutputStream(
+                        new FileOutputStream(new File(System.getProperty("user.dir")
+                                + "\\TAS_PLAYBACK" + seed + ".tts")));
+                String strSeed = Long.toString(seed);
+                String s = BASE_OUTPUT.substring(0, BASE_OUTPUT.length() - strSeed.length());
+                s += strSeed;
+                char[] chars = s.toCharArray();
+                for (char c : chars) {
+                    stream.write((byte)c);
+                }
+                stream.write(level);
+                for (Move m : moves) {
+                    stream.write(m.toInt());
+                }
+                stream.write(1);
+                stream.close();
+            } catch (Exception ignored) {}
+        }
+    }
+
+    private static class TASFileReader {
+        private static List<Move> moves;
+        private static long seed;
+        private static int level;
+
+        public static void read(BufferedInputStream stream) {
+            try {
+                seed = 0;
+                level = 0;
+                moves = new ArrayList<>();
+                seed = Long.parseLong(new String(stream.readNBytes(64)));
+                level = stream.read();
+                int b = stream.read();
+                while (b != 1) {
+                    parseValue(b);
+                    b = stream.read();
+                }
+                stream.close();
+            } catch (Exception e) {
+
+            }
+        }
+
+        public static List<Move> getMoves() {
+            return moves;
+        }
+
+        public static long getSeed() {
+            return seed;
+        }
+
+        public static int getLevel() {
+            return level;
+        }
+
+        private static void parseValue(int b) {
+            Move m = new Move();
+            if (b >= 128) {
+                b -= 128;
+                m.setLeftDown(true);
+            }
+            if (b >= 64) {
+                b -= 64;
+                m.setRightDown(true);
+            }
+            if (b >= 32) {
+                b -= 32;
+                m.setDownDown(true);
+            }
+            if (b >= 16) {
+                b -= 16;
+                m.setSpaceDown(true);
+            }
+            if (b >= 8) {
+                b -= 8;
+                m.setRotateLeftDown(true);
+            }
+            if (b >= 4) {
+                m.setRotateRightDown(true);
+            }
+            moves.add(m);
+        }
     }
 }

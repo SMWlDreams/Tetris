@@ -221,6 +221,11 @@ public class Board {
         sfx.playClip(3);
     }
 
+    public void init(Pane pane, int level, long seed) {
+        r = new Random(seed);
+        init(pane, level);
+    }
+
     /**
      * Initializes the games and the first shapes
      * @param pane  Pane to draw the first shape to

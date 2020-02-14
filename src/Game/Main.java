@@ -19,7 +19,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outputStream));
+//        System.setOut(new PrintStream(outputStream));
         FXMLLoader loader = new FXMLLoader();
         Pane root = loader.load(getClass().getResourceAsStream("Tetris.fxml"));
         Game gameController = loader.getController();
