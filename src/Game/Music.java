@@ -8,8 +8,10 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.SamplePlayer;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.InputMismatchException;
+import java.io.PrintStream;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Music {
@@ -18,6 +20,9 @@ public class Music {
             System.getProperty("user.dir") + "\\audio\\register_high_scores.wav",
             null,
             System.getProperty("user.dir") + "\\audio\\special_song.wav"};
+    private static final String DEFAULT_PATH = System.getProperty("user.home") +
+            "\\appdata\\roaming\\tetris\\Audio.txt";
+    private static final String COMP_STR = "Primary Sound Driver";
 
     private AudioContext audioContext;
     private boolean play = false;
@@ -47,10 +52,9 @@ public class Music {
     public void selectTrack(int trackNumber) {
         if (!play) {
             JavaSoundAudioIO io = new JavaSoundAudioIO();
-            try (Scanner in = new Scanner(new File(System.getProperty("user.home") + "\\AppData" +
-                    "\\Roaming\\Tetris\\Audio.txt"))) {
-                io.selectMixer(in.nextInt());
-            } catch (IOException | InputMismatchException e) {
+            try {
+                io.selectMixer(determineMixer());
+            } catch (IOException e) {
                 io.selectMixer(3);
             }
             audioContext = new AudioContext(io);
@@ -83,5 +87,35 @@ public class Music {
             audioContext.stop();
         }
         Platform.exit();
+    }
+
+    private static int determineMixer() throws IOException {
+        writeMixerInfo();
+        return determineMixerID();
+    }
+
+    private static void writeMixerInfo() throws IOException {
+        PrintStream stream = System.out;
+        FileOutputStream outputStream = new FileOutputStream(new File(DEFAULT_PATH));
+        System.setOut(new PrintStream(outputStream));
+        JavaSoundAudioIO.printMixerInfo();
+        outputStream.close();
+        System.setOut(stream);
+    }
+
+    private static int determineMixerID() throws IOException {
+        Scanner in = new Scanner(Paths.get(DEFAULT_PATH));
+        String line;
+        while (in.hasNextLine()) {
+            line = in.nextLine();
+            if (line.contains(COMP_STR)) {
+                for (int i = 0; i < line.length(); i++) {
+                    if (line.charAt(i) == ')') {
+                        return Integer.parseInt(line.substring(0, i)) - 1;
+                    }
+                }
+            }
+        }
+        throw new IOException("Oi vey");
     }
 }
